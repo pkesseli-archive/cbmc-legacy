@@ -2,6 +2,7 @@
 
 #include <ansi-c/c_types.h>
 
+#include <cegis/cegis-util/program_helper.h>
 #include <cegis/invariant/meta/literals.h>
 #include <cegis/invariant/meta/meta_variable_names.h>
 #include <cegis/invariant/options/invariant_program.h>

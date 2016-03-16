@@ -1,5 +1,6 @@
 #include <util/arith_tools.h>
 
+#include <cegis/cegis-util/program_helper.h>
 #include <cegis/value/program_individual.h>
 #include <cegis/genetic/instruction_set_info_factory.h>
 #include <cegis/invariant/util/invariant_program_helper.h>

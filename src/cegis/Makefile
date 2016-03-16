@@ -28,12 +28,14 @@ SRC = danger/meta/meta_variable_names.cpp danger/facade/danger_runner.cpp danger
       invariant/symex/learn/replace_operators.cpp invariant/symex/verify/extract_counterexample.cpp \
       invariant/symex/verify/insert_constraint.cpp invariant/symex/verify/insert_program.cpp \
       invariant/fitness/concrete_fitness_source_provider.cpp \
+      bjc/facade/bjc_runner.cpp bjc/preprocessing/bjc_preprocessing.cpp bjc/options/bjc_program.cpp \
+      bjc/symex/learn/bjc_symex_learn.cpp bjc/symex/verify/bjc_symex_verify.cpp \
       wordsize/restrict_bv_size.cpp value/program_individual_serialisation.cpp \
       seed/literals_seed.cpp genetic/tournament_select.cpp genetic/match_select.cpp \
       genetic/instruction_set_info_factory.cpp genetic/random_mutate.cpp genetic/random_cross.cpp \
       genetic/random_individual.cpp genetic/genetic_constant_strategy.cpp instructions/instruction_set_factory.cpp \
       genetic/concrete_test_runner.cpp genetic/dynamic_test_runner_helper.cpp genetic/genetic_settings.cpp \
-      cegis-util/task_pool.cpp cegis-util/constant_width.cpp cegis-util/irep_pipe.cpp \
+      cegis-util/task_pool.cpp cegis-util/constant_width.cpp cegis-util/irep_pipe.cpp cegis-util/program_helper.cpp \
       runner/cegis_parse_options.cpp runner/cegis_main.cpp \
       ../goto-instrument/dump_c.cpp ../goto-instrument/goto_program2code.cpp \
       ../cbmc/cbmc_parse_options.cpp ../cbmc/bmc.cpp ../cbmc/cbmc_solvers.cpp ../cbmc/symex_bmc.cpp \
@@ -65,6 +67,10 @@ OBJ += ../ansi-c/ansi-c$(LIBEXT) \
       ../util/util$(LIBEXT)
 
 INCLUDES= -I ..
+
+ifeq ($(filter-out Unix MinGW Cygwin OSX OSX_Universal FreeBSD,$(BUILD_ENV_)),)
+  DLFCN_LINKFLAGS = -ldl
+endif
 
 LIBS = $(DLFCN_LINKFLAGS)
 

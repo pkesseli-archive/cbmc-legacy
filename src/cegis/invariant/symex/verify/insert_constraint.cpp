@@ -3,6 +3,7 @@
 #include <util/cprover_prefix.h>
 #include <util/expr_util.h>
 
+#include <cegis/cegis-util/program_helper.h>
 #include <cegis/invariant/options/invariant_program.h>
 #include <cegis/invariant/util/invariant_constraint_variables.h>
 #include <cegis/invariant/util/invariant_program_helper.h>

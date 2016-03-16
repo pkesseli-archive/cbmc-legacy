@@ -17,28 +17,6 @@
  *
  * @details
  *
- * @param gf
- *
- * @return
- */
-class goto_programt &get_entry_body(class goto_functionst &gf);
-
-/**
- * @brief
- *
- * @details
- *
- * @param gf
- *
- * @return
- */
-const goto_programt &get_entry_body(const goto_functionst &gf);
-
-/**
- * @brief
- *
- * @details
- *
  * @param instr
  *
  * @return

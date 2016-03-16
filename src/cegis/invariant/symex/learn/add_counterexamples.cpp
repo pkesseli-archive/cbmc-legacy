@@ -4,6 +4,7 @@
 
 #include <util/arith_tools.h>
 
+#include <cegis/cegis-util/program_helper.h>
 #include <cegis/invariant/util/invariant_program_helper.h>
 #include <cegis/invariant/instrument/meta_variables.h>
 #include <cegis/invariant/options/invariant_program.h>

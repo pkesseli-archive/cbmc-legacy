@@ -10,6 +10,8 @@ Author: Daniel Kroening, kroening@kroening.com
 #ifndef CPROVER_CEGIS_H
 #define CPROVER_CEGIS_H
 
+#include <cstddef>
+
 /**
  * @brief CEGIS template algorithm.
  *
