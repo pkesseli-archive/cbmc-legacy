@@ -1,5 +1,6 @@
 #include <algorithm>
 
+#include <cegis/cegis-util/program_helper.h>
 #include <cegis/invariant/util/invariant_program_helper.h>
 #include <cegis/danger/meta/literals.h>
 #include <cegis/danger/meta/meta_variable_names.h>

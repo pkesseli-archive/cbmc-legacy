@@ -11,6 +11,7 @@ Author: Daniel Kroening, kroening@kroening.com
 
 #include <cegis/danger/facade/danger_runner.h>
 #include <cegis/safety/facade/safety_runner.h>
+#include <cegis/bjc/facade/bjc_runner.h>
 
 #include <cegis/runner/cegis_parse_options.h>
 
@@ -63,7 +64,7 @@ void cegis_parse_optionst::get_command_line_options(optionst &options)
 {
   cbmc_parse_optionst::get_command_line_options(options);
 
-  if(cmdline.isset("danger") || cmdline.isset("safety"))
+  if(cmdline.isset("danger") || cmdline.isset("safety") || cmdline.isset("bjc"))
   {
     unsigned int min_prog_size=1u;
     if (cmdline.isset("cegis-min-size"))
@@ -124,6 +125,8 @@ int cegis_parse_optionst::do_bmc(
     return run_danger(options, result(), symbol_table, goto_functions);
   if(cmdline.isset("safety"))
     return run_safety(options, result(), symbol_table, goto_functions);
+  if(cmdline.isset("bjc"))
+    return run_bjc(options, result(), symbol_table, goto_functions);
 
   return cbmc_parse_optionst::do_bmc(bmc, goto_functions);
 }
