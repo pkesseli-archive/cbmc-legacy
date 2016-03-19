@@ -24,7 +24,7 @@ SRC = danger/meta/meta_variable_names.cpp danger/facade/danger_runner.cpp danger
       invariant/constant/literals_constant_strategy.cpp invariant/meta/meta_variable_names.cpp \
       invariant/preprocess/add_invariants_and_temp_variables.cpp invariant/preprocess/remove_loops_and_assertion.cpp \
       invariant/symex/learn/add_counterexamples.cpp invariant/symex/learn/add_invariant_programs_to_learn.cpp \
-      invariant/symex/learn/instrument_vars.cpp invariant/symex/learn/invariant_library.cpp \
+      invariant/symex/learn/instrument_vars.cpp \
       invariant/symex/learn/replace_operators.cpp invariant/symex/verify/extract_counterexample.cpp \
       invariant/symex/verify/insert_constraint.cpp invariant/symex/verify/insert_program.cpp \
       invariant/fitness/concrete_fitness_source_provider.cpp \
@@ -36,6 +36,7 @@ SRC = danger/meta/meta_variable_names.cpp danger/facade/danger_runner.cpp danger
       genetic/random_individual.cpp genetic/genetic_constant_strategy.cpp instructions/instruction_set_factory.cpp \
       genetic/concrete_test_runner.cpp genetic/dynamic_test_runner_helper.cpp genetic/genetic_settings.cpp \
       cegis-util/task_pool.cpp cegis-util/constant_width.cpp cegis-util/irep_pipe.cpp cegis-util/program_helper.cpp \
+      instrument/cegis_library.cpp instrument/instrument_var_ops.cpp \
       runner/cegis_parse_options.cpp runner/cegis_main.cpp \
       ../goto-instrument/dump_c.cpp ../goto-instrument/goto_program2code.cpp \
       ../cbmc/cbmc_parse_options.cpp ../cbmc/bmc.cpp ../cbmc/cbmc_solvers.cpp ../cbmc/symex_bmc.cpp \
