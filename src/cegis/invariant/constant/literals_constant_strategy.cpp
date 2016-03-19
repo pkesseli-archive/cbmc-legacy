@@ -5,11 +5,10 @@
 #include <util/namespace_utils.h>
 
 #include <cegis/cegis-util/constant_width.h>
-
+#include <cegis/instrument/meta_variables.h>
 #include <cegis/invariant/options/invariant_program.h>
 #include <cegis/invariant/constant/add_constant.h>
 #include <cegis/invariant/constant/literals_constant_strategy.h>
-#include <cegis/invariant/instrument/meta_variables.h>
 
 namespace
 {
@@ -67,7 +66,7 @@ public:
 
   constant_expr_visitort(const invariant_programt &prog,
       constant_sett &constants) :
-      ns(prog.st), type(invariant_meta_type()), constants(constants)
+      ns(prog.st), type(cegis_default_integer_type()), constants(constants)
   {
     const invariant_programt::const_invariant_loopst loops=prog.get_loops();
     constant_expr_visitort &op=*this;

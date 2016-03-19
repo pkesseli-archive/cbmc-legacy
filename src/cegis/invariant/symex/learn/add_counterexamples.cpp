@@ -5,9 +5,9 @@
 #include <util/arith_tools.h>
 
 #include <cegis/cegis-util/program_helper.h>
+#include <cegis/instrument/meta_variables.h>
 #include <cegis/instrument/instrument_var_ops.h>
 #include <cegis/invariant/util/invariant_program_helper.h>
-#include <cegis/invariant/instrument/meta_variables.h>
 #include <cegis/invariant/options/invariant_program.h>
 #include <cegis/invariant/symex/learn/add_counterexamples.h>
 
@@ -54,15 +54,15 @@ void declare_x_arrays(symbol_tablet &st, goto_functionst &gf,
     base_name+=id2string(it->first);
     const array_exprt &value=it->second;
     const typet &type=value.type();
-    pos=declare_invariant_variable(st, gf, pos, base_name, type);
-    pos=assign_invariant_variable(st, gf, pos, base_name, value);
+    pos=declare_cegis_meta_variable(st, gf, pos, base_name, type);
+    pos=assign_cegis_meta_variable(st, gf, pos, base_name, value);
   }
 }
 
 const char X_INDEX[]=CEGIS_PREFIX "x_index";
 symbol_exprt get_index(const symbol_tablet &st)
 {
-  const std::string index_name(get_invariant_meta_name(X_INDEX));
+  const std::string index_name(get_cegis_meta_name(X_INDEX));
   return st.lookup(index_name).symbol_expr();
 }
 
@@ -117,15 +117,15 @@ public:
   {
     std::string base_name(meta_var_prefix);
     base_name+=id2string(assignment.first);
-    const std::string array_name(get_invariant_meta_name(base_name));
+    const std::string array_name(get_cegis_meta_name(base_name));
     const symbol_exprt array(st.lookup(array_name).symbol_expr());
     const index_exprt rhs(array, get_index(st));
     const irep_idt &id=assignment.first;
     const symbol_exprt lhs(st.lookup(id).symbol_expr());
     const goto_programt::targett end(prog.invariant_range.end);
     const goto_programt::targett decl(find_decl(pos, end, id));
-    if (end == decl) pos=invariant_assign(st, gf, pos, lhs, rhs);
-    else invariant_assign(st, gf, decl, lhs, rhs);
+    if (end == decl) pos=cegis_assign(st, gf, pos, lhs, rhs);
+    else cegis_assign(st, gf, decl, lhs, rhs);
   }
 
   void finalize_x0_case()
@@ -181,9 +181,9 @@ goto_programt::targett invariant_add_ce_loop(invariant_programt &prog,
   goto_functionst &gf=prog.gf;
   goto_programt::targett pos=prog.invariant_range.begin;
   const typet size_type(unsigned_int_type());
-  pos=declare_invariant_variable(st, gf, --pos, X_INDEX, size_type);
+  pos=declare_cegis_meta_variable(st, gf, --pos, X_INDEX, size_type);
   const constant_exprt first_index(from_integer(0, size_type));
-  pos=assign_invariant_variable(st, gf, pos, X_INDEX, first_index);
+  pos=assign_cegis_meta_variable(st, gf, pos, X_INDEX, first_index);
   goto_programt::targett loop_head=pos;
   (++loop_head)->labels.push_back(X_LABEL);
   goto_programt &body=get_entry_body(gf);

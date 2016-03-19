@@ -51,7 +51,7 @@ size_t safety_program_genetic_settingst<preproct>::num_progs()
 template<class preproct>
 size_t safety_program_genetic_settingst<preproct>::num_vars()
 {
-  invariant_variable_idst vars;
+  operand_variable_idst vars;
   get_invariant_variable_ids(prog.st, vars);
   return vars.size();
 }
@@ -59,7 +59,7 @@ size_t safety_program_genetic_settingst<preproct>::num_vars()
 template<class preproct>
 size_t safety_program_genetic_settingst<preproct>::num_consts()
 {
-  invariant_variable_idst vars;
+  operand_variable_idst vars;
   return get_invariant_variable_ids(prog.st, vars);
 }
 

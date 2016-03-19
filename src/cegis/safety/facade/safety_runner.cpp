@@ -17,6 +17,7 @@
 #include <cegis/genetic/match_select.h>
 #include <cegis/genetic/lazy_fitness.h>
 #include <cegis/genetic/ga_learn.h>
+#include <cegis/instrument/meta_variables.h>
 #include <cegis/symex/cegis_symex_learn.h>
 #include <cegis/symex/cegis_symex_verify.h>
 #include <cegis/seed/null_seed.h>
@@ -24,7 +25,6 @@
 #include <cegis/value/program_individual_serialisation.h>
 #include <cegis/invariant/constant/constant_strategy.h>
 #include <cegis/invariant/constant/default_constant_strategy.h>
-#include <cegis/invariant/instrument/meta_variables.h>
 #include <cegis/invariant/fitness/concrete_fitness_source_provider.h>
 #include <cegis/invariant/symex/learn/invariant_body_provider.h>
 #include <cegis/safety/value/safety_goto_ce.h>
@@ -74,7 +74,7 @@ int configure_backend(mstreamt &os, const optionst &o,
   instruction_set_info_factoryt info_fac(std::ref(body));
   const size_t pop_size=o.get_unsigned_int_option(CEGIS_POPSIZE);
   const size_t rounds=o.get_unsigned_int_option(CEGIS_ROUNDS);
-  const typet type=invariant_meta_type(); // XXX: Currently single user data type.
+  const typet type=cegis_default_integer_type(); // XXX: Currently single user data type.
   random_individualt rnd(type, info_fac, lazy);
   safety_fitness_configt safety_fitness_config(info_fac, prog);
   concrete_fitness_source_providert<safety_programt, safety_learn_configt> src(

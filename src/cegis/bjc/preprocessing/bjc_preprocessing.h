@@ -19,9 +19,12 @@
  */
 class bjc_preprocessingt
 {
+  typedef std::map<const irep_idt, size_t> operand_idst;
   const class optionst &options;
   bjc_programt original_program;
   bjc_programt current_program;
+  operand_idst var_ids;
+  size_t num_consts;
 public:
   /**
    * @brief

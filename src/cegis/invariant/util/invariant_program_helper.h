@@ -58,16 +58,4 @@ template<class loop_itert>
 void restrict_bv_size(invariant_programt &prog, loop_itert first_loop,
     const loop_itert &last_loop, size_t width_in_bits);
 
-/**
- * @brief
- *
- * @details
- *
- * @param name
- * @param type
- *
- * @return
- */
-bool is_invariant_user_variable(const irep_idt &name, const typet &type);
-
 #endif /* CEGIS_INVARIANT_PROGRAM_HELPER_H_ */

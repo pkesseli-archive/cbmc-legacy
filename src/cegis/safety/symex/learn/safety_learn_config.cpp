@@ -6,8 +6,8 @@
 
 #include <cegis/cegis-util/program_helper.h>
 #include <cegis/instrument/cegis_library.h>
+#include <cegis/instrument/meta_variables.h>
 #include <cegis/invariant/util/invariant_constraint_variables.h>
-#include <cegis/invariant/instrument/meta_variables.h>
 #include <cegis/invariant/symex/learn/instrument_vars.h>
 #include <cegis/invariant/symex/learn/add_invariant_programs_to_learn.h>
 #include <cegis/safety/symex/learn/add_counterexamples.h>
@@ -55,7 +55,7 @@ void safety_learn_configt::process(const size_t max_solution_size)
 {
   constraint_varst ce_vars;
   get_invariant_constraint_vars(ce_vars, original_program);
-  const typet type(invariant_meta_type());  // XXX: Currently single data type
+  const typet type(cegis_default_integer_type());  // XXX: Currently single data type
   const exprt zero(gen_zero(type));
   counterexamplet dummy_ce;
   dummy_ce.x.push_back(counterexamplet::assignmentst());

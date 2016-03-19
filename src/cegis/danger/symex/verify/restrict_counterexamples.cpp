@@ -1,8 +1,8 @@
 #include <algorithm>
 
 #include <cegis/cegis-util/program_helper.h>
+#include <cegis/instrument/meta_variables.h>
 #include <cegis/instrument/instrument_var_ops.h>
-#include <cegis/invariant/instrument/meta_variables.h>
 #include <cegis/invariant/util/invariant_program_helper.h>
 #include <cegis/invariant/meta/meta_variable_names.h>
 #include <cegis/danger/meta/meta_variable_names.h>

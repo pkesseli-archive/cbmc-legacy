@@ -19,7 +19,7 @@
  *
  * @details
  */
-typedef std::map<const irep_idt, size_t> invariant_variable_idst;
+typedef std::map<const irep_idt, size_t> operand_variable_idst;
 
 /**
  * @brief
@@ -74,7 +74,7 @@ goto_programt::targett set_rops_reference(const symbol_tablet &st,
  * @param var_ids
  */
 void link_user_program_variables(class invariant_programt &prog,
-    const invariant_variable_idst &var_ids);
+    const operand_variable_idst &var_ids);
 
 /**
  * @brief
@@ -87,6 +87,6 @@ void link_user_program_variables(class invariant_programt &prog,
  * @return
  */
 size_t get_invariant_variable_ids(const class symbol_tablet &st,
-    invariant_variable_idst &ids);
+    operand_variable_idst &ids);
 
 #endif /* CEGIS_INVARIANT_INSTRUMENT_VARS_H_ */

@@ -1,5 +1,25 @@
 /* FUNCTION: __CPROVER_bjc_run_query */
 
+// cegis.h
+typedef unsigned char opcodet;
+typedef unsigned char opt;
+struct __CPROVER_cegis_instructiont
+{
+  opcodet opcode;
+  opt op0;
+  opt op1;
+  opt op2;
+};
+#define __CPROVER_cegis_max_instruction 24u
+// cegis.h
+
+// bjc.h
+typedef struct abstract_heap abstract_heapt;
+typedef unsigned int word_t;
+typedef word_t ptr_t;
+typedef word_t data_t;
+// bjc.h
+
 #ifndef __CPROVER_cegis_max_query_instruction
 //#define __CPROVER_cegis_max_query_instruction __CPROVER_cegis_max_instruction + 5u
 #define __CPROVER_cegis_max_query_instruction __CPROVER_cegis_max_instruction + 1u
@@ -32,21 +52,21 @@ _Bool __CPROVER_bjc_run_query(
   // N
   // Predicate execution
   _Bool filtered = (_Bool) 0;
-  _Bool distinct = (_Bool) 0;
+  _Bool distincted = (_Bool) 0;
   _Bool sorted = (_Bool) 0;
   for (unsigned char i=0; i < size; ++i)
   {
 #define opcode query[i].opcode
     __CPROVER_assume(opcode > __CPROVER_cegis_max_instruction && opcode <= __CPROVER_cegis_max_query_instruction);
     __CPROVER_assume(query[i].op1 == 0 && query[i].op2 == 0);
-    const unsigned int predicate_length=program[i].op0;
+    const unsigned int predicate_length=query[i].op0;
     __CPROVER_assume(predicate_length <= __CPROVER_cegis_max_predicate_length);
     const struct __CPROVER_cegis_instructiont * const predicate=&query[i + 1];
 
     if (opcode > __CPROVER_cegis_max_query_base_opcode)
     {
       filtered=(_Bool) 0;
-      distinct=(_Bool) 0;
+      distincted=(_Bool) 0;
       sorted=(_Bool) 0;
     }
     switch(opcode)
@@ -55,8 +75,8 @@ _Bool __CPROVER_bjc_run_query(
       __CPROVER_assume(!filtered);
       __CPROVER_cegis_opcode_25: filter(heap, new_list, predicate, predicate_length);
       break;
-    case 26:
-      __CPROVER_assume(!distinct);
+    /*case 26:
+      __CPROVER_assume(!distincted);
       __CPROVER_cegis_opcode_26: distinct(heap, new_list);
       break;
     case 27:
@@ -68,7 +88,7 @@ _Bool __CPROVER_bjc_run_query(
       break;
     case 29:
       break;
-      //limit(heap, new_list, );
+      //limit(heap, new_list, );*/
     default:
     __CPROVER_assume((_Bool) 0);
     }

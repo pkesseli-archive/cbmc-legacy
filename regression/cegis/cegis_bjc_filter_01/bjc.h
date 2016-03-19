@@ -2,7 +2,6 @@
 #define CEGIS_BJC_H_
 
 typedef struct abstract_heap abstract_heapt;
-
 typedef unsigned int word_t;
 typedef word_t ptr_t;
 typedef word_t data_t;

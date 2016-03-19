@@ -3,12 +3,12 @@
 #include <ansi-c/c_types.h>
 
 #include <cegis/cegis-util/program_helper.h>
+#include <cegis/instrument/meta_variables.h>
 #include <cegis/instrument/instrument_var_ops.h>
 #include <cegis/instrument/literals.h>
 #include <cegis/invariant/meta/meta_variable_names.h>
 #include <cegis/invariant/options/invariant_program.h>
 #include <cegis/invariant/util/invariant_program_helper.h>
-#include <cegis/invariant/instrument/meta_variables.h>
 #include <cegis/invariant/symex/learn/instrument_vars.h>
 
 namespace
@@ -46,7 +46,7 @@ goto_programt::targett link_temp_vars(const symbol_tablet &st,
   ++previous_successor;
   for (size_t i=0; i < num_temps; ++i)
   {
-    const std::string name=get_invariant_meta_name(get_tmp(i));
+    const std::string name=get_cegis_meta_name(get_tmp(i));
     pos=set_rops_reference(st, body, pos, name, i);
     if (i == 0) move_labels(body, previous_successor, pos);
     pos=set_ops_reference(st, body, pos, name, i + num_user_vars);
@@ -55,25 +55,25 @@ goto_programt::targett link_temp_vars(const symbol_tablet &st,
 }
 
 void link_user_program_variables(invariant_programt &prog,
-    const invariant_variable_idst &var_ids)
+    const operand_variable_idst &var_ids)
 {
   const goto_programt::targett begin=prog.invariant_range.begin;
   const goto_programt::targett end=prog.invariant_range.end;
   link_user_program_variable_ops(prog.st, prog.gf, var_ids,
-      is_invariant_user_variable, begin, end);
+      is_instrumentable_user_variable, begin, end);
 }
 
 namespace
 {
-void link_user_symbols(const symbol_tablet &st,
-    invariant_variable_idst &var_ids, size_t &variable_id, bool consts)
+void link_user_symbols(const symbol_tablet &st, operand_variable_idst &var_ids,
+    size_t &variable_id, bool consts)
 {
   typedef symbol_tablet::symbolst symbolst;
   const symbolst &symbols=st.symbols;
   for (symbolst::const_iterator it=symbols.begin(); it != symbols.end(); ++it)
   {
     const symbolt &symbol=it->second;
-    if (!is_invariant_user_variable(symbol.name, symbol.type)) continue;
+    if (!is_instrumentable_user_variable(symbol.name, symbol.type)) continue;
     const bool is_const=is_global_const(symbol.name, symbol.type);
     if (is_const == consts)
       var_ids.insert(std::make_pair(symbol.name, variable_id++));
@@ -82,7 +82,7 @@ void link_user_symbols(const symbol_tablet &st,
 }
 
 size_t get_invariant_variable_ids(const symbol_tablet &st,
-    invariant_variable_idst &ids)
+    operand_variable_idst &ids)
 {
-  return get_variable_op_ids(st, ids, &is_invariant_user_variable);
+  return get_variable_op_ids(st, ids, &is_instrumentable_user_variable);
 }
