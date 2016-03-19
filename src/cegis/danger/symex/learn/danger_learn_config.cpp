@@ -2,11 +2,11 @@
 
 #include <util/expr_util.h>
 
+#include <cegis/instrument/cegis_library.h>
 #include <cegis/invariant/util/invariant_program_helper.h>
 #include <cegis/invariant/util/invariant_constraint_variables.h>
 #include <cegis/invariant/instrument/meta_variables.h>
 #include <cegis/invariant/symex/learn/add_counterexamples.h>
-#include <cegis/invariant/symex/learn/invariant_library.h>
 #include <cegis/danger/meta/literals.h>
 #include <cegis/danger/options/danger_program_printer.h>
 #include <cegis/danger/constraint/danger_constraint_factory.h>
@@ -34,14 +34,16 @@ void danger_learn_configt::process(const counterexamplest &ces,
   const size_t num_vars=var_ids.size();
   null_message_handlert msg;
   const std::string name(DANGER_EXECUTE);
-  add_invariant_library(program, msg, num_vars, num_consts, max_sz, name);
+  symbol_tablet &st=program.st;
+  goto_functionst &gf=program.gf;
+  add_cegis_library(st, gf, msg, num_vars, num_consts, max_sz, name);
   link_user_program_variables(program, var_ids);
   link_meta_variables(program, var_ids.size(), max_sz);
   danger_add_programs_to_learn(program, max_sz);
   danger_add_x0_placeholders(program);
   invariant_add_learned_counterexamples(program, ces, create_danger_constraint,
       true);
-  program.gf.update();
+  gf.update();
 }
 
 void danger_learn_configt::process(const size_t max_solution_size)

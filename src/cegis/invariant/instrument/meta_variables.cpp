@@ -5,8 +5,9 @@
 #include <goto-programs/goto_functions.h>
 
 #include <cegis/cegis-util/program_helper.h>
+#include <cegis/instrument/instrument_var_ops.h>
 #include <cegis/invariant/util/invariant_program_helper.h>
-#include <cegis/invariant/meta/literals.h>
+#include <cegis/instrument/literals.h>
 #include <cegis/invariant/instrument/meta_variables.h>
 
 namespace
@@ -30,7 +31,7 @@ goto_programt::targett declare_invariant_variable(symbol_tablet &st,
   const goto_programt::targett decl=get_entry_body(gf).insert_after(pos);
   decl->type=goto_program_instruction_typet::DECL;
   decl->code=code_declt(symbol);
-  decl->source_location=default_invariant_source_location();
+  decl->source_location=default_cegis_source_location();
   return decl;
 }
 
@@ -42,7 +43,7 @@ symbolt &create_invariant_symbol(symbol_tablet &st, const std::string &full_name
   new_symbol.type=type;
   new_symbol.base_name=full_name;
   new_symbol.pretty_name=new_symbol.base_name;
-  new_symbol.location=default_invariant_source_location();
+  new_symbol.location=default_cegis_source_location();
   new_symbol.mode=ID_C;
   new_symbol.module=CEGIS_MODULE;
   new_symbol.is_thread_local=true;
@@ -60,7 +61,7 @@ goto_programt::targett invariant_assign(const symbol_tablet &st,
   goto_programt &body=get_entry_body(gf);
   goto_programt::targett assign=body.insert_after(insert_after_pos);
   assign->type=goto_program_instruction_typet::ASSIGN;
-  assign->source_location=default_invariant_source_location();
+  assign->source_location=default_cegis_source_location();
   const namespacet ns(st);
   const typet &type=lhs.type();
   if (type_eq(type, rhs.type(), ns)) assign->code=code_assignt(lhs, rhs);
@@ -87,12 +88,4 @@ goto_programt::targett assign_invariant_variable(const symbol_tablet &st,
 typet invariant_meta_type()
 {
   return unsigned_int_type();
-}
-
-source_locationt default_invariant_source_location()
-{
-  source_locationt loc;
-  loc.set_file(CEGIS_MODULE);
-  loc.set_function(goto_functionst::entry_point());
-  return loc;
 }

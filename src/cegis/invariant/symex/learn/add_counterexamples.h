@@ -15,7 +15,7 @@
 
 #include <util/expr.h>
 
-#include <cegis/invariant/meta/literals.h>
+#include <cegis/instrument/literals.h>
 
 /**
  * @brief

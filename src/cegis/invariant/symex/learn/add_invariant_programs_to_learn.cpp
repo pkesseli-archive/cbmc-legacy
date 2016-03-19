@@ -5,8 +5,9 @@
 #include <util/arith_tools.h>
 
 #include <cegis/cegis-util/program_helper.h>
+#include <cegis/instrument/instrument_var_ops.h>
 #include <cegis/invariant/util/invariant_program_helper.h>
-#include <cegis/invariant/meta/literals.h>
+#include <cegis/instrument/literals.h>
 #include <cegis/danger/meta/literals.h>
 #include <cegis/danger/options/danger_program.h>
 #include <cegis/invariant/instrument/meta_variables.h>
@@ -32,7 +33,7 @@ void execute_inv_prog(const symbol_tablet &st, goto_functionst &gf,
   goto_programt::targett pos=decl;
   goto_programt::targett execution=body.insert_after(++pos);
   execution->type=goto_program_instruction_typet::FUNCTION_CALL;
-  execution->source_location=default_invariant_source_location();
+  execution->source_location=default_cegis_source_location();
   code_function_callt call;
   call.function()=st.lookup(DANGER_EXECUTE).symbol_expr();
   const std::string prog_name(get_invariant_meta_name(prog_base_name));
