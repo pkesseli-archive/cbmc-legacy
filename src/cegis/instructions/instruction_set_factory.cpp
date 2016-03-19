@@ -3,7 +3,7 @@
 
 #include <goto-programs/goto_functions.h>
 
-#include <cegis/invariant/meta/literals.h>
+#include <cegis/instrument/literals.h>
 #include <cegis/invariant/util/copy_instructions.h>
 #include <cegis/instructions/instruction_set_factory.h>
 

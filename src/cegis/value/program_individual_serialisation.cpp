@@ -2,7 +2,7 @@
 
 #include <goto-programs/goto_trace.h>
 
-#include <cegis/invariant/meta/literals.h>
+#include <cegis/instrument/literals.h>
 #include <cegis/danger/options/danger_program.h>
 #include <cegis/danger/symex/learn/add_variable_refs.h>
 #include <cegis/danger/symex/learn/read_x0.h>

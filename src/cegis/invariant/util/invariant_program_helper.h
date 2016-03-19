@@ -17,48 +17,11 @@
  *
  * @details
  *
- * @param instr
- *
- * @return
- */
-const irep_idt &get_affected_variable(const goto_programt::instructiont &instr);
-
-/**
- * @brief
- *
- * @details
- *
- * @param target
- * @param end
- *
- * @return
- */
-bool is_nondet(const goto_programt::targett &target,
-    const goto_programt::targett &end);
-
-
-/**
- * @brief
- *
- * @details
- *
  * @param body
  * @param target
  */
 void erase_target(goto_programt::instructionst &body,
     const goto_programt::targett &target);
-
-/**
- * @brief
- *
- * @details
- *
- * @param body
- * @param from
- * @param to
- */
-void move_labels(goto_programt &body, const goto_programt::targett &from,
-    const goto_programt::targett &to);
 
 /**
  * @brief
@@ -106,17 +69,5 @@ void restrict_bv_size(invariant_programt &prog, loop_itert first_loop,
  * @return
  */
 bool is_invariant_user_variable(const irep_idt &name, const typet &type);
-
-/**
- * @brief
- *
- * @details
- *
- * @param name
- * @param type
- *
- * @return
- */
-bool is_global_const(const irep_idt &name, const typet &type);
 
 #endif /* CEGIS_INVARIANT_PROGRAM_HELPER_H_ */

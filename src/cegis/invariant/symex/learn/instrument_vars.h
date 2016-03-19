@@ -70,21 +70,6 @@ goto_programt::targett set_rops_reference(const symbol_tablet &st,
  *
  * @details
  *
- * @param st
- * @param body
- * @param pos
- * @param name
- * @param id
- */
-goto_programt::targett set_ops_reference(const symbol_tablet &st,
-    goto_programt &body, const goto_programt::targett &pos,
-    const irep_idt &name, const unsigned int id);
-
-/**
- * @brief
- *
- * @details
- *
  * @param prog
  * @param var_ids
  */

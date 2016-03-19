@@ -5,6 +5,7 @@
 #include <util/arith_tools.h>
 
 #include <cegis/cegis-util/program_helper.h>
+#include <cegis/instrument/instrument_var_ops.h>
 #include <cegis/invariant/util/invariant_program_helper.h>
 #include <cegis/invariant/instrument/meta_variables.h>
 #include <cegis/invariant/options/invariant_program.h>
@@ -107,7 +108,7 @@ public:
     {
       pos=get_entry_body(gf).insert_after(pos);
       pos->type=goto_program_instruction_typet::GOTO;
-      pos->source_location=default_invariant_source_location();
+      pos->source_location=default_cegis_source_location();
       add_x0_case(ces_size);
     }
   }
@@ -141,7 +142,7 @@ void create_constraints(invariant_programt &prog,
   goto_programt &body=get_entry_body(prog.gf);
   pos=body.insert_after(pos);
   pos->type=goto_program_instruction_typet::ASSUME;
-  pos->source_location=default_invariant_source_location();
+  pos->source_location=default_cegis_source_location();
   pos->guard=constraint(prog.get_loops().size());
 }
 
@@ -151,7 +152,7 @@ void add_final_assertion(invariant_programt &prog,
   goto_programt &body=get_entry_body(prog.gf);
   goto_programt::targett assertion=body.insert_after(loop_end);
   assertion->type=goto_program_instruction_typet::ASSERT;
-  assertion->source_location=default_invariant_source_location();
+  assertion->source_location=default_cegis_source_location();
   assertion->guard=false_exprt();
 }
 }
@@ -188,14 +189,14 @@ goto_programt::targett invariant_add_ce_loop(invariant_programt &prog,
   goto_programt &body=get_entry_body(gf);
   pos=insert_before_preserve_labels(body, prog.invariant_range.end);
   pos->type=goto_program_instruction_typet::ASSIGN;
-  pos->source_location=default_invariant_source_location();
+  pos->source_location=default_cegis_source_location();
   const symbol_exprt index(get_index(st));
   const constant_exprt one(from_integer(1, size_type));
   const code_assignt inc(index, plus_exprt(index, one));
   pos->code=inc;
   pos=body.insert_after(pos);
   pos->type=goto_program_instruction_typet::GOTO;
-  pos->source_location=default_invariant_source_location();
+  pos->source_location=default_cegis_source_location();
   pos->function=goto_functionst::entry_point();
   pos->targets.push_back(loop_head);
   pos->loop_number=0u;
