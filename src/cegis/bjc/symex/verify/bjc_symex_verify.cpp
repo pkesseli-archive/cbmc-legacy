@@ -11,6 +11,7 @@ bjc_symex_verifyt::~bjc_symex_verifyt()
 
 void bjc_symex_verifyt::process(const candidatet &candidate)
 {
+  // TODO: Assign value to query targett
 }
 
 const symbol_tablet &bjc_symex_verifyt::get_symbol_table() const
@@ -26,4 +27,5 @@ const goto_functionst &bjc_symex_verifyt::get_goto_functions() const
 void bjc_symex_verifyt::convert(counterexamplest &counterexamples,
     const goto_tracet &trace)
 {
+  // TODO: Extract assignment with program_loc == ce_targett.loc
 }

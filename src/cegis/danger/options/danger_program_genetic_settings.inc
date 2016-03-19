@@ -1,6 +1,6 @@
 #include <algorithm>
 
-#include <cegis/invariant/options/parameters.h>
+#include <cegis/options/parameters.h>
 #include <cegis/invariant/symex/learn/instrument_vars.h>
 #include <cegis/danger/options/danger_program.h>
 

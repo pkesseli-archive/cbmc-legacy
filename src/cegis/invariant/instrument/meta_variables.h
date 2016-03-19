@@ -114,13 +114,4 @@ goto_programt::targett assign_invariant_variable(const symbol_tablet &st,
  */
 typet invariant_meta_type();
 
-/**
- * @brief
- *
- * @details
- *
- * @return
- */
-source_locationt default_invariant_source_location();
-
 #endif /* CEGIS_INVARIANT_META_VARIABLES_H_ */

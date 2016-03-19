@@ -4,6 +4,7 @@
 #include <util/expr_util.h>
 
 #include <cegis/cegis-util/program_helper.h>
+#include <cegis/instrument/instrument_var_ops.h>
 #include <cegis/invariant/options/invariant_program.h>
 #include <cegis/invariant/util/invariant_constraint_variables.h>
 #include <cegis/invariant/util/invariant_program_helper.h>
@@ -28,7 +29,7 @@ public:
   {
     pos=body.insert_after(pos);
     pos->type=goto_program_instruction_typet::ASSIGN;
-    pos->source_location=default_invariant_source_location();
+    pos->source_location=default_cegis_source_location();
     pos->code=code_assignt(var, side_effect_expr_nondett(var.type()));
     quantifiers.push_back(pos);
   }
@@ -50,7 +51,7 @@ void add_final_assertion(invariant_programt &program,
   goto_programt::targett pos=program.invariant_range.end;
   pos=get_entry_body(program.gf).insert_after(--pos);
   pos->type=goto_program_instruction_typet::ASSERT;
-  pos->source_location=default_invariant_source_location();
+  pos->source_location=default_cegis_source_location();
   pos->guard=constraint_factory(program.get_loops().size());
 }
 }

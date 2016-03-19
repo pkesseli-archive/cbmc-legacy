@@ -5,6 +5,7 @@
 #include <cegis/danger/meta/literals.h>
 
 #include <cegis/facade/cegis.h>
+#include <cegis/options/parameters.h>
 #include <cegis/statistics/cegis_statistics_wrapper.h>
 #include <cegis/genetic/genetic_preprocessing.h>
 #include <cegis/genetic/genetic_constant_strategy.h>
@@ -21,7 +22,6 @@
 #include <cegis/seed/null_seed.h>
 #include <cegis/learn/concurrent_learn.h>
 #include <cegis/value/program_individual_serialisation.h>
-#include <cegis/invariant/options/parameters.h>
 #include <cegis/invariant/constant/constant_strategy.h>
 #include <cegis/invariant/constant/default_constant_strategy.h>
 #include <cegis/invariant/instrument/meta_variables.h>

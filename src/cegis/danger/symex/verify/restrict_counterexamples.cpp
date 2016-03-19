@@ -1,6 +1,7 @@
 #include <algorithm>
 
 #include <cegis/cegis-util/program_helper.h>
+#include <cegis/instrument/instrument_var_ops.h>
 #include <cegis/invariant/instrument/meta_variables.h>
 #include <cegis/invariant/util/invariant_program_helper.h>
 #include <cegis/invariant/meta/meta_variable_names.h>
@@ -31,7 +32,7 @@ goto_programt::targett add_assume(goto_functionst &gf)
   if (goto_program_instruction_typet::ASSUME == (--pos)->type) return pos;
   pos=body.insert_after(pos);
   pos->type=goto_program_instruction_typet::ASSUME;
-  pos->source_location=default_invariant_source_location();
+  pos->source_location=default_cegis_source_location();
   return pos;
 }
 

@@ -6,8 +6,9 @@
 #include <ansi-c/cprover_library.h>
 
 #include <cegis/cegis-util/program_helper.h>
+#include <cegis/instrument/instrument_var_ops.h>
 #include <cegis/invariant/util/invariant_program_helper.h>
-#include <cegis/invariant/meta/literals.h>
+#include <cegis/instrument/literals.h>
 #include <cegis/invariant/options/invariant_program.h>
 #include <cegis/invariant/instrument/meta_variables.h>
 
@@ -74,20 +75,19 @@ goto_programt::targett init_array(const symbol_tablet &st, goto_programt &body,
 {
   pos=body.insert_after(pos);
   pos->type=goto_program_instruction_typet::ASSIGN;
-  pos->source_location=default_invariant_source_location();
+  pos->source_location=default_cegis_source_location();
   const symbol_exprt array(st.lookup(name).symbol_expr());
   const array_typet &type=to_array_type(array.type());
   pos->code=code_assignt(array, array_of_exprt(gen_zero(type.subtype()), type));
   return pos;
 }
 
-void set_init_values(invariant_programt &prog)
+void set_init_values(const symbol_tablet &st, goto_functionst &gf)
 {
-  goto_programt &body=get_entry_body(prog.gf);
-  goto_programt::targett pos=prog.invariant_range.begin;
-  const symbol_tablet &st=prog.st;
-  pos=init_array(st, body, CEGIS_OPS, --pos);
-  pos=init_array(st, body, CEGIS_RESULT_OPS, pos);
+  goto_programt &body=get_entry_body(gf);
+  goto_programt::targett pos=body.instructions.begin();
+  pos=init_array(st, body, CEGIS_OPS, pos);
+  init_array(st, body, CEGIS_RESULT_OPS, pos);
 }
 
 std::string get_prefix(const size_t num_vars, const size_t num_consts,
@@ -105,7 +105,7 @@ std::string get_prefix(const size_t num_vars, const size_t num_consts,
 }
 }
 
-std::string get_invariant_library_text(const size_t num_vars,
+std::string get_cegis_library_text(const size_t num_vars,
     const size_t num_consts, const size_t max_solution_size,
     const std::string &func_name)
 {
@@ -117,20 +117,18 @@ std::string get_invariant_library_text(const size_t num_vars,
   return text+=get_cprover_library_text(functions, st);
 }
 
-void add_invariant_library(invariant_programt &prog, message_handlert &msg,
-    const size_t num_vars, const size_t num_consts,
+void add_cegis_library(symbol_tablet &st, goto_functionst &gf,
+    message_handlert &msg, const size_t num_vars, const size_t num_consts,
     const size_t max_solution_size, const std::string &func_name)
 {
-  symbol_tablet &st=prog.st;
-  goto_functionst &goto_functions=prog.gf;
   add_placeholder(st, func_name);
   std::set<irep_idt> functions;
   functions.insert(func_name);
   const std::string library_src(
-      get_invariant_library_text(num_vars, num_consts, max_solution_size,
+      get_cegis_library_text(num_vars, num_consts, max_solution_size,
           func_name));
   add_library(library_src, st, msg);
-  goto_convert(func_name, st, goto_functions, msg);
-  set_loop_id(goto_functions, func_name);
-  set_init_values(prog);
+  goto_convert(func_name, st, gf, msg);
+  set_loop_id(gf, func_name);
+  set_init_values(st, gf);
 }

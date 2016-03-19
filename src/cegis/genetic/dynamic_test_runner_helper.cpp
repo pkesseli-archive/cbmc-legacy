@@ -10,7 +10,7 @@
 #include <util/tempfile.h>
 #include <util/bv_arithmetic.h>
 #include <cegis/value/program_individual.h>
-#include <cegis/invariant/meta/literals.h>
+#include <cegis/instrument/literals.h>
 #include <cegis/genetic/dynamic_test_runner_helper.h>
 
 void close_fitness_tester_library(fitness_lib_handlet &handle,
