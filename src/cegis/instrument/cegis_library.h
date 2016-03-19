@@ -43,4 +43,28 @@ void add_cegis_library(symbol_tablet &st, class goto_functionst &gf,
     class message_handlert &msg, size_t num_vars, size_t num_consts,
     size_t max_solution_size, const std::string &func_name);
 
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @param st
+ * @param gf
+ * @param msg
+ * @param func_name
+ * @param code_type
+ */
+void add_cegis_library(symbol_tablet &st, goto_functionst &gf,
+    message_handlert &msg, const std::string &func_name,
+    const code_typet &func_type);
+
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @return
+ */
+code_typet cegis_execute_type();
+
 #endif /* CEGIS_LIBRARY_H_ */

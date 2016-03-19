@@ -3,9 +3,9 @@
 #include <util/expr_util.h>
 
 #include <cegis/instrument/cegis_library.h>
+#include <cegis/instrument/meta_variables.h>
 #include <cegis/invariant/util/invariant_program_helper.h>
 #include <cegis/invariant/util/invariant_constraint_variables.h>
-#include <cegis/invariant/instrument/meta_variables.h>
 #include <cegis/invariant/symex/learn/add_counterexamples.h>
 #include <cegis/danger/meta/literals.h>
 #include <cegis/danger/options/danger_program_printer.h>
@@ -51,7 +51,7 @@ void danger_learn_configt::process(const size_t max_solution_size)
   constraint_varst ce_vars;
   get_invariant_constraint_vars(ce_vars, original_program);
   counterexamplet dummy_ce;
-  const typet type(invariant_meta_type());  // XXX: Currently single data type
+  const typet type(cegis_default_integer_type());  // XXX: Currently single data type
   const exprt zero(gen_zero(type));
   for (const symbol_exprt &var : ce_vars)
     dummy_ce.insert(std::make_pair(var.get_identifier(), zero));

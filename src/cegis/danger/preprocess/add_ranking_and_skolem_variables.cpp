@@ -1,8 +1,8 @@
 #include <algorithm>
 
 #include <cegis/cegis-util/program_helper.h>
+#include <cegis/instrument/meta_variables.h>
 #include <cegis/invariant/meta/meta_variable_names.h>
-#include <cegis/invariant/instrument/meta_variables.h>
 #include <cegis/invariant/util/invariant_program_helper.h>
 #include <cegis/danger/options/danger_program.h>
 #include <cegis/danger/meta/meta_variable_names.h>
@@ -22,7 +22,7 @@ public:
   create_skolem_meta_variablest(symbol_tablet &st, goto_functionst &gf,
       const size_t loop_id, danger_programt::danger_meta_vars_positionst &meta,
       const goto_programt::targett &pos) :
-      st(st), gf(gf), loop_id(loop_id), type(invariant_meta_type()), meta(meta), pos(
+      st(st), gf(gf), loop_id(loop_id), type(cegis_default_integer_type()), meta(meta), pos(
           pos), skid(0)
   {
   }
@@ -30,11 +30,11 @@ public:
   void operator()(const goto_programt::targett &sklm)
   {
     const std::string meta_name=get_Sx(loop_id, skid++);
-    pos=declare_invariant_variable(st, gf, pos, meta_name, type);
-    const std::string full_meta_name(get_invariant_meta_name(meta_name));
+    pos=declare_cegis_meta_variable(st, gf, pos, meta_name, type);
+    const std::string full_meta_name(get_cegis_meta_name(meta_name));
     const symbol_exprt meta_var(st.lookup(full_meta_name).symbol_expr());
     const irep_idt &sklm_name=get_affected_variable(*sklm);
-    invariant_assign_user_variable(st, gf, sklm, sklm_name, meta_var);
+    cegis_assign_user_variable(st, gf, sklm, sklm_name, meta_var);
     meta.Sx.push_back(pos);
   }
 };
@@ -52,7 +52,7 @@ public:
 
   void operator()(danger_programt::loopt &loop)
   {
-    const typet type(invariant_meta_type());
+    const typet type(cegis_default_integer_type());
     invariant_programt::meta_vars_positionst &im=loop.meta_variables;
     danger_programt::danger_meta_vars_positionst &dm=loop.danger_meta_variables;
     goto_programt::targett pos=im.Gx;
@@ -60,7 +60,7 @@ public:
     const size_t ranking_count=1; // XXX: Lexicographical ranking?
     for (size_t i=0; i < ranking_count; ++i)
     {
-      pos=declare_invariant_variable(st, gf, pos, get_Rx(loop_id, i), type);
+      pos=declare_cegis_meta_variable(st, gf, pos, get_Rx(loop_id, i), type);
       dm.Rx.push_back(pos);
     }
     const goto_programt::targetst &sklm=loop.skolem_choices;
@@ -70,7 +70,7 @@ public:
     for (size_t i=0; i < ranking_count; ++i)
     {
       const std::string rx_prime(get_Rx_prime(loop_id, i));
-      pos=declare_invariant_variable(st, gf, pos, rx_prime, type);
+      pos=declare_cegis_meta_variable(st, gf, pos, rx_prime, type);
       dm.Rx_prime.push_back(pos);
     }
     ++loop_id;

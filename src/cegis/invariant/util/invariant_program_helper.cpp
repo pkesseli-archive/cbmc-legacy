@@ -35,15 +35,3 @@ void restrict_bv_size(invariant_programt &prog, const size_t width_in_bits)
     restrict_bv_size(loop->guard, width_in_bits);
   restrict_bv_size(prog.assertion, width_in_bits);
 }
-
-namespace
-{
-const char RETURN_VALUE_IDENTIFIER[]="#return_value";
-}
-bool is_invariant_user_variable(const irep_idt &id, const typet &type)
-{
-  if (ID_code == type.id()) return false;
-  const std::string &name=id2string(id);
-  if (std::string::npos != name.find(RETURN_VALUE_IDENTIFIER)) return false;
-  return std::string::npos == name.find(CPROVER_PREFIX);
-}

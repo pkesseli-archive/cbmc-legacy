@@ -1,8 +1,8 @@
 #include <algorithm>
 
 #include <cegis/cegis-util/program_helper.h>
+#include <cegis/instrument/meta_variables.h>
 #include <cegis/invariant/meta/meta_variable_names.h>
-#include <cegis/invariant/instrument/meta_variables.h>
 #include <cegis/invariant/util/invariant_program_helper.h>
 #include <cegis/invariant/options/invariant_program.h>
 #include <cegis/invariant/preprocess/add_invariants_and_temp_variables.h>
@@ -24,11 +24,11 @@ void create_tmp_variables(invariant_programt &program,
   goto_programt &body=get_entry_body(gf);
   goto_programt::targett insert_after=program.invariant_range.begin;
   --insert_after;
-  const typet type(invariant_meta_type());
+  const typet type(cegis_default_integer_type());
   for (size_t i=0; i < max_program_length - 1; ++i)
   {
     const std::string name(get_tmp(i));
-    insert_after=declare_invariant_variable(st, gf, insert_after, name, type);
+    insert_after=declare_cegis_meta_variable(st, gf, insert_after, name, type);
     if (i == 0) move_labels(body, program.invariant_range.begin, insert_after);
   }
 }
@@ -53,19 +53,19 @@ public:
 
   void operator()(invariant_programt::invariant_loopt * const loop)
   {
-    const typet type(invariant_meta_type());
+    const typet type(cegis_default_integer_type());
     invariant_programt::meta_vars_positionst &im=loop->meta_variables;
     goto_programt::targett pos=loop->body.begin;
     const std::string inv(inv_name(loop_id));
-    im.Ix=declare_invariant_variable(st, gf, --pos, inv, type);
+    im.Ix=declare_cegis_meta_variable(st, gf, --pos, inv, type);
     goto_programt &body=get_entry_body(gf);
     move_labels(body, loop->body.begin, im.Ix);
     const std::string guard(get_Gx(loop_id));
-    im.Gx=declare_invariant_variable(st, gf, im.Ix, guard, type);
-    assign_invariant_variable(st, gf, im.Gx, guard, loop->guard);
+    im.Gx=declare_cegis_meta_variable(st, gf, im.Ix, guard, type);
+    assign_cegis_meta_variable(st, gf, im.Gx, guard, loop->guard);
     pos=loop->body.end;
     const std::string x_prime(inv_prime_name(loop_id));
-    im.Ix_prime=declare_invariant_variable(st, gf, --pos, x_prime, type);
+    im.Ix_prime=declare_cegis_meta_variable(st, gf, --pos, x_prime, type);
     move_labels(body, loop->body.end, im.Ix_prime);
     ++loop_id;
   }
@@ -77,9 +77,9 @@ void createAx(invariant_programt &program)
   goto_functionst &gf=program.gf;
   goto_programt::targett pos=program.get_loops().back()->body.begin;
   const std::string base_name(get_Ax());
-  const typet type(invariant_meta_type());
-  program.Ax=declare_invariant_variable(st, gf, --pos, get_Ax(), type);
-  assign_invariant_variable(st, gf, program.Ax, base_name, program.assertion);
+  const typet type(cegis_default_integer_type());
+  program.Ax=declare_cegis_meta_variable(st, gf, --pos, get_Ax(), type);
+  assign_cegis_meta_variable(st, gf, program.Ax, base_name, program.assertion);
 }
 
 void createIx0(invariant_programt &program, const std::string &inv0_name)
@@ -87,12 +87,12 @@ void createIx0(invariant_programt &program, const std::string &inv0_name)
   const invariant_programt &prog=program;
   invariant_programt::const_invariant_loopst loops(prog.get_loops());
   assert(!loops.empty() && "At least one loop required.");
-  const typet type(invariant_meta_type());
+  const typet type(cegis_default_integer_type());
   const invariant_programt::invariant_loopt &first=*loops.front();
   goto_programt::targett &meta=program.Ix0;
   goto_programt::targett pos=first.meta_variables.Ix;
   goto_functionst &gf=program.gf;
-  meta=declare_invariant_variable(program.st, gf, --pos, inv0_name, type);
+  meta=declare_cegis_meta_variable(program.st, gf, --pos, inv0_name, type);
   move_labels(get_entry_body(gf), first.body.begin, meta);
 }
 }

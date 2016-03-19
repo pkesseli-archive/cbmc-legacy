@@ -12,7 +12,7 @@
 
 #include <goto-programs/goto_program.h>
 
-typedef std::map<const irep_idt, size_t> invariant_variable_idst;
+typedef std::map<const irep_idt, size_t> operand_variable_idst;
 typedef bool (*is_op_variablet)(const irep_idt &id, const typet &type);
 
 /**
@@ -26,7 +26,7 @@ typedef bool (*is_op_variablet)(const irep_idt &id, const typet &type);
  * @return
  */
 size_t get_variable_op_ids(const class symbol_tablet &st,
-    invariant_variable_idst &ids);
+    operand_variable_idst &ids);
 
 /**
  * @brief
@@ -40,18 +40,50 @@ size_t get_variable_op_ids(const class symbol_tablet &st,
  * @return
  */
 size_t get_variable_op_ids(const class symbol_tablet &st,
-    invariant_variable_idst &ids, is_op_variablet is_op_variable);
+    operand_variable_idst &ids, is_op_variablet is_op_variable);
 
 /**
  * @brief
  *
  * @details
  *
- * @param prog
+ * @param id
+ * @param type
+ *
+ * @return
+ */
+bool is_instrumentable_user_variable(const irep_idt &id, const typet &type);
+
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @param st
+ * @param gf
  * @param var_ids
+ * @param is_op_variable
+ * @param begin
+ * @param end
  */
 void link_user_program_variable_ops(const symbol_tablet &st, class goto_functionst &gf,
-    const invariant_variable_idst &var_ids, const is_op_variablet is_op_variable,
+    const operand_variable_idst &var_ids, const is_op_variablet is_op_variable,
+    goto_programt::targett begin, goto_programt::targett end);
+
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @param st
+ * @param gf
+ * @param var_ids
+ * @param begin
+ * @param end
+ */
+void link_user_program_variable_ops(
+    const symbol_tablet &st, class goto_functionst &gf,
+    const operand_variable_idst &var_ids,
     goto_programt::targett begin, goto_programt::targett end);
 
 /**

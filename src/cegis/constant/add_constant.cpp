@@ -3,9 +3,7 @@
 #include <ansi-c/expr2c.h>
 
 #include <cegis/cegis-util/program_helper.h>
-#include <cegis/instrument/meta_variables.h>
-#include <cegis/invariant/constant/add_constant.h>
-#include <cegis/danger/options/danger_program.h>
+#include <cegis/instrument/literals.h>
 
 namespace
 {
@@ -36,34 +34,30 @@ bool contains_constant(const symbol_tablet &st, const exprt &value)
   return false;
 }
 
-const char CONSTANT_PREFIX[]="INVARIANT_CONSTANT_";
-
 bool is_empty(const exprt &expr)
 {
   return exprt() == expr;
 }
 }
 
-void add_danger_constant(invariant_programt &program, const exprt &value)
+void add_cegis_constant(symbol_tablet &st, goto_functionst &gf,
+    const std::string &name, const exprt &value, goto_programt::targett pos)
 {
-  symbol_tablet &st=program.st;
-  if (contains_constant(st, value)) return;
-  const namespacet ns(st);
-  std::string name(CONSTANT_PREFIX);
-  name+=expr2c(value, ns);
-  add_danger_constant(program, name, value);
-}
-
-void add_danger_constant(invariant_programt &prog, const std::string &name,
-    const exprt &value)
-{
-  goto_programt::targett pos=prog.invariant_range.begin;
   while (is_builtin(pos->source_location))
     ++pos;
   typet type=value.type();
   type.set(ID_C_constant, true);
-  symbol_tablet &st=prog.st;
   create_cegis_symbol(st, name, type).value=value;
   if (!is_empty(value))
-    pos=cegis_assign_user_variable(st, prog.gf, pos, name, value);
+    pos=cegis_assign_user_variable(st, gf, pos, name, value);
+}
+
+void add_cegis_constant(symbol_tablet &st, goto_functionst &gf,
+    const exprt &value, goto_programt::targett pos)
+{
+  if (contains_constant(st, value)) return;
+  const namespacet ns(st);
+  std::string name(CEGIS_CONSTANT_PREFIX);
+  name+=expr2c(value, ns);
+  add_cegis_constant(st, gf, name, value, pos);
 }

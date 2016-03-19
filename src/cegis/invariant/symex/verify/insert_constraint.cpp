@@ -4,11 +4,11 @@
 #include <util/expr_util.h>
 
 #include <cegis/cegis-util/program_helper.h>
+#include <cegis/instrument/meta_variables.h>
 #include <cegis/instrument/instrument_var_ops.h>
 #include <cegis/invariant/options/invariant_program.h>
 #include <cegis/invariant/util/invariant_constraint_variables.h>
 #include <cegis/invariant/util/invariant_program_helper.h>
-#include <cegis/invariant/instrument/meta_variables.h>
 #include <cegis/invariant/symex/verify/insert_constraint.h>
 
 namespace

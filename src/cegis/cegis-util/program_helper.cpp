@@ -1,7 +1,10 @@
 #include <algorithm>
 
+#include <util/type_eq.h>
 #include <goto-programs/goto_functions.h>
 
+#include <cegis/instrument/literals.h>
+#include <cegis/instrument/instrument_var_ops.h>
 #include <cegis/cegis-util/program_helper.h>
 
 goto_programt &get_entry_body(goto_functionst &gf)
@@ -133,4 +136,53 @@ void move_labels(goto_programt &body, const goto_programt::targett &from,
   for (goto_programt::instructiont &instr : body.instructions)
     for (goto_programt::targett &target : instr.targets)
       if (from == target) target=to;
+}
+
+bool is_builtin(const source_locationt &loc)
+{
+  if (loc.is_nil()) return true;
+  const std::string &file=id2string(loc.get_file());
+  return file.empty() || file.at(0) == '<';
+}
+
+symbolt &create_cegis_symbol(symbol_tablet &st, const std::string &full_name,
+    const typet &type)
+{
+  symbolt new_symbol;
+  new_symbol.name=full_name;
+  new_symbol.type=type;
+  new_symbol.base_name=full_name;
+  new_symbol.pretty_name=new_symbol.base_name;
+  new_symbol.location=default_cegis_source_location();
+  new_symbol.mode=ID_C;
+  new_symbol.module=CEGIS_MODULE;
+  new_symbol.is_thread_local=true;
+  new_symbol.is_static_lifetime=false;
+  new_symbol.is_file_local=true;
+  new_symbol.is_lvalue=true;
+  assert(!st.add(new_symbol));
+  return st.lookup(new_symbol.name);
+}
+
+goto_programt::targett cegis_assign(const symbol_tablet &st,
+    goto_functionst &gf, const goto_programt::targett &insert_after_pos,
+    const exprt &lhs, const exprt &rhs)
+{
+  goto_programt &body=get_entry_body(gf);
+  goto_programt::targett assign=body.insert_after(insert_after_pos);
+  assign->type=goto_program_instruction_typet::ASSIGN;
+  assign->source_location=default_cegis_source_location();
+  const namespacet ns(st);
+  const typet &type=lhs.type();
+  if (type_eq(type, rhs.type(), ns)) assign->code=code_assignt(lhs, rhs);
+  else assign->code=code_assignt(lhs, typecast_exprt(rhs, type));
+  return assign;
+}
+
+goto_programt::targett cegis_assign_user_variable(const symbol_tablet &st,
+    goto_functionst &gf, const goto_programt::targett &insert_after_pos,
+    const irep_idt &name, const exprt &value)
+{
+  const symbol_exprt lhs(st.lookup(name).symbol_expr());
+  return cegis_assign(st, gf, insert_after_pos, lhs, value);
 }

@@ -16,11 +16,11 @@ namespace
 {
 bjc_programt &assign(bjc_programt &lhs, const bjc_programt &rhs)
 {
+  lhs.gf.copy_from(rhs.gf);
   goto_programt::instructionst &lbody=get_entry_body(lhs.gf).instructions;
   const goto_programt::instructionst &rbody=get_entry_body(rhs.gf).instructions;
   lhs.query_decl=copy_iterator(rbody, lbody, rhs.query_decl);
   lhs.ce_targets=copy_iterators(rbody, lbody, lhs.ce_targets);
-  lhs.gf.copy_from(rhs.gf);
   return lhs;
 }
 }

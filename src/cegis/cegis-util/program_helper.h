@@ -95,4 +95,64 @@ bool is_global_const(const irep_idt &name, const typet &type);
 void move_labels(goto_programt &body, const goto_programt::targett &from,
     const goto_programt::targett &to);
 
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @param loc
+ *
+ * @return
+ */
+bool is_builtin(const source_locationt &loc);
+
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @param st
+ * @param full_name
+ * @param type
+ *
+ * @return
+ */
+symbolt &create_cegis_symbol(symbol_tablet &st, const std::string &full_name,
+    const typet &type);
+
+
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @param st
+ * @param gf
+ * @param insert_after_pos
+ * @param lhs
+ * @param rhs
+ *
+ * @return
+ */
+goto_programt::targett cegis_assign(const symbol_tablet &st,
+    goto_functionst &gf, const goto_programt::targett &insert_after_pos,
+    const exprt &lhs, const exprt &rhs);
+
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @param st
+ * @param gf
+ * @param insert_after_pos
+ * @param base_name
+ * @param value
+ *
+ * @return
+ */
+goto_programt::targett cegis_assign_user_variable(const symbol_tablet &st,
+    goto_functionst &gf, const goto_programt::targett &insert_after_pos,
+    const irep_idt &name, const exprt &value);
+
 #endif /* CEGIS_PROGRAM_HELPER_H_ */
