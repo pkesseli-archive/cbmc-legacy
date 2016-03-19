@@ -42,7 +42,7 @@ SRC = danger/meta/meta_variable_names.cpp danger/facade/danger_runner.cpp danger
       ../cbmc/cbmc_parse_options.cpp ../cbmc/bmc.cpp ../cbmc/cbmc_solvers.cpp ../cbmc/symex_bmc.cpp \
       ../cbmc/xml_interface.cpp ../cbmc/cover.cpp ../cbmc/bv_cbmc.cpp ../cbmc/counterexample_beautification.cpp \
       ../cbmc/cbmc_languages.cpp ../cbmc/show_vcc.cpp ../cbmc/cbmc_dimacs.cpp ../cbmc/all_properties.cpp
-
+ 
 OBJ += ../ansi-c/ansi-c$(LIBEXT) \
       ../cpp/cpp$(LIBEXT) \
       ../java_bytecode/java_bytecode$(LIBEXT) \
