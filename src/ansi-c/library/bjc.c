@@ -231,11 +231,11 @@ void __CPROVER_bjc_it_remove(abstract_heapt * const heap, const ptr_t it)
 
 /* FUNCTION: __CPROVER_bjc_clone */
 
-ptr_t __CPROVER_bjc_clone(abstract_heapt *heap, ptr_t list)
+ptr_t __CPROVER_bjc_clone(abstract_heapt * const heap, const ptr_t list)
 {
   const index_t size=heap->lists[list].size;
   __CPROVER_assume(size <= MAX_LIST_SIZE);
-  const data_t * const data=heap->lists[list].data;
+  const data_t * const data=heap->lists[list].content;
   const ptr_t new_list=__CPROVER_bjc_new_list(heap);
   heap->lists[new_list].size=size;
   for (index_t i=0; i < size; ++i)
@@ -245,7 +245,7 @@ ptr_t __CPROVER_bjc_clone(abstract_heapt *heap, ptr_t list)
 
 /* FUNCTION: __CPROVER_bjc_size */
 
-ptr_t __CPROVER_bjc_size(const abstract_heapt *heap, ptr_t list)
+ptr_t __CPROVER_bjc_size(const abstract_heapt * const heap, const ptr_t list)
 {
   return heap->lists[list].size;
 }
