@@ -95,31 +95,17 @@ void set_init_values(const symbol_tablet &st, goto_functionst &gf)
   pos=init_array(st, body, CEGIS_OPS, pos);
   init_array(st, body, CEGIS_RESULT_OPS, pos);
 }
-
-std::string get_prefix(const size_t num_vars, const size_t num_consts,
-    const size_t max_solution_size)
-{
-  std::string prefix("#define " CEGIS_PREFIX "number_of_vars ");
-  prefix+=integer2string(num_vars);
-  prefix+="\n#define " CEGIS_PREFIX "number_of_consts ";
-  prefix+=integer2string(num_consts);
-  prefix+="u\n#define " CEGIS_PREFIX "number_of_ops ";
-  prefix+=integer2string(num_vars + max_solution_size);
-  prefix+="u\n#define " CEGIS_PREFIX "max_solution_size ";
-  prefix+=integer2string(max_solution_size);
-  return prefix+="u\n";
-}
 }
 
 std::string get_cegis_library_text(const size_t num_vars,
-    const size_t num_consts, const size_t max_solution_size,
+    const size_t num_consts, const size_t max_size,
     const std::string &func_name)
 {
   symbol_tablet st;
   add_execute_placeholder(st, func_name, cegis_execute_type());
   std::set<irep_idt> functions;
   functions.insert(func_name);
-  std::string text(get_prefix(num_vars, num_consts, max_solution_size));
+  std::string text(get_cegis_code_prefix(num_vars, num_consts, max_size));
   return text+=get_cprover_library_text(functions, st);
 }
 
@@ -139,15 +125,7 @@ void add_cegis_library(symbol_tablet &st, goto_functionst &gf,
   set_init_values(st, gf);
 }
 
-void add_cegis_library(symbol_tablet &st, goto_functionst &gf,
-    message_handlert &msg, const std::string &func_name,
-    const code_typet &func_type)
+void add_cegis_execute_placeholder(symbol_tablet &st)
 {
-  add_execute_placeholder(st, func_name, func_type);
-  std::set<irep_idt> functions;
-  functions.insert(func_name);
-  add_cprover_library(functions, st, msg);
-  goto_convert(func_name, st, gf, msg);
-  gf.compute_loop_numbers();
-  gf.update();
+  add_execute_placeholder(st, CEGIS_EXECUTE, cegis_execute_type());
 }

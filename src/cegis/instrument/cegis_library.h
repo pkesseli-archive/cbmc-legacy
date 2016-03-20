@@ -49,14 +49,8 @@ void add_cegis_library(symbol_tablet &st, class goto_functionst &gf,
  * @details
  *
  * @param st
- * @param gf
- * @param msg
- * @param func_name
- * @param code_type
  */
-void add_cegis_library(symbol_tablet &st, goto_functionst &gf,
-    message_handlert &msg, const std::string &func_name,
-    const code_typet &func_type);
+void add_cegis_execute_placeholder(symbol_tablet &st);
 
 /**
  * @brief

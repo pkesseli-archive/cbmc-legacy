@@ -24,7 +24,7 @@ array_exprt empty_candidate()
 void insert_bjc_candidate(bjc_programt &prog, const candidatet &candidate)
 {
   //if (candidate.is_nil()) return insert_bjc_candidate(prog, empty_candidate());
-  if (candidate.is_nil()) return;
+  if (!candidate.has_operands()) return;
   const goto_programt::targett &decl=prog.query_decl;
   assert(is_initialised(decl));
   const irep_idt &id=get_affected_variable(*decl);

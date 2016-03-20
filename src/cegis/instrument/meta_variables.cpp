@@ -46,3 +46,17 @@ typet cegis_default_integer_type()
 {
   return unsigned_int_type();
 }
+
+std::string get_cegis_code_prefix(const size_t num_vars,
+    const size_t num_consts, const size_t max_solution_size)
+{
+  std::string prefix("#define " CEGIS_PREFIX "number_of_vars ");
+  prefix+=integer2string(num_vars);
+  prefix+="\n#define " CEGIS_PREFIX "number_of_consts ";
+  prefix+=integer2string(num_consts);
+  prefix+="u\n#define " CEGIS_PREFIX "number_of_ops ";
+  prefix+=integer2string(num_vars + max_solution_size);
+  prefix+="u\n#define " CEGIS_PREFIX "max_solution_size ";
+  prefix+=integer2string(max_solution_size);
+  return prefix+="u\n";
+}

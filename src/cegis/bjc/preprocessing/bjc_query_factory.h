@@ -18,7 +18,10 @@
  * @details
  *
  * @param prog
+ * @param max_size
+ * @param num_ops
  */
-void add_bjc_query(class bjc_programt &prog, size_t max_size);
+void add_bjc_query(class bjc_programt &prog, size_t num_vars, size_t num_consts,
+    size_t max_sz);
 
 #endif /* CEGIS_BJC_QUERY_FACTORY_H_ */

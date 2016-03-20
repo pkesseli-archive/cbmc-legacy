@@ -20,7 +20,7 @@
 class bjc_preprocessingt
 {
   typedef std::map<const irep_idt, size_t> operand_idst;
-  const class optionst &options;
+  class optionst &options;
   bjc_programt original_program;
   bjc_programt current_program;
   operand_idst var_ids;
@@ -36,7 +36,7 @@ public:
    * @param gf
    */
   bjc_preprocessingt(
-      const optionst &options,
+      optionst &options,
       const symbol_tablet &st,
       const goto_functionst &gf);
 
