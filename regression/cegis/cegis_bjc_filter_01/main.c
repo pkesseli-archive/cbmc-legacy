@@ -1,6 +1,6 @@
 #include "bjc.h"
 
-inline int main(void)
+int main(void)
 {
   abstract_heapt * const __CPROVER_heap;
   const ptr_t __CPROVER_list=__CPROVER_bjc_new_list(__CPROVER_heap);

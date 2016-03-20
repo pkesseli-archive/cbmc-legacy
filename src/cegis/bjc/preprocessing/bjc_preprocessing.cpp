@@ -1,3 +1,4 @@
+#include <util/options.h>
 #include <goto-programs/goto_inline.h>
 
 #include <cegis/cegis-util/program_helper.h>
@@ -8,7 +9,7 @@
 #include <cegis/bjc/preprocessing/bjc_query_factory.h>
 #include <cegis/bjc/preprocessing/bjc_preprocessing.h>
 
-bjc_preprocessingt::bjc_preprocessingt(const optionst &options,
+bjc_preprocessingt::bjc_preprocessingt(optionst &options,
     const symbol_tablet &st, const goto_functionst &gf) :
     options(options), original_program(st, gf), num_consts(0)
 {
@@ -52,14 +53,16 @@ void bjc_preprocessingt::operator ()(const size_t max_length)
   goto_functionst &gf=current_program.gf;
   null_message_handlert msg;
   const std::string name(CEGIS_EXECUTE);
-  add_cegis_library(st, gf, msg, var_ids.size(), num_consts, max_length, name);
+  const size_t num_vars=var_ids.size();
+  add_cegis_library(st, gf, msg, num_vars, num_consts, max_length, name);
   operand_idst instr(var_ids);
   instr.erase(LAMBDA_OPERATOR_NAME);
 
   goto_programt::instructionst &instrs=get_entry_body(gf).instructions;
   link_user_program_variable_ops(st, gf, instr, &int_list_filter,
       instrs.begin(), instrs.end());
-  add_bjc_query(current_program, max_length);
+  add_bjc_query(current_program, num_vars, num_consts, max_length);
+  options.set_option("unwind", static_cast<unsigned int>(max_length));
 }
 
 size_t bjc_preprocessingt::get_min_solution_size() const

@@ -66,4 +66,19 @@ goto_programt::targett assign_cegis_meta_variable(const symbol_tablet &st,
  */
 typet cegis_default_integer_type();
 
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @param num_vars
+ * @param num_consts
+ * @param max_solution_size
+ * @return
+ */
+std::string get_cegis_code_prefix(
+    size_t num_vars,
+    size_t num_consts,
+    size_t max_solution_size);
+
 #endif /* CEGIS_META_VARIABLES_H_ */
