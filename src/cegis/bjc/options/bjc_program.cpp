@@ -21,6 +21,7 @@ bjc_programt &assign(bjc_programt &lhs, const bjc_programt &rhs)
   const goto_programt::instructionst &rbody=get_entry_body(rhs.gf).instructions;
   lhs.query_decl=copy_iterator(rbody, lbody, rhs.query_decl);
   lhs.ce_targets=copy_iterators(rbody, lbody, lhs.ce_targets);
+  lhs.refactored_loop_id=rhs.refactored_loop_id;
   return lhs;
 }
 }

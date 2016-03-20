@@ -53,7 +53,8 @@ typedef struct abstract_heap
 #define __CPROVER_cegis_max_query_base_opcode 27u
 #endif
 #ifndef __CPROVER_cegis_max_predicate_length
-#define __CPROVER_cegis_max_predicate_length 5u
+//#define __CPROVER_cegis_max_predicate_length 5u
+#define __CPROVER_cegis_max_predicate_length 2u
 #endif
 
 void __CPROVER_bjc_filter(abstract_heapt * heap, ptr_t list, const struct __CPROVER_cegis_instructiont * predicate, unsigned char predicate_length);
@@ -70,6 +71,7 @@ _Bool __CPROVER_bjc_run_query(abstract_heapt *heap, const ptr_t original_list,
     const struct __CPROVER_cegis_instructiont * const query,
     const unsigned char size)
 {
+  __CPROVER_assert(0 == 1, "__CPROVER_bjc_run_query");
   // B
   // N
   // Predicate execution
@@ -130,24 +132,26 @@ void __CPROVER_bjc_filter(abstract_heapt * const heap, const ptr_t list,
 {
   __CPROVER_assume(predicate_length <= __CPROVER_cegis_max_predicate_length);
   const index_t size=heap->lists[list].size;
-  data_t * const data=heap->lists[list].content;
   __CPROVER_assume(size <= MAX_LIST_SIZE);
-  for (index_t i=0; i < size; ++i)
+  data_t * const data=heap->lists[list].content;
+  data_t tmp[predicate_length];
+  for (unsigned char tmp_id=0; tmp_id < __CPROVER_cegis_max_predicate_length; ++tmp_id)
   {
+    if (tmp_id >= predicate_length) break;
+    __CPROVER_cegis_RESULT_OPS[tmp_id]=&tmp[tmp_id];
+    __CPROVER_cegis_OPS[__CPROVER_cegis_number_of_vars + tmp_id]=&tmp[tmp_id];
+  }
+  for (index_t i=0; i < MAX_LIST_SIZE; ++i)
+  {
+    if (i >= size) break;
     __CPROVER_cegis_OPS[0]=&data[i]; // We assume 0 is the lambda operator.
     // Evaluate predicate
-    data_t tmp[predicate_length];
-    for (unsigned char tmp_id=0; tmp_id < predicate_length; ++tmp_id)
-    {
-      __CPROVER_cegis_RESULT_OPS[tmp_id]=&tmp[tmp_id];
-      __CPROVER_cegis_OPS[__CPROVER_cegis_number_of_vars + tmp_id]=&tmp[tmp_id];
-    }
     __CPROVER_danger_execute(predicate, predicate_length);
 
     // Remove based on predicate
     if (tmp[predicate_length - 1] != 0)
-      for (unsigned char j=0; j < predicate_length; ++j)
-        if (j >= i && j < predicate_length - 1) data[j]=data[j + 1];
+      for (unsigned char j=0; j < MAX_LIST_SIZE; ++j)
+        if (j >= i && j < size - 1) data[j]=data[j + 1];
   }
 }
 
@@ -157,16 +161,19 @@ _Bool __CPROVER_bjc_equal(const abstract_heapt * const heap, const ptr_t lhs,
     const ptr_t rhs)
 {
   const index_t lhs_size=heap->lists[lhs].size;
+  __CPROVER_assume(lhs_size <= MAX_LIST_SIZE);
   if (lhs_size != heap->lists[rhs].size) return (_Bool) 0;
   const data_t * const lhs_data=heap->lists[lhs].content;
   const data_t * const rhs_data=heap->lists[rhs].content;
-  __CPROVER_assume(lhs_size <= MAX_LIST_SIZE);
-  for (index_t i=0; i < lhs_size; ++i)
+  for (index_t i=0; i < MAX_LIST_SIZE; ++i)
+  {
+    if (i >= lhs_size) break;
     if (lhs_data[i] != rhs_data[i]) return (_Bool) 0;
+  }
   return (_Bool) 1;
 }
 
-/* FUNCTION: __CPROVER_bjc_new_list */
+/* FUNCTION: __CPROVER_bjc_nondet_list */
 
 // bjc.h
 typedef unsigned int word_t;
@@ -199,6 +206,20 @@ typedef struct abstract_heap
   abstract_iteratort iterators[NPROG];
 } abstract_heapt;
 // bjc.h
+
+ptr_t __CPROVER_bjc_nondet_list(abstract_heapt * const heap)
+{
+  ptr_t new_list;
+  for (new_list=0; new_list < NPROG; ++new_list)
+    if (!heap->iterators[new_list].is_valid && !heap->lists[new_list].is_valid)
+      break;
+  __CPROVER_assert(new_list < NPROG, "Increase NPROG");
+  heap->lists[new_list].is_valid=(_Bool) 1;
+  __CPROVER_assume(heap->lists[new_list].size <= MAX_LIST_SIZE);
+  return new_list;
+}
+
+/* FUNCTION: __CPROVER_bjc_new_list */
 
 ptr_t __CPROVER_bjc_new_list(abstract_heapt * const heap)
 {
@@ -265,7 +286,7 @@ ptr_t __CPROVER_bjc_clone(abstract_heapt * const heap, const ptr_t list)
   const index_t size=heap->lists[list].size;
   __CPROVER_assume(size <= MAX_LIST_SIZE);
   const data_t * const data=heap->lists[list].content;
-  const ptr_t new_list=__CPROVER_bjc_new_list(heap);
+  const ptr_t new_list=__CPROVER_bjc_nondet_list(heap);
   heap->lists[new_list].size=size;
   for (index_t i=0; i < MAX_LIST_SIZE && i < size; ++i)
     heap->lists[new_list].content[i]=heap->lists[list].content[i];

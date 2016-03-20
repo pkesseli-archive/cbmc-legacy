@@ -25,6 +25,7 @@ public:
 
   goto_programt::targetst ce_targets;
   goto_programt::targett query_decl;
+  std::string refactored_loop_id;
 
   /**
    * @brief

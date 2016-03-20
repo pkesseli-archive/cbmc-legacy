@@ -67,15 +67,6 @@ void add_parameter(code_typet &code_type, const typet &type,
   code_type.parameters().push_back(parameter);
 }
 
-code_typet new_list_func_type()
-{
-  code_typet type;
-  type.return_type()=ptr_t();
-  type.parameter_identifiers().push_back(HEAP_ARG_BASE_NAME);
-  add_parameter(type, heap_type(), HEAP_ARG_BASE_NAME);
-  return type;
-}
-
 code_typet query_execute_type()
 {
   code_typet type;

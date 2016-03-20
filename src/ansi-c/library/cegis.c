@@ -30,7 +30,8 @@ struct __CPROVER_cegis_instructiont
   opt op2;
 };
 
-#define __CPROVER_cegis_max_instruction 24u
+//#define __CPROVER_cegis_max_instruction 24u
+#define __CPROVER_cegis_max_instruction 8u
 
 void __CPROVER_danger_execute(struct __CPROVER_cegis_instructiont *program,
                               unsigned char size)
@@ -94,7 +95,7 @@ void __CPROVER_danger_execute(struct __CPROVER_cegis_instructiont *program,
     __CPROVER_cegis_opcode_first_8: result=op0 > op1;
     if (result) result=op0;
     else __CPROVER_cegis_opcode_last_8: result=op1;
-    }
+    }/*
           else if (opcode < 10)
     {
     __CPROVER_cegis_opcode_first_9: if (op0) result=op1;
@@ -157,7 +158,7 @@ void __CPROVER_danger_execute(struct __CPROVER_cegis_instructiont *program,
     __CPROVER_cegis_opcode_23: result=sop0 == -1;
     else
       __CPROVER_cegis_opcode_24: result=op0;
-    //__CPROVER_cegis_opcode_24: result=sop0 != -1;
+    //__CPROVER_cegis_opcode_24: result=sop0 != -1;*/
 
     *(unsigned int *)__CPROVER_cegis_RESULT_OPS[i]=result;
   }
