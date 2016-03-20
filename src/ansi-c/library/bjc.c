@@ -1,3 +1,25 @@
+/* FUNCTION: __CPROVER_bjc_placeholders */
+
+// bjc_fwd.h
+typedef struct abstract_heap abstract_heapt;
+typedef unsigned int word_t;
+typedef word_t ptr_t;
+typedef word_t data_t;
+// bjc_fwd.h
+
+ptr_t __CPROVER_bjc_new_list(abstract_heapt * heap);
+_Bool __CPROVER_bjc_run_query(abstract_heapt *heap, ptr_t original_list, ptr_t new_list, const struct __CPROVER_cegis_instructiont * query, unsigned char size);
+void __CPROVER_bjc_filter(abstract_heapt * heap, ptr_t list, const struct __CPROVER_cegis_instructiont * predicate, unsigned char predicate_length);
+_Bool __CPROVER_bjc_equal(const abstract_heapt * heap, ptr_t lhs, ptr_t rhs);
+
+void __CPROVER_bjc_placeholders(void)
+{
+  __CPROVER_bjc_new_list(0);
+  __CPROVER_bjc_run_query(0, 0, 0, 0, 0);
+  __CPROVER_bjc_filter(0, 0, 0, 0);
+  __CPROVER_bjc_equal(0, 0, 0);
+}
+
 /* FUNCTION: __CPROVER_bjc_run_query */
 
 // cegis.h
@@ -13,13 +35,6 @@ struct __CPROVER_cegis_instructiont
 #define __CPROVER_cegis_max_instruction 24u
 // cegis.h
 
-// bjc.h
-typedef struct abstract_heap abstract_heapt;
-typedef unsigned int word_t;
-typedef word_t ptr_t;
-typedef word_t data_t;
-// bjc.h
-
 #ifndef __CPROVER_cegis_max_query_instruction
 //#define __CPROVER_cegis_max_query_instruction __CPROVER_cegis_max_instruction + 5u
 #define __CPROVER_cegis_max_query_instruction __CPROVER_cegis_max_instruction + 1u
@@ -31,33 +46,27 @@ typedef word_t data_t;
 #define __CPROVER_cegis_max_predicate_length 5u
 #endif
 
-// Query instructions
-void filter(abstract_heapt *heap, ptr_t list, const struct __CPROVER_cegis_instructiont *pred, unsigned char pred_sz);
-_Bool equal(const abstract_heapt *heap, ptr_t lhs, ptr_t rhs);
-void map(abstract_heapt *heap, ptr_t list, const struct __CPROVER_cegis_instructiont *pred, unsigned char pred_sz);
-
 // B := distinct | filter | forEach | forEachOrdered | peek | sorted
 // N := map | flatMap | limit | skip
 /* T := allMatch | anyMatch | count | empty | findAny | findFirst
  | max | min | noneMatch | reduce
  */
 
-_Bool __CPROVER_bjc_run_query(
-    abstract_heapt *heap,
-    const ptr_t original_list, const ptr_t new_list,
+_Bool __CPROVER_bjc_run_query(abstract_heapt *heap, const ptr_t original_list,
+    const ptr_t new_list,
     const struct __CPROVER_cegis_instructiont * const query,
     const unsigned char size)
 {
   // B
   // N
   // Predicate execution
-  _Bool filtered = (_Bool) 0;
-  _Bool distincted = (_Bool) 0;
-  _Bool sorted = (_Bool) 0;
+  _Bool filtered=(_Bool) 0;
+  _Bool distincted=(_Bool) 0;
+  _Bool sorted=(_Bool) 0;
   for (unsigned char i=0; i < size; ++i)
   {
 #define opcode query[i].opcode
-    __CPROVER_assume(opcode > __CPROVER_cegis_max_instruction && opcode <= __CPROVER_cegis_max_query_instruction);
+    __CPROVER_assume(opcode> __CPROVER_cegis_max_instruction && opcode <= __CPROVER_cegis_max_query_instruction);
     __CPROVER_assume(query[i].op1 == 0 && query[i].op2 == 0);
     const unsigned int predicate_length=query[i].op0;
     __CPROVER_assume(predicate_length <= __CPROVER_cegis_max_predicate_length);
@@ -71,36 +80,35 @@ _Bool __CPROVER_bjc_run_query(
     }
     switch(opcode)
     {
-    case 25:
+      case 25:
       __CPROVER_assume(!filtered);
-      __CPROVER_cegis_opcode_25: filter(heap, new_list, predicate, predicate_length);
+      __CPROVER_cegis_opcode_25: __CPROVER_bjc_filter(heap, new_list, predicate, predicate_length);
       break;
-    /*case 26:
-      __CPROVER_assume(!distincted);
-      __CPROVER_cegis_opcode_26: distinct(heap, new_list);
-      break;
-    case 27:
-      __CPROVER_assume(!sorted);
-      __CPROVER_cegis_opcode_27: sort(heap, new_list);
-      break;
-    case 28:
-      map(heap, new_list, predicate, predicate_length);
-      break;
-    case 29:
-      break;
-      //limit(heap, new_list, );*/
-    default:
-    __CPROVER_assume((_Bool) 0);
+      /*case 26:
+       __CPROVER_assume(!distincted);
+       __CPROVER_cegis_opcode_26: distinct(heap, new_list);
+       break;
+       case 27:
+       __CPROVER_assume(!sorted);
+       __CPROVER_cegis_opcode_27: sort(heap, new_list);
+       break;
+       case 28:
+       map(heap, new_list, predicate, predicate_length);
+       break;
+       case 29:
+       break;
+       //limit(heap, new_list, );*/
+      default:
+      __CPROVER_assume((_Bool) 0);
     }
   }
-  return equal(heap, original_list, new_list);
+  return __CPROVER_bjc_equal(heap, original_list, new_list);
 }
 
 /* FUNCTION: __CPROVER_bjc_filter */
 
-void __CPROVER_bjc_filter(
-    abstract_heapt *heap, ptr_t list,
-    const __CPROVER_cegis_instructiont * const predicate,
+void __CPROVER_bjc_filter(abstract_heapt * const heap, ptr_t list,
+    const struct __CPROVER_cegis_instructiont * const predicate,
     const unsigned char predicate_length)
 {
   __CPROVER_assume(predicate_length <= __CPROVER_cegis_max_predicate_length);
@@ -112,7 +120,7 @@ void __CPROVER_bjc_filter(
     __CPROVER_cegis_OPS[0]=&data[i]; // We assume 0 is the lambda operator.
     // Evaluate predicate
     data_t tmp[predicate_length];
-    for (unsigned char tmp = 0; tmp < predicate_length; ++tmp)
+    for (unsigned char tmp=0; tmp < predicate_length; ++tmp)
     {
       __CPROVER_cegis_ROPS[tmp]=&tmp[tmp];
       __CPROVER_cegis_OPS[__CPROVER_cegis_number_of_vars + tmp]=&tmp[tmp];
@@ -121,14 +129,15 @@ void __CPROVER_bjc_filter(
 
     // Remove based on predicate
     if (tmp[predicate_length - 1] != 0)
-      for (unsigned char j = 0; j < predicate_length; ++j)
+      for (unsigned char j=0; j < predicate_length; ++j)
         if (j >= i && j < predicate_length - 1) data[j]=data[j + 1];
   }
 }
 
 /* FUNCTION: __CPROVER_bjc_equal */
 
-_Bool __CPROVER_bjc_equal(const abstract_heapt *heap, ptr_t lhs, ptr_t rhs)
+_Bool __CPROVER_bjc_equal(const abstract_heapt * const heap, const ptr_t lhs,
+    const ptr_t rhs)
 {
   const index_t lhs_size=heap->lists[lhs].size;
   if (lhs_size != heap->lists[rhs].size) return (_Bool) 0;
@@ -148,7 +157,6 @@ typedef word_t index_t;
 typedef word_t data_t;
 
 #define MAX_LIST_SIZE 5
-
 #ifndef NPROG
 #define NPROG 4
 #endif
@@ -177,7 +185,8 @@ ptr_t __CPROVER_bjc_new_list(abstract_heapt * const heap)
 {
   ptr_t new_list;
   for (new_list=0; new_list < NPROG; ++new_list)
-    if (!heap->iterators[new_list].is_valid && !heap->lists[new_list].is_valid) break;
+    if (!heap->iterators[new_list].is_valid && !heap->lists[new_list].is_valid)
+      break;
   __CPROVER_assert(new_list < NPROG, "Increase NPROG");
   heap->lists[new_list].is_valid=(_Bool) 1;
   heap->lists[new_list].size=0;
@@ -190,7 +199,8 @@ ptr_t __CPROVER_bjc_iterator(abstract_heapt * const heap, const ptr_t list)
 {
   ptr_t new_iterator;
   for (new_iterator=0; new_iterator < NPROG; ++new_iterator)
-    if (!heap->iterators[new_iterator].is_valid && !heap->lists[new_iterator].is_valid) break;
+    if (!heap->iterators[new_iterator].is_valid
+        && !heap->lists[new_iterator].is_valid) break;
   __CPROVER_assert(new_iterator < NPROG, "Increase NPROG");
   heap->iterators[new_iterator].is_valid=(_Bool) 1;
   heap->iterators[new_iterator].list=list;
@@ -225,8 +235,8 @@ void __CPROVER_bjc_it_remove(abstract_heapt * const heap, const ptr_t it)
   const index_t size=heap->lists[list].size;
   const index_t index=heap->iterators[it].index;
   for (index_t i=0; i < MAX_LIST_SIZE; ++i)
-    if (i >= index && i < size - 1)
-      heap->lists[list].content[i]=heap->lists[list].content[i+1];
+    if (i >= index && i < size - 1) heap->lists[list].content[i]=
+        heap->lists[list].content[i + 1];
 }
 
 /* FUNCTION: __CPROVER_bjc_clone */
@@ -238,7 +248,7 @@ ptr_t __CPROVER_bjc_clone(abstract_heapt * const heap, const ptr_t list)
   const data_t * const data=heap->lists[list].content;
   const ptr_t new_list=__CPROVER_bjc_new_list(heap);
   heap->lists[new_list].size=size;
-  for (index_t i=0; i < size; ++i)
+  for (index_t i=0; i < MAX_LIST_SIZE && i < size; ++i)
     heap->lists[new_list].content[i]=heap->lists[list].content[i];
   return new_list;
 }

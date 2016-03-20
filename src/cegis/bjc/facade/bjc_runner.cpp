@@ -25,5 +25,8 @@ int run_bjc(optionst &options, mstreamt &result, const symbol_tablet &st,
   cegis_symex_verifyt<bjc_symex_verifyt> oracle(options, oracle_cfg);
   null_seedt seed;
   const size_t max_size=options.get_unsigned_int_option(CEGIS_MAX_SIZE);
+  // XXX: Bound explicitly
+  options.set_option("unwind", 10);
+  // XXX: Bound explicitly
   return run_cegis(learn, oracle, preproc, seed, max_size, result);
 }
