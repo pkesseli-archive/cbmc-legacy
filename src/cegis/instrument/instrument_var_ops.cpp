@@ -32,15 +32,20 @@ void link_user_symbols(const symbol_tablet &st, operand_variable_idst &var_ids,
       var_ids.insert(std::make_pair(s.name, variable_id++));
   }
 }
+
+size_t get_min_id(const operand_variable_idst &ids)
+{
+  if (ids.empty()) return 0;
+  return std::max_element(ids.begin(), ids.end(),
+      [](const operand_variable_idst::value_type &lhs, const operand_variable_idst::value_type &rhs)
+      { return lhs.second < rhs.second;})->second + 1;
+}
 }
 
 size_t get_variable_op_ids(const symbol_tablet &st, operand_variable_idst &ids,
     const is_op_variablet is_op_variable)
 {
-  size_t variable_id=
-      std::max_element(ids.begin(), ids.end(),
-          [](const operand_variable_idst::value_type &lhs, const operand_variable_idst::value_type &rhs)
-          { return lhs.second < rhs.second;})->second;
+  size_t variable_id=get_min_id(ids);
   link_user_symbols(st, ids, variable_id, true, is_op_variable);
   const size_t num_consts=ids.size();
   link_user_symbols(st, ids, variable_id, false, is_op_variable);
@@ -91,7 +96,7 @@ void link_user_program_variable_ops(const symbol_tablet &st,
     const goto_program_instruction_typet type=instr.type;
     if (DECL != type && DEAD != type) continue;
     const irep_idt &name=get_affected_variable(instr);
-    if (!is_op_variable(name, typet())) continue;
+    if (!is_op_variable(name, st.lookup(name).type)) continue;
     const operand_variable_idst::const_iterator id=var_ids.find(name);
     if (DEAD == type) set_ops_reference(st, body, it, get_null(), id->second);
     else
