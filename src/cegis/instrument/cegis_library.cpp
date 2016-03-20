@@ -147,4 +147,7 @@ void add_cegis_library(symbol_tablet &st, goto_functionst &gf,
   std::set<irep_idt> functions;
   functions.insert(func_name);
   add_cprover_library(functions, st, msg);
+  goto_convert(func_name, st, gf, msg);
+  gf.compute_loop_numbers();
+  gf.update();
 }

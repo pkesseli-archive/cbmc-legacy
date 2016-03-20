@@ -8,10 +8,6 @@
 #include <cegis/bjc/preprocessing/bjc_query_factory.h>
 #include <cegis/bjc/preprocessing/bjc_preprocessing.h>
 
-// XXX: Debug
-#include <iostream>
-// XXX: Debug
-
 bjc_preprocessingt::bjc_preprocessingt(const optionst &options,
     const symbol_tablet &st, const goto_functionst &gf) :
     options(options), original_program(st, gf), num_consts(0)
@@ -64,13 +60,6 @@ void bjc_preprocessingt::operator ()(const size_t max_length)
   link_user_program_variable_ops(st, gf, instr, &int_list_filter,
       instrs.begin(), instrs.end());
   add_bjc_query(current_program, max_length);
-  // TODO: Add query declaration
-  // XXX: Debug
-  std::cout << "<bjc_preprocessingt::operator ()>" << std::endl;
-  const namespacet ns(st);
-  gf.output(ns, std::cout);
-  std::cout << "</bjc_preprocessingt::operator ()>" << std::endl;
-  // XXX: Debug
 }
 
 size_t bjc_preprocessingt::get_min_solution_size() const

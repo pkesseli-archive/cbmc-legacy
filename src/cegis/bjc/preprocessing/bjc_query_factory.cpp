@@ -1,5 +1,6 @@
 #include <ansi-c/c_types.h>
 #include <util/arith_tools.h>
+#include <util/expr_util.h>
 
 #include <cegis/cegis-util/program_helper.h>
 
@@ -43,6 +44,11 @@ pointer_typet instr_type()
 const char HEAP_ARG_BASE_NAME[]="heap";
 const char ORIGINAL_LIST_ARG_BASE_NAME[]="original_list";
 const char NEW_LIST_ARG_BASE_NAME[]="new_list";
+const char LIST_ARG_BASE_NAME[]="list";
+const char LHS_ARG_BASE_NAME[]="lhs";
+const char RHS_ARG_BASE_NAME[]="rhs";
+const char PRED_ARG_BASE_NAME[]="pred";
+const char PRED_SZ_ARG_BASE_NAME[]="pred_sz";
 const char QUERY_ARG_BASE_NAME[]="query";
 const char SIZE_ARG_BASE_NAME[]="size";
 const char BASE_NAME_SEP[]="::";
@@ -76,6 +82,42 @@ code_typet query_execute_type()
   type.return_type()=c_bool_type();
   return type;
 }
+
+code_typet query_filter_type()
+{
+  code_typet type;
+  type.return_type()=void_typet();
+  type.parameter_identifiers().push_back(HEAP_ARG_BASE_NAME);
+  type.parameter_identifiers().push_back(LIST_ARG_BASE_NAME);
+  type.parameter_identifiers().push_back(PRED_ARG_BASE_NAME);
+  type.parameter_identifiers().push_back(PRED_SZ_ARG_BASE_NAME);
+  add_parameter(type, heap_type(), HEAP_ARG_BASE_NAME);
+  add_parameter(type, ptr_t(), LIST_ARG_BASE_NAME);
+  add_parameter(type, instr_type(), PRED_ARG_BASE_NAME);
+  add_parameter(type, unsigned_char_type(), PRED_SZ_ARG_BASE_NAME);
+  return type;
+}
+
+code_typet query_equal_type()
+{
+  code_typet type;
+  type.return_type()=void_typet();
+  type.parameter_identifiers().push_back(HEAP_ARG_BASE_NAME);
+  type.parameter_identifiers().push_back(LHS_ARG_BASE_NAME);
+  type.parameter_identifiers().push_back(RHS_ARG_BASE_NAME);
+  add_parameter(type, heap_type(), HEAP_ARG_BASE_NAME);
+  add_parameter(type, ptr_t(), LHS_ARG_BASE_NAME);
+  add_parameter(type, ptr_t(), RHS_ARG_BASE_NAME);
+  return type;
+}
+
+void add_bjc_library(symbol_tablet &st, goto_functionst &gf,
+    message_handlert &msg)
+{
+  add_cegis_library(st, gf, msg, BJC_RUN_QUERY_FUNC_NAME, query_execute_type());
+  add_cegis_library(st, gf, msg, BJC_FILTER_FUNC_NAME, query_filter_type());
+  add_cegis_library(st, gf, msg, BJC_EQUAL_FUNC_NAME, query_equal_type());
+}
 }
 
 void add_bjc_query(bjc_programt &prog, const size_t max_size)
@@ -87,12 +129,13 @@ void add_bjc_query(bjc_programt &prog, const size_t max_size)
   const constant_exprt sz(from_integer(max_size, unsigned_int_type()));
   const array_typet type(symbol_typet(CEGIS_INSTRUCTION_TYPE_NAME), sz);
   pos=declare_cegis_meta_variable(st, gf, pos, BJC_QUERY_VAR_NAME, type);
+  prog.query_decl=pos;
   const typet bt(c_bool_type());
   pos=declare_cegis_meta_variable(st, gf, pos, BJC_QUERY_RESULT_VAR_NAME, bt);
   // XXX: Debug
   ui_message_handlert msg(ui_message_handlert::PLAIN, "");
   // XXX: Debug
-  add_cegis_library(st, gf, msg, BJC_RUN_QUERY_FUNC_NAME, query_execute_type());
+  add_bjc_library(st, gf, msg);
   code_function_callt call;
   const std::string res_var(get_cegis_meta_name(BJC_QUERY_RESULT_VAR_NAME));
   call.lhs()=st.lookup(res_var).symbol_expr();
@@ -101,8 +144,10 @@ void add_bjc_query(bjc_programt &prog, const size_t max_size)
   args.push_back(st.lookup(BJC_HEAP_SYMBOL_NAME).symbol_expr());
   args.push_back(st.lookup(BJC_LIST_SYMBOL_NAME).symbol_expr());
   args.push_back(st.lookup(BJC_LIST_COPY_SYMBOL_NAME).symbol_expr());
-  const std::string bjcQueryVar(get_cegis_meta_name(BJC_QUERY_VAR_NAME));
-  args.push_back(st.lookup(bjcQueryVar).symbol_expr());
+  const std::string bjc_query_var(get_cegis_meta_name(BJC_QUERY_VAR_NAME));
+  const symbol_exprt query_symbol(st.lookup(bjc_query_var).symbol_expr());
+  const index_exprt first_elem(query_symbol, gen_zero(unsigned_int_type()));
+  args.push_back(address_of_exprt(first_elem));
   args.push_back(sz);
   pos=body.insert_after(pos);
   pos->source_location=default_cegis_source_location();
