@@ -35,12 +35,17 @@ void handle_loop_removal(invariant_programt &program,
   invariant_programt::invariant_loopt &loop=program.add_loop();
   if (instr.guard.is_true())
   {
-    exprt guard=goto_target->guard;
+    goto_programt::targett guard_instr=goto_target;
+    const goto_programt::targett end=instrs.end();
+    while (end != guard_instr && guard_instr->guard.is_true())
+      ++guard_instr;
+    assert(end != guard_instr);
+    exprt guard=guard_instr->guard;
     if (ID_not == guard.id()) loop.guard=to_not_expr(guard).op();
     else loop.guard=simplify_expr(not_exprt(guard), ns);
-    loop.body.begin=goto_target;
+    loop.body.begin=guard_instr;
     ++loop.body.begin;
-    erase_target(instrs, goto_target);
+    erase_target(instrs, guard_instr);
   } else
   {
     loop.guard=simplify_expr(instr.guard, ns);

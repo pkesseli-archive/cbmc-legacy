@@ -47,7 +47,7 @@ public:
    * @param st
    * @param gf
    */
-  safety_programt(const symbol_tablet &st, const class goto_functionst &gf);
+  safety_programt(const symbol_tablet &st, const goto_functionst &gf);
 
   /**
    * @brief

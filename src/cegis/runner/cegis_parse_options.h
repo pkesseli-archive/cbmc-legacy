@@ -15,7 +15,7 @@ Author: Daniel Kroening, kroening@kroening.com
   "(cegis)(cegis-seed):(cegis-root):(cegis-targets):(cegis-min-prog-size):(cegis-max-prog-size):(cegis-skolem):(cegis-ranking):" \
   "(cegis-max-size):(cegis-statistics)(cegis-genetic)(cegis-genetic-rounds):(cegis-genetic-popsize):(cegis-tournament-select)" \
   "(cegis-genetic-mutation-rate):(cegis-genetic-replace-rate):(cegis-limit-wordsize)(cegis-parallel-verify)(danger)" \
-  "(safety)(danger)(bjc)(danger-max-size):"
+  "(safety)(danger)(jsa)(danger-max-size):"
 
 class cegis_parse_optionst: public cbmc_parse_optionst
 {
