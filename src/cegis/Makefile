@@ -31,6 +31,8 @@ SRC = danger/meta/meta_variable_names.cpp danger/facade/danger_runner.cpp danger
       bjc/facade/bjc_runner.cpp bjc/options/bjc_program.cpp bjc/preprocessing/bjc_preprocessing.cpp \
       bjc/preprocessing/bjc_query_factory.cpp bjc/symex/learn/bjc_symex_learn.cpp \
       bjc/symex/verify/bjc_symex_verify.cpp bjc/symex/verify/insert_bjc_candidate.cpp \
+      jsa/facade/jsa_runner.cpp jsa/options/jsa_program.cpp jsa/preprocessing/jsa_preprocessing.cpp \
+      jsa/preprocessing/inline_user_program.cpp \
       wordsize/restrict_bv_size.cpp value/program_individual_serialisation.cpp \
       seed/literals_seed.cpp genetic/tournament_select.cpp genetic/match_select.cpp \
       genetic/instruction_set_info_factory.cpp genetic/random_mutate.cpp genetic/random_cross.cpp \
