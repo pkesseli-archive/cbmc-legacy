@@ -18,6 +18,7 @@ OBJ += ../ansi-c/ansi-c$(LIBEXT) \
       ../pointer-analysis/rewrite_index$(OBJEXT) \
       ../pointer-analysis/goto_program_dereference$(OBJEXT) \
       ../goto-instrument/full_slicer$(OBJEXT) \
+      ../goto-instrument/nondet_static$(OBJEXT) \
       ../analyses/analyses$(LIBEXT) \
       ../langapi/langapi$(LIBEXT) \
       ../xmllang/xmllang$(LIBEXT) \
@@ -50,8 +51,13 @@ ifneq ($(wildcard ../java_bytecode/Makefile),)
   OBJ += ../java_bytecode/java_bytecode$(LIBEXT)
   CP_CXXFLAGS += -DHAVE_JAVA_BYTECODE
   ifneq ($(LIBZIPLIB),)
-    LIBS += -L $(LIBZIPLIB) -lzip -lz
+    LIBS += $(LIBZIPLIB)
   endif
+endif
+
+ifneq ($(wildcard ../jsil/Makefile),)
+  OBJ += ../jsil/jsil$(LIBEXT)
+  CP_CXXFLAGS += -DHAVE_JSIL
 endif
 
 ifneq ($(wildcard ../specc/Makefile),)

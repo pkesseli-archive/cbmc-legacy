@@ -76,63 +76,86 @@ java_bytecode_parse_treet &java_class_loadert::get_parse_tree(
   const irep_idt &class_name)
 {
   java_bytecode_parse_treet &parse_tree=class_map[class_name];
-
-  // in a JAR?
-  class_jar_mapt::const_iterator c_j_it=
-    class_jar_map.find(class_name);
   
-  if(c_j_it!=class_jar_map.end())
+  // First check given JAR files
+  for(const auto & jf : jar_files)
   {
-    std::vector<char> data;
-
-    if(get_jar_entry(
-      c_j_it->second.jar_file_name.c_str(), c_j_it->second.index, data))
-      return parse_tree; // error
-  
-    std::istringstream istream(data.data());
+    read_jar_file(jf);
     
-    java_bytecode_parse(
-      istream,
-      parse_tree,
-      get_message_handler());
+    const auto &jm=jar_map[jf];
+  
+    auto jm_it=jm.entries.find(class_name);
+    
+    if(jm_it!=jm.entries.end())
+    {
+      debug() << "Getting class `" << class_name << "' from JAR "
+              << jf << eom;
+
+      std::string data;
       
-    return parse_tree;
+      if(get_jar_entry(jf, jm_it->second.index, data))
+        return parse_tree; // error
+
+      std::istringstream istream(data);
+      
+      java_bytecode_parse(
+        istream,
+        parse_tree,
+        get_message_handler());
+        
+      return parse_tree;
+    }
   }
 
-  // in a given class file?
-  class_file_mapt::const_iterator c_f_it=
-    class_file_map.find(class_name);
+  // See if we can find it in the class path
   
-  if(c_f_it!=class_file_map.end())
+  for(const auto & cp : config.java.classpath)
   {
-    java_bytecode_parse(
-      id2string(c_f_it->second),
-      parse_tree,
-      get_message_handler());
+    // in a JAR?
+    if(has_suffix(cp, ".jar"))
+    {
+      read_jar_file(cp);
+      
+      const auto &jm=jar_map[cp];
     
-    return parse_tree;
-  }
-  
-  // See if we can find a class file in class path
-  
-  for(std::list<std::string>::const_iterator
-      cp_it=config.java.class_path.begin();
-      cp_it!=config.java.class_path.end();
-      cp_it++)
-  {
-    std::string full_path;
+      auto jm_it=jm.entries.find(class_name);
+      
+      if(jm_it!=jm.entries.end())
+      {
+        debug() << "Getting class `" << class_name << "' from JAR "
+                << cp << eom;
+
+        std::string data;
+        
+        if(get_jar_entry(cp, jm_it->second.index, data))
+          return parse_tree; // error
+
+        std::istringstream istream(data);
+        
+        java_bytecode_parse(
+          istream,
+          parse_tree,
+          get_message_handler());
+          
+        return parse_tree;
+      }
+    }
+    else
+    {
+      // in a given directory?
+      std::string full_path=
+        #ifdef _WIN32
+        cp+'\\'+class_name_to_file(class_name);
+        #else
+        cp+'/'+class_name_to_file(class_name);
+        #endif
     
-    #ifdef _WIN32
-    full_path=*cp_it+'\\'+id2string(class_name)+".class";
-    #else
-    full_path=*cp_it+'/'+id2string(class_name)+".class";
-    #endif
-  
-    if(!java_bytecode_parse(
-         full_path,
-         parse_tree,
-         get_message_handler()))
-      return parse_tree;
+      if(!java_bytecode_parse(
+           full_path,
+           parse_tree,
+           get_message_handler()))
+        return parse_tree;
+    }
   }
     
   // not found
@@ -143,7 +166,7 @@ java_bytecode_parse_treet &java_class_loadert::get_parse_tree(
 
 /*******************************************************************\
 
-Function: java_class_loadert::add_class_file
+Function: java_class_loadert::load_entire_jar
 
   Inputs:
 
@@ -153,14 +176,23 @@ Function: java_class_loadert::add_class_file
 
 \*******************************************************************/
 
-void java_class_loadert::add_class_file(const irep_idt &file)
+void java_class_loadert::load_entire_jar(const std::string &file)
 {
-  class_file_map[file_to_class_name(id2string(file))]=file;
+  read_jar_file(file);
+
+  const auto &jm=jar_map[file];
+
+  jar_files.push_front(file);
+
+  for(const auto &e : jm.entries)
+    operator()(e.first);
+  
+  jar_files.pop_front();  
 }
 
 /*******************************************************************\
 
-Function: java_class_loadert::add_jar_file
+Function: java_class_loadert::read_jar_file
 
   Inputs:
 
@@ -170,9 +202,17 @@ Function: java_class_loadert::add_jar_file
 
 \*******************************************************************/
 
-void java_class_loadert::add_jar_file(const irep_idt &file)
+void java_class_loadert::read_jar_file(const irep_idt &file)
 {
+  // done already?
+  if(jar_map.find(file)!=jar_map.end()) return;
+
   std::vector<std::string> entries;
+  
+  #ifndef HAVE_LIBZIP
+  error() << "no support for reading JAR files configured" << eom;
+  return;
+  #endif
   
   if(get_jar_index(file.c_str(), entries))
   {
@@ -180,6 +220,9 @@ void java_class_loadert::add_jar_file(const irep_idt &file)
     return;
   }
   
+  debug() << "adding JAR file `" << file << "'" << eom;
+
+  auto &jm=jar_map[file];  
   std::size_t number_of_files=entries.size();
   
   for(std::size_t index=0; index<number_of_files; index++)
@@ -191,13 +234,8 @@ void java_class_loadert::add_jar_file(const irep_idt &file)
     {
       irep_idt class_name=file_to_class_name(file_name);
     
-      // Already there? Ignore.
-      if(class_jar_map.find(class_name)==class_jar_map.end())
-      {
-        // record
-        class_jar_map[class_name].jar_file_name=file;
-        class_jar_map[class_name].index=index;
-      }
+      // record
+      jm.entries[class_name].index=index;
     }
   }
 }
@@ -218,13 +256,44 @@ std::string java_class_loadert::file_to_class_name(const std::string &file)
 {
   std::string result=file;
 
-  // strip .class              
+  // strip .class
   if(has_suffix(result, ".class"))
     result.resize(result.size()-6);
     
   // slash to dot
   for(std::string::iterator it=result.begin(); it!=result.end(); it++)
     if(*it=='/') *it='.';
+
+  return result;
+}
+
+/*******************************************************************\
+
+Function: java_class_loadert::class_name_to_file
+
+  Inputs:
+
+ Outputs:
+
+ Purpose:
+
+\*******************************************************************/
+
+std::string java_class_loadert::class_name_to_file(const irep_idt &class_name)
+{
+  std::string result=id2string(class_name);
+
+  // dots (package name separators) to slash, depending on OS
+  for(std::string::iterator it=result.begin(); it!=result.end(); it++)
+    if(*it=='.')
+      #ifdef _WIN32
+      *it='\\';
+      #else
+      *it='/';
+      #endif
+
+  // add .class suffix
+  result+=".class";
 
   return result;
 }

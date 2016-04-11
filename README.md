@@ -1,11 +1,6 @@
-# CBMC
-
-Web: http://www.cprover.org/cbmc/
-
-Wiki: http://www.cprover.org/wiki/
-
-=======
 [![Build Status][build_img]][travis]
+
+[CProver Wiki](http://www.cprover.org/wiki)
 
 About
 =====

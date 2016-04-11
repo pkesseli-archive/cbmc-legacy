@@ -84,8 +84,8 @@ void remove_returnst::replace_returns(
     auxiliary_symbolt new_symbol;
     new_symbol.is_static_lifetime=true;
     new_symbol.module=function_symbol.module;
-    new_symbol.base_name=id2string(function_symbol.base_name)+"#return_value";
-    new_symbol.name=id2string(function_symbol.name)+"#return_value";
+    new_symbol.base_name=id2string(function_symbol.base_name)+RETURN_VALUE_SUFFIX;
+    new_symbol.name=id2string(function_symbol.name)+RETURN_VALUE_SUFFIX;
     new_symbol.mode=function_symbol.mode;
     new_symbol.type=return_type;
 
@@ -107,7 +107,7 @@ void remove_returnst::replace_returns(
 
         // replace "return x;" by "fkt#return_value=x;"
         symbol_exprt lhs_expr;
-        lhs_expr.set_identifier(id2string(function_id)+"#return_value");
+        lhs_expr.set_identifier(id2string(function_id)+RETURN_VALUE_SUFFIX);
         lhs_expr.type()=return_type;
 
         code_assignt assignment(lhs_expr, i_it->code.op0());
@@ -167,20 +167,10 @@ void remove_returnst::do_function_calls(
         {
           exprt rhs;
           
-          if(f_it->second.body_available())
-          {
-            symbol_exprt return_value;
-            return_value.type()=function_call.lhs().type();
-            return_value.set_identifier(id2string(function_id)+"#return_value");
-            rhs=return_value;
-          }
-          else
-          {
-            // no body available
-            exprt nondet_value=side_effect_expr_nondett(function_call.lhs().type());
-            nondet_value.add_source_location()=i_it->source_location;
-            rhs=nondet_value;
-          }
+          symbol_exprt return_value;
+          return_value.type()=function_call.lhs().type();
+          return_value.set_identifier(id2string(function_id)+RETURN_VALUE_SUFFIX);
+          rhs=return_value;
 
           goto_programt::targett t_a=goto_program.insert_after(i_it);
           t_a->make_assignment();
@@ -282,7 +272,7 @@ bool remove_returnst::restore_returns(
   const irep_idt function_id=f_it->first;
 
   // do we have X#return_value?
-  std::string rv_name=id2string(function_id)+"#return_value";
+  std::string rv_name=id2string(function_id)+RETURN_VALUE_SUFFIX;
 
   symbol_tablet::symbolst::iterator rv_it=
     symbol_table.symbols.find(rv_name);
@@ -384,8 +374,6 @@ void remove_returnst::undo_function_calls(
 
       // find "f(...); lhs=f#return_value; DEAD f#return_value;"
       // and revert to "lhs=f(...);"
-      // nondet assignments when the body of f isn't available are
-      // not reverted
       goto_programt::instructionst::iterator next=i_it;
       ++next;
       assert(next!=goto_program.instructions.end());
@@ -398,7 +386,7 @@ void remove_returnst::undo_function_calls(
       if(assign.rhs().id()!=ID_symbol)
         continue;
 
-      irep_idt rv_name=id2string(function_id)+"#return_value";
+      irep_idt rv_name=id2string(function_id)+RETURN_VALUE_SUFFIX;
       const symbol_exprt &rhs=to_symbol_expr(assign.rhs());
       if(rhs.get_identifier()!=rv_name)
         continue;

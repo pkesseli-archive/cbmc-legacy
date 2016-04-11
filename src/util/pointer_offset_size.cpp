@@ -41,7 +41,7 @@ mp_integer member_offset(
   const struct_typet::componentst &components=type.components();
   
   mp_integer result=0;
-  unsigned bit_field_bits=0;
+  std::size_t bit_field_bits=0;
   
   for(struct_typet::componentst::const_iterator
       it=components.begin();
@@ -54,7 +54,7 @@ mp_integer member_offset(
     if(it->type().id()==ID_c_bit_field)
     {
       // take the extra bytes needed
-      unsigned w=to_c_bit_field_type(it->type()).get_width();
+      std::size_t w=to_c_bit_field_type(it->type()).get_width();
       for(; w>bit_field_bits; ++result, bit_field_bits+=8);
       bit_field_bits-=w;
     }
@@ -222,6 +222,10 @@ mp_integer pointer_offset_bits(
   {
     return 0;
   }
+  else if(type.id()==ID_string)
+  {
+    return 32;
+  }
   else
     return mp_integer(-1);
 }
@@ -273,7 +277,7 @@ exprt member_offset_expr(
   const struct_typet::componentst &components=type.components();
   
   exprt result=gen_zero(signedbv_typet(config.ansi_c.pointer_width));
-  unsigned bit_field_bits=0;
+  std::size_t bit_field_bits=0;
   
   for(struct_typet::componentst::const_iterator
       it=components.begin();
@@ -284,8 +288,8 @@ exprt member_offset_expr(
 
     if(it->type().id()==ID_c_bit_field)
     {
-      unsigned w=to_c_bit_field_type(it->type()).get_width();
-      unsigned bytes;
+      std::size_t w=to_c_bit_field_type(it->type()).get_width();
+      std::size_t bytes;
       for(bytes=0; w>bit_field_bits; ++bytes, bit_field_bits+=8);
       bit_field_bits-=w;
       result=plus_exprt(result, from_integer(bytes, result.type()));
@@ -376,7 +380,7 @@ exprt size_of_expr(
       struct_type.components();
       
     exprt result=gen_zero(signedbv_typet(config.ansi_c.pointer_width));
-    unsigned bit_field_bits=0;
+    std::size_t bit_field_bits=0;
     
     for(struct_typet::componentst::const_iterator
         it=components.begin();
@@ -385,8 +389,8 @@ exprt size_of_expr(
     {
       if(it->type().id()==ID_c_bit_field)
       {
-        unsigned w=to_c_bit_field_type(it->type()).get_width();
-        unsigned bytes;
+        std::size_t w=to_c_bit_field_type(it->type()).get_width();
+        std::size_t bytes;
         for(bytes=0; w>bit_field_bits; ++bytes, bit_field_bits+=8);
         bit_field_bits-=w;
         result=plus_exprt(result, from_integer(bytes, result.type()));
@@ -425,7 +429,7 @@ exprt size_of_expr(
 
       if(subtype.id()==ID_c_bit_field)
       {
-        unsigned bits=to_c_bit_field_type(subtype).get_width();
+        std::size_t bits=to_c_bit_field_type(subtype).get_width();
         sub_size=bits/8;
         if((bits%8)!=0) ++sub_size;
       }
@@ -444,15 +448,15 @@ exprt size_of_expr(
           type.id()==ID_bv ||
           type.id()==ID_c_bool)
   {
-    unsigned width=to_bitvector_type(type).get_width();
-    unsigned bytes=width/8;
+    std::size_t width=to_bitvector_type(type).get_width();
+    std::size_t bytes=width/8;
     if(bytes*8!=width) bytes++;
     return from_integer(bytes, signedbv_typet(config.ansi_c.pointer_width));
   }
   else if(type.id()==ID_c_enum)
   {
-    unsigned width=to_bitvector_type(type.subtype()).get_width();
-    unsigned bytes=width/8;
+    std::size_t width=to_bitvector_type(type.subtype()).get_width();
+    std::size_t bytes=width/8;
     if(bytes*8!=width) bytes++;
     return from_integer(bytes, signedbv_typet(config.ansi_c.pointer_width));
   }
@@ -466,8 +470,8 @@ exprt size_of_expr(
   }
   else if(type.id()==ID_pointer)
   {
-    unsigned width=config.ansi_c.pointer_width;
-    unsigned bytes=width/8;
+    std::size_t width=config.ansi_c.pointer_width;
+    std::size_t bytes=width/8;
     if(bytes*8!=width) bytes++;
     return from_integer(bytes, signedbv_typet(config.ansi_c.pointer_width));
   }
@@ -478,6 +482,11 @@ exprt size_of_expr(
   else if(type.id()==ID_code)
   {
     return gen_zero(signedbv_typet(config.ansi_c.pointer_width));
+  }
+  else if(type.id()==ID_string)
+  {
+    return from_integer(
+      32/8, signedbv_typet(config.ansi_c.pointer_width));
   }
   else
     return nil_exprt();

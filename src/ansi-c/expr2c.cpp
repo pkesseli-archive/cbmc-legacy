@@ -238,6 +238,10 @@ std::string expr2ct::convert_rec(
   {
     return q+"_Bool"+d;
   }
+  else if(src.id()==ID_string)
+  {
+    return q+"__CPROVER_string"+d;
+  }
   else if(src.id()==ID_natural ||
           src.id()==ID_integer ||
           src.id()==ID_rational)
@@ -255,7 +259,7 @@ std::string expr2ct::convert_rec(
   }
   else if(src.id()==ID_floatbv)
   {
-    unsigned width=to_floatbv_type(src).get_width();
+    std::size_t width=to_floatbv_type(src).get_width();
 
     if(width==config.ansi_c.single_width)
       return q+"float"+d;
@@ -272,7 +276,7 @@ std::string expr2ct::convert_rec(
   }
   else if(src.id()==ID_fixedbv)
   {
-    unsigned width=to_fixedbv_type(src).get_width();
+    std::size_t width=to_fixedbv_type(src).get_width();
 
     if(config.ansi_c.use_fixed_for_float)
     {
@@ -287,7 +291,7 @@ std::string expr2ct::convert_rec(
     }
     else
     {
-      unsigned fraction_bits=to_fixedbv_type(src).get_fraction_bits();
+      std::size_t fraction_bits=to_fixedbv_type(src).get_fraction_bits();
       return q+"__CPROVER_fixedbv["+i2string(width)+"]["+i2string(fraction_bits)+"]";
     }
   }
@@ -2300,6 +2304,10 @@ std::string expr2ct::convert_constant(
         return convert(src.op0(), precedence);
     }
   }
+  else if(type.id()==ID_string)
+  {
+    return '"'+id2string(src.get_value())+'"';
+  }
   else
     return convert_norep(src, precedence);
 
@@ -3572,6 +3580,10 @@ std::string expr2ct::convert_code(
 
   if(statement==ID_array_copy)
     return convert_code_array_copy(src, indent);
+
+  if(statement=="set_may" ||
+     statement=="set_must")
+    return indent_str(indent)+convert_function(src, id2string(statement), 16)+";";
 
   unsigned precedence;
   return convert_norep(src, precedence);
