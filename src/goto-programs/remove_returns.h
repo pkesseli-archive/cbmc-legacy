@@ -8,10 +8,12 @@ Date:   September 2009
 
 \*******************************************************************/
 
-#ifndef CPROVER_REMOVE_RETURN_VALUES_H
-#define CPROVER_REMOVE_RETURN_VALUES_H
+#ifndef CPROVER_REMOVE_RETURNS_H
+#define CPROVER_REMOVE_RETURNS_H
 
 #include <goto-programs/goto_model.h>
+
+#define RETURN_VALUE_SUFFIX "#return_value"
 
 // Turns 'return x' into an assignment to fkt#return_value,
 // unless the function returns void,

@@ -28,7 +28,9 @@ bool escape_domaint::is_tracked(const symbol_exprt &symbol)
 {
   const irep_idt &identifier=symbol.get_identifier();
   if(identifier=="__CPROVER_memory_leak" ||
-     identifier=="__CPROVER_malloc_object")
+     identifier=="__CPROVER_malloc_object" ||
+     identifier=="__CPROVER_dead_object" ||
+     identifier=="__CPROVER_deallocated")
     return false;
     
   return true;
@@ -83,7 +85,11 @@ void escape_domaint::assign_lhs_cleanup(
     if(is_tracked(symbol_expr))
     {
       irep_idt identifier=symbol_expr.get_identifier();
-      cleanup_map[identifier].cleanup_functions=cleanup_functions;
+      
+      if(cleanup_functions.empty())
+        cleanup_map.erase(identifier);
+      else
+        cleanup_map[identifier].cleanup_functions=cleanup_functions;
     }
   }
 }
@@ -334,6 +340,7 @@ void escape_domaint::transform(
     break;
   
   case END_FUNCTION:
+    // This is the edge to the call site.
     break;
 
   default:;
@@ -357,6 +364,12 @@ void escape_domaint::output(
   const ai_baset &ai,
   const namespacet &ns) const
 {
+  if(is_bottom)
+  {
+    out << "BOTTOM\n";
+    return;
+  }
+
   for(cleanup_mapt::const_iterator it=cleanup_map.begin();
       it!=cleanup_map.end();
       it++)
@@ -409,6 +422,15 @@ bool escape_domaint::merge(
   locationt from,
   locationt to)
 {
+  if(b.is_bottom)
+    return false; // no change
+
+  if(is_bottom)
+  {
+    *this=b;
+    return true; // change
+  }
+
   bool changed=false;
 
   for(cleanup_mapt::const_iterator b_it=b.cleanup_map.begin();
@@ -512,7 +534,7 @@ void escape_domaint::check_lhs(
 
 /*******************************************************************\
 
-Function: escape_analysist::instrument
+Function: escape_analysist::insert_cleanup
 
   Inputs:
 
@@ -598,7 +620,7 @@ void escape_analysist::instrument(
       case DEAD:
         {
           const code_deadt &code_dead=to_code_dead(instruction.code);
-
+          
           std::set<irep_idt> cleanup_functions1;
           
           escape_domaint &d=operator[](i_it);
