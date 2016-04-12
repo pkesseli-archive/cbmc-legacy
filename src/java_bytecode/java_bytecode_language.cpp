@@ -14,7 +14,6 @@ Author: Daniel Kroening, kroening@kroening.com
 #include "java_bytecode_convert.h"
 #include "java_bytecode_internal_additions.h"
 #include "java_bytecode_typecheck.h"
-#include "java_bytecode_load_class.h"
 #include "java_entry_point.h"
 #include "java_bytecode_parser.h"
 #include "java_class_loader.h"
@@ -101,17 +100,12 @@ bool java_bytecode_languaget::parse(
   // look at extension
   if(has_suffix(path, ".class"))
   {
-    java_class_loader.add_class_file(path);
-    
-    if(config.java.main_class.empty())
-      main_class=java_class_loadert::file_to_class_name(path);
-    else
-      main_class=config.java.main_class;
+    // override main_class
+    main_class=java_class_loadert::file_to_class_name(path);
   }
   else if(has_suffix(path, ".jar"))
   {
-    java_class_loader.add_jar_file(path);
-
+    #ifdef HAVE_LIBZIP
     if(config.java.main_class.empty())
     {
       // Does it have a main class set in the manifest?
@@ -124,6 +118,20 @@ bool java_bytecode_languaget::parse(
     }
     else
       main_class=config.java.main_class;
+      
+    // Do we have one now?
+    if(main_class.empty())
+    {
+      status() << "JAR file without entry point: loading it all" << eom;
+      java_class_loader.load_entire_jar(path);
+    }
+    else
+      java_class_loader.add_jar_file(path);
+    
+    #else
+    error() << "No support for reading JAR files" << eom;
+    return true;
+    #endif
   }
   else
     assert(false);
