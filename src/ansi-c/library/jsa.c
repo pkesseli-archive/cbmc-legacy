@@ -361,7 +361,6 @@ __CPROVER_jsa_inline abstract_heapt *__CPROVER_jsa_create_heap(void)
 #endif /* CEGIS_JSA_TRANSFORMERS_H_ */
 
 /* FUNCTION: __CPROVER_jsa_create_nondet_list */
-
 __CPROVER_jsa_inline list_t __CPROVER_jsa_create_list(
     const abstract_heapt * const heap)
 {
@@ -416,4 +415,10 @@ __CPROVER_jsa_inline void __CPROVER_jsa_remove(abstract_heapt * const heap,
   __CPROVER_jsa_set_next(heap, previous_node_id, next_node_id);
   __CPROVER_jsa_set_previous(heap, next_node_id, previous_node_id);
   heap->iterators[it].previous_node_id=__CPROVER_jsa_null;
+}
+
+/* FUNCTION: __CPROVER_jsa_query_execute */
+__CPROVER_jsa_inline void __CPROVER_jsa_query_execute(
+    abstract_heapt * const heap, const iterator_t it)
+{
 }

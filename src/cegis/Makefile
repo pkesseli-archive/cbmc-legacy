@@ -42,12 +42,13 @@ SRC = danger/meta/meta_variable_names.cpp danger/facade/danger_runner.cpp danger
       constant/add_constant.cpp constant/literals_collector.cpp constant/default_cegis_constant_strategy.cpp \
       instrument/cegis_library.cpp instrument/instrument_var_ops.cpp instrument/meta_variables.cpp \
       runner/cegis_parse_options.cpp runner/cegis_main.cpp \
-      ../goto-instrument/dump_c.cpp ../goto-instrument/goto_program2code.cpp \
+      ../goto-instrument/dump_c.cpp ../goto-instrument/goto_program2code.cpp ../goto-instrument/nondet_static.cpp \
       ../cbmc/cbmc_parse_options.cpp ../cbmc/bmc.cpp ../cbmc/cbmc_solvers.cpp ../cbmc/symex_bmc.cpp \
       ../cbmc/xml_interface.cpp ../cbmc/cover.cpp ../cbmc/bv_cbmc.cpp ../cbmc/counterexample_beautification.cpp \
-      ../cbmc/cbmc_languages.cpp ../cbmc/show_vcc.cpp ../cbmc/cbmc_dimacs.cpp ../cbmc/all_properties.cpp
+      ../cbmc/cbmc_languages.cpp ../cbmc/show_vcc.cpp ../cbmc/cbmc_dimacs.cpp ../cbmc/all_properties.cpp \
  
 OBJ += ../ansi-c/ansi-c$(LIBEXT) \
+      ../jsil/jsil$(LIBEXT) \
       ../cpp/cpp$(LIBEXT) \
       ../java_bytecode/java_bytecode$(LIBEXT) \
       ../linking/linking$(LIBEXT) \
