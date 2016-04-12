@@ -14,10 +14,10 @@ struct __CPROVER_cegis_instructiont
 // cegis.h
 
 // bjc.h
-typedef unsigned int word_t;
-typedef word_t ptr_t;
-typedef word_t index_t;
-typedef word_t data_t;
+typedef unsigned int __CPROVER_jsa_word_t;
+typedef __CPROVER_jsa_word_t ptr_t;
+typedef __CPROVER_jsa_word_t __CPROVER_jsa_index_t;
+typedef __CPROVER_jsa_word_t __CPROVER_jsa_data_t;
 
 #define MAX_LIST_SIZE 5
 #ifndef NPROG
@@ -28,14 +28,14 @@ typedef struct abstract_iterator
 {
   _Bool is_valid;
   ptr_t list;
-  index_t index;
+  __CPROVER_jsa_index_t index;
 } abstract_iteratort;
 
 typedef struct abstract_list
 {
   _Bool is_valid;
-  index_t size;
-  data_t content[MAX_LIST_SIZE];
+  __CPROVER_jsa_index_t size;
+  __CPROVER_jsa_data_t content[MAX_LIST_SIZE];
 } abstract_listt;
 
 typedef struct abstract_heap
@@ -131,17 +131,17 @@ void __CPROVER_bjc_filter(abstract_heapt * const heap, const ptr_t list,
     const unsigned char predicate_length)
 {
   __CPROVER_assume(predicate_length <= __CPROVER_cegis_max_predicate_length);
-  const index_t size=heap->lists[list].size;
+  const __CPROVER_jsa_index_t size=heap->lists[list].size;
   __CPROVER_assume(size <= MAX_LIST_SIZE);
-  data_t * const data=heap->lists[list].content;
-  data_t tmp[predicate_length];
+  __CPROVER_jsa_data_t * const data=heap->lists[list].content;
+  __CPROVER_jsa_data_t tmp[predicate_length];
   for (unsigned char tmp_id=0; tmp_id < __CPROVER_cegis_max_predicate_length; ++tmp_id)
   {
     if (tmp_id >= predicate_length) break;
     __CPROVER_cegis_RESULT_OPS[tmp_id]=&tmp[tmp_id];
     __CPROVER_cegis_OPS[__CPROVER_cegis_number_of_vars + tmp_id]=&tmp[tmp_id];
   }
-  for (index_t i=0; i < MAX_LIST_SIZE; ++i)
+  for (__CPROVER_jsa_index_t i=0; i < MAX_LIST_SIZE; ++i)
   {
     if (i >= size) break;
     __CPROVER_cegis_OPS[0]=&data[i]; // We assume 0 is the lambda operator.
@@ -160,12 +160,12 @@ void __CPROVER_bjc_filter(abstract_heapt * const heap, const ptr_t list,
 _Bool __CPROVER_bjc_equal(const abstract_heapt * const heap, const ptr_t lhs,
     const ptr_t rhs)
 {
-  const index_t lhs_size=heap->lists[lhs].size;
+  const __CPROVER_jsa_index_t lhs_size=heap->lists[lhs].size;
   __CPROVER_assume(lhs_size <= MAX_LIST_SIZE);
   if (lhs_size != heap->lists[rhs].size) return (_Bool) 0;
-  const data_t * const lhs_data=heap->lists[lhs].content;
-  const data_t * const rhs_data=heap->lists[rhs].content;
-  for (index_t i=0; i < MAX_LIST_SIZE; ++i)
+  const __CPROVER_jsa_data_t * const lhs_data=heap->lists[lhs].content;
+  const __CPROVER_jsa_data_t * const rhs_data=heap->lists[rhs].content;
+  for (__CPROVER_jsa_index_t i=0; i < MAX_LIST_SIZE; ++i)
   {
     if (i >= lhs_size) break;
     if (lhs_data[i] != rhs_data[i]) return (_Bool) 0;
@@ -176,10 +176,10 @@ _Bool __CPROVER_bjc_equal(const abstract_heapt * const heap, const ptr_t lhs,
 /* FUNCTION: __CPROVER_bjc_nondet_list */
 
 // bjc.h
-typedef unsigned int word_t;
-typedef word_t ptr_t;
-typedef word_t index_t;
-typedef word_t data_t;
+typedef unsigned int __CPROVER_jsa_word_t;
+typedef __CPROVER_jsa_word_t ptr_t;
+typedef __CPROVER_jsa_word_t __CPROVER_jsa_index_t;
+typedef __CPROVER_jsa_word_t __CPROVER_jsa_data_t;
 
 #define MAX_LIST_SIZE 5
 #ifndef NPROG
@@ -190,14 +190,14 @@ typedef struct abstract_iterator
 {
   _Bool is_valid;
   ptr_t list;
-  index_t index;
+  __CPROVER_jsa_index_t index;
 } abstract_iteratort;
 
 typedef struct abstract_list
 {
   _Bool is_valid;
-  index_t size;
-  data_t content[MAX_LIST_SIZE];
+  __CPROVER_jsa_index_t size;
+  __CPROVER_jsa_data_t content[MAX_LIST_SIZE];
 } abstract_listt;
 
 typedef struct abstract_heap
@@ -258,11 +258,11 @@ _Bool __CPROVER_bjc_hasNext(const abstract_heapt * const heap, const ptr_t it)
 
 /* FUNCTION: __CPROVER_bjc_next */
 
-data_t __CPROVER_bjc_next(abstract_heapt * const heap, const ptr_t it)
+__CPROVER_jsa_data_t __CPROVER_bjc_next(abstract_heapt * const heap, const ptr_t it)
 {
   const ptr_t list=heap->iterators[it].list;
-  const index_t index=heap->iterators[it].index;
-  const data_t result=heap->lists[list].content[index];
+  const __CPROVER_jsa_index_t index=heap->iterators[it].index;
+  const __CPROVER_jsa_data_t result=heap->lists[list].content[index];
   ++heap->iterators[it].index;
   return result;
 }
@@ -272,9 +272,9 @@ data_t __CPROVER_bjc_next(abstract_heapt * const heap, const ptr_t it)
 void __CPROVER_bjc_it_remove(abstract_heapt * const heap, const ptr_t it)
 {
   const ptr_t list=heap->iterators[it].list;
-  const index_t size=heap->lists[list].size;
-  const index_t index=heap->iterators[it].index;
-  for (index_t i=0; i < MAX_LIST_SIZE; ++i)
+  const __CPROVER_jsa_index_t size=heap->lists[list].size;
+  const __CPROVER_jsa_index_t index=heap->iterators[it].index;
+  for (__CPROVER_jsa_index_t i=0; i < MAX_LIST_SIZE; ++i)
     if (i >= index && i < size - 1) heap->lists[list].content[i]=
         heap->lists[list].content[i + 1];
 }
@@ -283,12 +283,12 @@ void __CPROVER_bjc_it_remove(abstract_heapt * const heap, const ptr_t it)
 
 ptr_t __CPROVER_bjc_clone(abstract_heapt * const heap, const ptr_t list)
 {
-  const index_t size=heap->lists[list].size;
+  const __CPROVER_jsa_index_t size=heap->lists[list].size;
   __CPROVER_assume(size <= MAX_LIST_SIZE);
-  const data_t * const data=heap->lists[list].content;
+  const __CPROVER_jsa_data_t * const data=heap->lists[list].content;
   const ptr_t new_list=__CPROVER_bjc_nondet_list(heap);
   heap->lists[new_list].size=size;
-  for (index_t i=0; i < MAX_LIST_SIZE && i < size; ++i)
+  for (__CPROVER_jsa_index_t i=0; i < MAX_LIST_SIZE && i < size; ++i)
     heap->lists[new_list].content[i]=heap->lists[list].content[i];
   return new_list;
 }

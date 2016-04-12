@@ -15,7 +15,7 @@ int main(void)
   for (const ptr_t __CPROVER_it=__CPROVER_bjc_iterator(__CPROVER_heap, __CPROVER_list); __CPROVER_bjc_hasNext(__CPROVER_heap, __CPROVER_it);)
   {
     __CPROVER_assert(0 == 1, "__CPROVER_bjc_iterator");
-    const data_t __CPROVER_element=__CPROVER_bjc_next(__CPROVER_heap, __CPROVER_it);
+    const __CPROVER_jsa_data_t __CPROVER_element=__CPROVER_bjc_next(__CPROVER_heap, __CPROVER_it);
     __CPROVER_assert(0 == 1, "__CPROVER_bjc_next");
     if (__CPROVER_element <= limit)
       __CPROVER_bjc_it_remove(__CPROVER_heap, __CPROVER_it);

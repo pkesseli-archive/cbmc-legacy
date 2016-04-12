@@ -5,21 +5,27 @@
 #define __CPROVER_JSA_MAX_LISTS 1u
 #endif
 
+// XXX: Debug
+#define JSA_SYNTHESIS_H_
+// XXX: Debug
+
 #include "../../../src/ansi-c/library/jsa.c"
 
 int main(void)
 {
   abstract_heapt * const heap=__CPROVER_jsa_create_heap();
-  const list_t list=__CPROVER_jsa_create_list(heap);
+  const __CPROVER_jsa_list_id_t list=__CPROVER_jsa_create_list(heap);
   const unsigned int limit;
-  for (const iterator_t it=__CPROVER_jsa_iterator(heap, list);
+  for (const __CPROVER_jsa_iterator_id_t it=__CPROVER_jsa_iterator(heap, list);
       __CPROVER_jsa_hasNext(heap, it);)
   {
-    const data_t value=__CPROVER_jsa_next(heap, it);
+    const __CPROVER_jsa_data_t value=__CPROVER_jsa_next(heap, it);
     if (value <= limit)
     {
       __CPROVER_jsa_remove(heap, it);
     }
   }
   __CPROVER_assert(0 == 1, "");
+
+  return 0;
 }
