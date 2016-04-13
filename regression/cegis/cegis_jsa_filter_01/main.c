@@ -13,14 +13,13 @@
 
 int main(void)
 {
-  abstract_heapt * const heap=__CPROVER_jsa_create_heap();
+  __CPROVER_jsa_abstract_heapt * const heap=__CPROVER_jsa_create_heap();
   const __CPROVER_jsa_list_id_t list=__CPROVER_jsa_create_list(heap);
-  const unsigned int limit;
   for (const __CPROVER_jsa_iterator_id_t it=__CPROVER_jsa_iterator(heap, list);
       __CPROVER_jsa_hasNext(heap, it);)
   {
     const __CPROVER_jsa_data_t value=__CPROVER_jsa_next(heap, it);
-    if (value <= limit)
+    if (value < 3)
     {
       __CPROVER_jsa_remove(heap, it);
     }

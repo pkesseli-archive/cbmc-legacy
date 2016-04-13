@@ -28,22 +28,26 @@
 #if __CPROVER_JSA_MAX_LISTS < 1
 #error "JSA needs at least one list variable for analysis."
 #endif
+#if __CPROVER_JSA_MAX_ABSTRACT_NODES != 0
+#error "Currently in concrete-mode only."
+#endif
 
 typedef unsigned char __CPROVER_jsa_word_t;
 typedef __CPROVER_jsa_word_t  __CPROVER_jsa_data_t;
 typedef __CPROVER_jsa_word_t  __CPROVER_jsa_index_t;
+typedef __CPROVER_jsa_word_t  __CPROVER_jsa__internal_index_t;
 typedef __CPROVER_jsa_word_t  __CPROVER_jsa_id_t;
 typedef __CPROVER_jsa_id_t  __CPROVER_jsa_node_id_t;
 typedef __CPROVER_jsa_id_t  __CPROVER_jsa_list_id_t;
 typedef __CPROVER_jsa_id_t  __CPROVER_jsa_iterator_id_t;
 #define __CPROVER_jsa_null 0xFF
 typedef
-struct abstract_heap
+struct __CPROVER_jsa_abstract_heap
 {
   /**
    * Concrete node with explicit value.
    */
-  struct concrete_nodet
+  struct __CPROVER_jsa_concrete_nodet
   {
     __CPROVER_jsa_node_id_t next;
     __CPROVER_jsa_node_id_t previous;
@@ -54,7 +58,7 @@ struct abstract_heap
    * Abstract nodes may assume any of a set of pre-defined values
    * (value_ref to abstract_ranget).
    */
-  struct abstract_nodet
+  struct __CPROVER_jsa_abstract_nodet
   {
     __CPROVER_jsa_node_id_t next;
     __CPROVER_jsa_node_id_t previous;
@@ -68,7 +72,7 @@ struct abstract_heap
   /**
    * Set of pre-defined, possible values for abstract nodes.
    */
-  struct abstract_ranget
+  struct __CPROVER_jsa_abstract_ranget
   {
     __CPROVER_jsa_data_t min;
     __CPROVER_jsa_data_t max;
@@ -82,7 +86,7 @@ struct abstract_heap
    * Iterators point to a node and give the relative index
    * within that node.
    */
-  struct iteratort
+  struct __CPROVER_jsa_iteratort
   {
     __CPROVER_jsa_node_id_t node_id;
     __CPROVER_jsa_node_id_t previous_node_id;
@@ -102,7 +106,7 @@ struct abstract_heap
    * Number of lists on the heap.
    */
   __CPROVER_jsa_index_t list_count;
-} abstract_heapt;
+} __CPROVER_jsa_abstract_heapt;
 #endif
 
 #if !defined(JSA_TRANSFORMERS_H_)
@@ -122,7 +126,7 @@ _Bool __CPROVER_jsa_assume_violated;
 #endif
 
 // Node utility functions
-__CPROVER_jsa_node_id_t __CPROVER_jsa__internal_get_head_node(const abstract_heapt * const heap,
+__CPROVER_jsa_node_id_t __CPROVER_jsa__internal_get_head_node(const __CPROVER_jsa_abstract_heapt * const heap,
     const __CPROVER_jsa_list_id_t list)
 {
   return heap->list_head_nodes[list];
@@ -140,21 +144,21 @@ _Bool __CPROVER_jsa__internal_is_abstract_node(
   return !__CPROVER_jsa__internal_is_concrete_node(node);
 }
 
-unsigned int __CPROVER_jsa__internal_get_abstract_node_index(
+__CPROVER_jsa__internal_index_t __CPROVER_jsa__internal_get_abstract_node_index(
     const __CPROVER_jsa_node_id_t node)
 {
   return node - __CPROVER_JSA_MAX_CONCRETE_NODES;
 }
 
-__CPROVER_jsa_id_t  __CPROVER_jsa__internal_get_abstract_node_id(const unsigned int node_index)
+__CPROVER_jsa_id_t  __CPROVER_jsa__internal_get_abstract_node_id(const __CPROVER_jsa__internal_index_t node_index)
 
 {
   return __CPROVER_JSA_MAX_CONCRETE_NODES + node_index;
 }
 
-__CPROVER_jsa_list_id_t  __CPROVER_jsa__internal_get_list(const abstract_heapt * const heap,
-const __CPROVER_jsa_node_id_t node)
-
+__CPROVER_jsa_list_id_t  __CPROVER_jsa__internal_get_list(
+    const __CPROVER_jsa_abstract_heapt * const heap,
+    const __CPROVER_jsa_node_id_t node)
 {
   if (__CPROVER_jsa_null == node) return __CPROVER_jsa_null;
   if (__CPROVER_jsa__internal_is_concrete_node(node))
@@ -162,8 +166,10 @@ const __CPROVER_jsa_node_id_t node)
   return heap->abstract_nodes[node].list;
 }
 
-void __CPROVER_jsa__internal_set_next(abstract_heapt * const heap,
-    const __CPROVER_jsa_node_id_t node, const __CPROVER_jsa_node_id_t next_node)
+void __CPROVER_jsa__internal_set_next(
+    __CPROVER_jsa_abstract_heapt * const heap,
+    const __CPROVER_jsa_node_id_t node,
+    const __CPROVER_jsa_node_id_t next_node)
 {
   if (__CPROVER_jsa__internal_is_concrete_node(node))
   {
@@ -176,9 +182,9 @@ void __CPROVER_jsa__internal_set_next(abstract_heapt * const heap,
   }
 }
 
-__CPROVER_jsa_node_id_t  __CPROVER_jsa__internal_get_next(const abstract_heapt * const heap,
-const __CPROVER_jsa_node_id_t node)
-
+__CPROVER_jsa_node_id_t  __CPROVER_jsa__internal_get_next(
+    const __CPROVER_jsa_abstract_heapt * const heap,
+    const __CPROVER_jsa_node_id_t node)
 {
   if (__CPROVER_jsa__internal_is_concrete_node(node))
     return heap->concrete_nodes[node].next;
@@ -187,8 +193,10 @@ const __CPROVER_jsa_node_id_t node)
   return heap->abstract_nodes[index].next;
 }
 
-void __CPROVER_jsa__internal_set_previous(abstract_heapt * const heap,
-    const __CPROVER_jsa_node_id_t node, const __CPROVER_jsa_node_id_t previous_node)
+void __CPROVER_jsa__internal_set_previous(
+    __CPROVER_jsa_abstract_heapt * const heap,
+    const __CPROVER_jsa_node_id_t node,
+    const __CPROVER_jsa_node_id_t previous_node)
 {
   if (__CPROVER_jsa__internal_is_concrete_node(node))
   {
@@ -201,9 +209,9 @@ void __CPROVER_jsa__internal_set_previous(abstract_heapt * const heap,
   }
 }
 
-__CPROVER_jsa_node_id_t  __CPROVER_jsa__internal_get_previous(const abstract_heapt * const heap,
-const __CPROVER_jsa_node_id_t node)
-
+__CPROVER_jsa_node_id_t  __CPROVER_jsa__internal_get_previous(
+    const __CPROVER_jsa_abstract_heapt * const heap,
+    const __CPROVER_jsa_node_id_t node)
 {
   if (__CPROVER_jsa__internal_is_concrete_node(node))
     return heap->concrete_nodes[node].previous;
@@ -219,7 +227,8 @@ _Bool __CPROVER_jsa__internal_is_valid_node_id(const __CPROVER_jsa_node_id_t nod
 }
 
 _Bool __CPROVER_jsa__internal_is_in_valid_list(
-    const abstract_heapt * const heap, const __CPROVER_jsa_node_id_t node_id)
+    const __CPROVER_jsa_abstract_heapt * const heap,
+    const __CPROVER_jsa_node_id_t node_id)
 {
   const __CPROVER_jsa_list_id_t list=__CPROVER_jsa__internal_get_list(heap,
       node_id);
@@ -227,8 +236,10 @@ _Bool __CPROVER_jsa__internal_is_in_valid_list(
 }
 
 _Bool __CPROVER_jsa__internal_is_linking_correct(
-    const abstract_heapt * const heap, const __CPROVER_jsa_node_id_t node_id,
-    const __CPROVER_jsa_node_id_t prev, const __CPROVER_jsa_node_id_t next)
+    const __CPROVER_jsa_abstract_heapt * const heap,
+    const __CPROVER_jsa_node_id_t node_id,
+    const __CPROVER_jsa_node_id_t prev,
+    const __CPROVER_jsa_node_id_t next)
 {
   return __CPROVER_jsa__internal_is_in_valid_list(heap, node_id)
       && (__CPROVER_jsa_null == prev
@@ -240,34 +251,40 @@ _Bool __CPROVER_jsa__internal_is_linking_correct(
 }
 
 _Bool __CPROVER_jsa__internal_is_valid_iterator_linking(
-    const abstract_heapt * const h, const __CPROVER_jsa_list_id_t list,
-    const __CPROVER_jsa_node_id_t node_id, const __CPROVER_jsa_index_t index)
+    const __CPROVER_jsa_abstract_heapt * const h,
+    const __CPROVER_jsa_list_id_t list,
+    const __CPROVER_jsa_node_id_t node_id,
+    const __CPROVER_jsa_index_t index)
 {
   if (!__CPROVER_jsa__internal_is_valid_node_id(node_id)) return false;
   if (__CPROVER_jsa_null != node_id
       && list != __CPROVER_jsa__internal_get_list(h, node_id)) return false;
   if (__CPROVER_jsa_null == node_id
       || __CPROVER_jsa__internal_is_concrete_node(node_id)) return index == 0;
-  const unsigned int idx=__CPROVER_jsa__internal_get_abstract_node_index(
+  const __CPROVER_jsa__internal_index_t idx=__CPROVER_jsa__internal_get_abstract_node_index(
       node_id);
   const __CPROVER_jsa_id_t value_ref=h->abstract_nodes[idx].value_ref;
   return index < h->abstract_ranges[value_ref].size;
 }
 
-__CPROVER_jsa_index_t  __CPROVER_jsa__internal_get_max_index(const abstract_heapt * const heap,
-const __CPROVER_jsa_node_id_t node_id)
+__CPROVER_jsa_index_t  __CPROVER_jsa__internal_get_max_index(
+    const __CPROVER_jsa_abstract_heapt * const heap,
+    const __CPROVER_jsa_node_id_t node_id)
 
 {
   if (__CPROVER_jsa__internal_is_concrete_node(node_id)) return 0;
-  const unsigned int idx=__CPROVER_jsa__internal_get_abstract_node_index(
+  const __CPROVER_jsa__internal_index_t idx=__CPROVER_jsa__internal_get_abstract_node_index(
       node_id);
   const __CPROVER_jsa_id_t value_ref=heap->abstract_nodes[idx].value_ref;
   return heap->abstract_ranges[value_ref].size - 1;
 }
 
-_Bool __CPROVER_jsa__internal_is_neighbour(const abstract_heapt * const heap,
-    const __CPROVER_jsa_node_id_t lhs_node_id, const __CPROVER_jsa_index_t lhs_index,
-    const __CPROVER_jsa_node_id_t rhs_node_id, const __CPROVER_jsa_index_t rhs_index)
+_Bool __CPROVER_jsa__internal_is_neighbour(
+    const __CPROVER_jsa_abstract_heapt * const heap,
+    const __CPROVER_jsa_node_id_t lhs_node_id,
+    const __CPROVER_jsa_index_t lhs_index,
+    const __CPROVER_jsa_node_id_t rhs_node_id,
+    const __CPROVER_jsa_index_t rhs_index)
 {
   if (__CPROVER_jsa__internal_is_concrete_node(lhs_node_id))
   {
@@ -280,7 +297,7 @@ _Bool __CPROVER_jsa__internal_is_neighbour(const abstract_heapt * const heap,
     if (lhs_index < rhs_index) return lhs_index - rhs_index == 1;
     return rhs_index - lhs_index == 1;
   }
-  const struct abstract_nodet node=heap->abstract_nodes[lhs_node_id];
+  const struct __CPROVER_jsa_abstract_nodet node=heap->abstract_nodes[lhs_node_id];
   if (node.next == rhs_node_id)
     return rhs_index == 0
         && lhs_index == __CPROVER_jsa__internal_get_max_index(heap, lhs_node_id);
@@ -294,17 +311,17 @@ void __CPROVER_jsa__internal_unused(void)
 {
 }
 
-abstract_heapt __CPROVER_jsa_heap;
+__CPROVER_jsa_abstract_heapt __CPROVER_jsa_heap;
 #ifdef __CPROVER
-abstract_heapt nondet_heap();
+__CPROVER_jsa_abstract_heapt nondet_heap();
 #endif
 
-__CPROVER_jsa_inline abstract_heapt *__CPROVER_jsa_create_heap(void)
+__CPROVER_jsa_inline __CPROVER_jsa_abstract_heapt *__CPROVER_jsa_create_heap(void)
 {
 #ifdef __CPROVER
   __CPROVER_jsa_heap=nondet_heap();
 #endif
-  const abstract_heapt * const h=&__CPROVER_jsa_heap;
+  const __CPROVER_jsa_abstract_heapt * const h=&__CPROVER_jsa_heap;
 // Lists point to valid head nodes.
 // Enforce strictly ascending head node ids (unless null).
   __CPROVER_jsa_id_t max_head_node=h->list_head_nodes[0];
@@ -341,7 +358,7 @@ __CPROVER_jsa_inline abstract_heapt *__CPROVER_jsa_create_heap(void)
     __CPROVER_jsa_assume(
         __CPROVER_jsa__internal_is_linking_correct(h, cnode, prev, nxt));
   }
-  for (unsigned int anode=0; anode < __CPROVER_JSA_MAX_ABSTRACT_NODES; ++anode)
+  for (__CPROVER_jsa__internal_index_t anode=0; anode < __CPROVER_JSA_MAX_ABSTRACT_NODES; ++anode)
   {
     const __CPROVER_jsa_id_t nxt=h->abstract_nodes[anode].next;
     __CPROVER_jsa_assume(__CPROVER_jsa__internal_is_valid_node_id(nxt));
@@ -352,9 +369,9 @@ __CPROVER_jsa_inline abstract_heapt *__CPROVER_jsa_create_heap(void)
     __CPROVER_jsa_assume(
         __CPROVER_jsa__internal_is_linking_correct(h, nid, prev, nxt));
   }
-  for (unsigned int range=0; range < __CPROVER_JSA_MAX_ABSTRACT_RANGES; ++range)
+  for (__CPROVER_jsa__internal_index_t range=0; range < __CPROVER_JSA_MAX_ABSTRACT_RANGES; ++range)
   {
-    const struct abstract_ranget r=h->abstract_ranges[range];
+    const struct __CPROVER_jsa_abstract_ranget r=h->abstract_ranges[range];
     __CPROVER_jsa_assume(r.size >= 1);
     __CPROVER_jsa_assume(r.min <= r.max);
   }
@@ -362,7 +379,7 @@ __CPROVER_jsa_inline abstract_heapt *__CPROVER_jsa_create_heap(void)
   __CPROVER_jsa_iterator_id_t iterator_count=0;
   for (__CPROVER_jsa_iterator_id_t it=0; it < __CPROVER_JSA_MAX_ITERATORS; ++it)
   {
-    struct iteratort val=h->iterators[it];
+    struct __CPROVER_jsa_iteratort val=h->iterators[it];
     const __CPROVER_jsa_id_t next_node=val.node_id;
     const __CPROVER_jsa_index_t next_index=val.index;
     const __CPROVER_jsa_index_t prev_index=val.previous_index;
@@ -394,7 +411,7 @@ __CPROVER_jsa_inline abstract_heapt *__CPROVER_jsa_create_heap(void)
 
 /* FUNCTION: __CPROVER_jsa_create_nondet_list */
 __CPROVER_jsa_inline __CPROVER_jsa_list_id_t __CPROVER_jsa_create_list(
-    const abstract_heapt * const heap)
+    const __CPROVER_jsa_abstract_heapt * const heap)
 {
   const __CPROVER_jsa_index_t new_list=heap->list_count;
   __CPROVER_jsa_assume(new_list < __CPROVER_JSA_MAX_LISTS);
@@ -405,12 +422,13 @@ __CPROVER_jsa_inline __CPROVER_jsa_list_id_t __CPROVER_jsa_create_list(
 
 /* FUNCTION: __CPROVER_jsa_iterator */
 __CPROVER_jsa_inline __CPROVER_jsa_iterator_id_t __CPROVER_jsa_iterator(
-    abstract_heapt * const heap, const __CPROVER_jsa_list_id_t list)
+    __CPROVER_jsa_abstract_heapt * const heap,
+    const __CPROVER_jsa_list_id_t list)
 {
   const __CPROVER_jsa_index_t new_iterator=heap->iterator_count;
   __CPROVER_jsa_assume(new_iterator < __CPROVER_JSA_MAX_ITERATORS);
   ++heap->iterator_count;
-  const struct iteratort tmp={ .node_id=__CPROVER_jsa__internal_get_head_node(
+  const struct __CPROVER_jsa_iteratort tmp={ .node_id=__CPROVER_jsa__internal_get_head_node(
       heap, list), .previous_node_id=
   __CPROVER_jsa_null, .index=0, .previous_index=0 };
   heap->iterators[new_iterator]=tmp;
@@ -419,14 +437,16 @@ __CPROVER_jsa_inline __CPROVER_jsa_iterator_id_t __CPROVER_jsa_iterator(
 
 /* FUNCTION: __CPROVER_jsa_hasNext */
 __CPROVER_jsa_inline _Bool __CPROVER_jsa_hasNext(
-    const abstract_heapt * const heap, const __CPROVER_jsa_iterator_id_t it)
+    const __CPROVER_jsa_abstract_heapt * const heap,
+    const __CPROVER_jsa_iterator_id_t it)
 {
   return __CPROVER_jsa_null != heap->iterators[it].node_id;
 }
 
 /* FUNCTION: __CPROVER_jsa_next */
 __CPROVER_jsa_inline __CPROVER_jsa_data_t __CPROVER_jsa_next(
-    abstract_heapt * const heap, const __CPROVER_jsa_iterator_id_t it)
+    __CPROVER_jsa_abstract_heapt * const heap,
+    const __CPROVER_jsa_iterator_id_t it)
 {
   const __CPROVER_jsa_id_t node_id=heap->iterators[it].node_id;
   __CPROVER_jsa_assume(__CPROVER_jsa__internal_is_concrete_node(node_id));
@@ -437,7 +457,8 @@ __CPROVER_jsa_inline __CPROVER_jsa_data_t __CPROVER_jsa_next(
 }
 
 /* FUNCTION: __CPROVER_jsa_remove */
-__CPROVER_jsa_inline void __CPROVER_jsa_remove(abstract_heapt * const heap,
+__CPROVER_jsa_inline void __CPROVER_jsa_remove(
+    __CPROVER_jsa_abstract_heapt * const heap,
     const __CPROVER_jsa_iterator_id_t it)
 {
   const __CPROVER_jsa_id_t node_id_to_remove=
@@ -455,44 +476,157 @@ __CPROVER_jsa_inline void __CPROVER_jsa_remove(abstract_heapt * const heap,
 
 /* FUNCTION: __CPROVER_jsa_query_execute */
 #ifdef JSA_SYNTHESIS_H_
-typedef unsigned char __CPROVER_jsa_opcodet;
-typedef unsigned char __CPROVER_jsa_opt;
-typedef struct __CPROVER_jsa_instruction
+#ifndef __CPROVER_JSA_NUM_PRED_OPS
+#define __CPROVER_JSA_NUM_PRED_OPS 10
+#endif
+#ifndef __CPROVER_JSA_MAX_QUERY_SIZE
+#define __CPROVER_JSA_MAX_QUERY_SIZE 10
+#endif
+#ifndef __CPROVER_JSA_MAX_PRED_SIZE
+#define __CPROVER_JSA_MAX_PRED_SIZE __CPROVER_JSA_MAX_QUERY_SIZE
+#endif
+#ifndef __CPROVER_JSA_NUM_PREDS
+#define __CPROVER_JSA_NUM_PREDS __CPROVER_JSA_MAX_QUERY_SIZE
+#endif
+
+__CPROVER_jsa_word_t __CPROVER_JSA_PRED_OPS[__CPROVER_JSA_NUM_PRED_OPS];
+__CPROVER_jsa_word_t __CPROVER_JSA_PRED_RESULT_OPS[__CPROVER_JSA_MAX_PRED_SIZE];
+
+typedef __CPROVER_jsa_word_t __CPROVER_jsa_opcodet;
+typedef __CPROVER_jsa_word_t __CPROVER_jsa_opt;
+typedef struct __CPROVER_jsa_pred_instruction
 {
   __CPROVER_jsa_opcodet opcode;
   __CPROVER_jsa_opt op0;
   __CPROVER_jsa_opt op1;
   __CPROVER_jsa_opt op2;
-} __CPROVER_jsa_instructiont;
+} __CPROVER_jsa_pred_instructiont;
 
-__CPROVER_jsa_inline _Bool __CPROVER_jsa_query_compare(
-    const abstract_heapt * const heap, const __CPROVER_jsa_list_id_t list,
-    const __CPROVER_jsa_iterator_id_t it,
-    const __CPROVER_jsa_list_id_t candidate_list,
-    const __CPROVER_jsa_instructiont * const query)
+const __CPROVER_jsa_pred_instructiont *__CPROVER_JSA_PREDICATES[__CPROVER_JSA_NUM_PREDS];
+__CPROVER_jsa__internal_index_t __CPROVER_JSA_PREDICATE_SIZES[__CPROVER_JSA_NUM_PREDS];
+
+typedef __CPROVER_jsa_word_t __CPROVER_jsa_pred_id_t;
+
+__CPROVER_jsa_inline __CPROVER_jsa_pred_id_t __CPROVER_jsa_execute_pred(
+    const __CPROVER_jsa_pred_id_t pred_id)
 {
-  __CPROVER_jsa_node_id_t lhs_node=__CPROVER_jsa__internal_get_head_node(heap, list);
-  const struct iteratort iterator=heap->iterators[it];
-  const __CPROVER_jsa_node_id_t it_node=iterator.node_id;
-  __CPROVER_jsa_node_id_t rhs_node=__CPROVER_jsa__internal_get_head_node(heap, candidate_list);
-  for (unsigned int i = 0; i < __CPROVER_JSA_MAX_NODES_PER_LIST; ++i)
+  const __CPROVER_jsa_pred_instructiont * const pred=__CPROVER_JSA_PREDICATES[pred_id];
+  const __CPROVER_jsa__internal_index_t pred_sz=__CPROVER_JSA_PREDICATE_SIZES[pred_id];
+#ifdef __CPROVER
+  //__CPROVER_JSA_PRED_RESULT_OPS=__CPROVER_array_of(0); // TODO: Fix!
+#else
+  memset(&__CPROVER_JSA_PRED_RESULT_OPS, 0, sizeof(__CPROVER_JSA_PRED_RESULT_OPS));
+#endif
+  __CPROVER_jsa_word_t result;
+  for (__CPROVER_jsa__internal_index_t i=0; i < pred_sz; ++i)
   {
-    if (lhs_node == it_node) break;
-    if (__CPROVER_jsa__internal_is_conrete_node(lhs_node))
+    const __CPROVER_jsa_pred_instructiont instr=pred[i];
+    const __CPROVER_jsa_opt op0_id=instr.op0;
+    const __CPROVER_jsa_opt op1_id=instr.op1;
+    const __CPROVER_jsa_opt op2_id=instr.op2;
+    // TODO: __CPROVER_jsa_assume(...)
+    const __CPROVER_jsa_word_t op0=__CPROVER_JSA_PRED_OPS[op0_id];
+    const __CPROVER_jsa_word_t op1=__CPROVER_JSA_PRED_OPS[op1_id];
+    const __CPROVER_jsa_word_t op2=__CPROVER_JSA_PRED_OPS[op2_id];
+    switch (instr.opcode)
     {
-      heap->concrete_nodes[lhs_node].value;
+    case 0: __CPROVER_jsa_pred_opcode_0: result=op0 < op1;
+    break;
+    default:
+      __CPROVER_jsa_assume(false); // TODO: Speed-up, slow-down?
+    }
+    __CPROVER_JSA_PRED_RESULT_OPS[i]=result;
+  }
+  return result;
+}
+
+#define __CPROVER_jsa__internal_lambda_op_id 0
+
+__CPROVER_jsa_inline void __CPROVER_jsa_filter(
+    __CPROVER_jsa_abstract_heapt * const heap,
+    const __CPROVER_jsa_list_id_t list,
+    const __CPROVER_jsa_iterator_id_t it,
+    const __CPROVER_jsa_pred_id_t pred_id)
+{
+  __CPROVER_jsa_node_id_t node=__CPROVER_jsa__internal_get_head_node(heap, list);
+  for (__CPROVER_jsa__internal_index_t i=0; i < __CPROVER_JSA_MAX_NODES_PER_LIST; ++i)
+  {
+    if (node == it) break;
+    if (__CPROVER_jsa__internal_is_concrete_node(node))
+    {
+      __CPROVER_JSA_PRED_OPS[__CPROVER_jsa__internal_lambda_op_id]=heap->concrete_nodes[node].value;
+      if (__CPROVER_jsa_execute_pred(pred_id) == 0)
+        ;// __CPROVER_jsa__internal_remove(heap, node); // TODO: Add!
     }
     else
     {
-
+      // TODO: Implement filtering abstract nodes. (Maybe ignore and handle on whole query level?)
     }
+  }
+}
+
+typedef struct __CPROVER_jsa_query_instruction
+{
+  __CPROVER_jsa_opcodet opcode;
+  __CPROVER_jsa_opt op;
+} __CPROVER_jsa_query_instructiont;
+
+__CPROVER_jsa_inline void __CPROVER_jsa_query_execute_up_to(
+    __CPROVER_jsa_abstract_heapt * const heap,
+    const __CPROVER_jsa_list_id_t list,
+    const __CPROVER_jsa_iterator_id_t it,
+    const __CPROVER_jsa_query_instructiont * const query,
+    const __CPROVER_jsa__internal_index_t query_size)
+{
+  for (__CPROVER_jsa__internal_index_t i=0; i < query_size; ++i)
+  {
+    const __CPROVER_jsa_query_instructiont instr=query[i];
+    switch (instr.opcode)
+    {
+    case 0:
+      __CPROVER_jsa_query_opcode_0: __CPROVER_jsa_filter(heap, list, it, instr.op);
+    default:
+      __CPROVER_jsa_assume(false); // TODO: Speed-up, slow-down?
+    }
+  }
+}
+
+#define __CPROVER_jsa_query_execute(heap, list, query, size) \
+    __CPROVER_jsa_query_execute_up_to(heap, list, __CPROVER_jsa_null, query, size)
+
+__CPROVER_jsa_inline _Bool __CPROVER_jsa_query_compare_up_to(
+    const __CPROVER_jsa_abstract_heapt * const heap,
+    const __CPROVER_jsa_list_id_t list,
+    const __CPROVER_jsa_iterator_id_t it,
+    const __CPROVER_jsa_list_id_t candidate_list,
+    const __CPROVER_jsa_query_instructiont * const query,
+    const __CPROVER_jsa__internal_index_t query_size)
+{
+  __CPROVER_jsa_abstract_heapt copy=*heap;
+  __CPROVER_jsa_query_execute_up_to(&copy, list, it, query, query_size);
+  __CPROVER_jsa_node_id_t lhs_node=__CPROVER_jsa__internal_get_head_node(&copy, list);
+  const struct __CPROVER_jsa_iteratort iterator=copy.iterators[it];
+  const __CPROVER_jsa_node_id_t it_node=iterator.node_id;
+  __CPROVER_jsa_node_id_t rhs_node=__CPROVER_jsa__internal_get_head_node(&copy, candidate_list);
+  for (__CPROVER_jsa__internal_index_t i = 0; i < __CPROVER_JSA_MAX_NODES_PER_LIST; ++i)
+  {
+    if (lhs_node == it_node) break;
+    if (__CPROVER_jsa__internal_is_concrete_node(lhs_node))
+    {
+      if (__CPROVER_jsa__internal_is_abstract_node(rhs_node)) return false;
+      if (copy.concrete_nodes[lhs_node].value != copy.concrete_nodes[rhs_node].value) return false;
+    }
+    else
+    {
+      // TODO: Implement comparison for abstract value segments!
+    }
+    lhs_node=__CPROVER_jsa__internal_get_next(&copy, lhs_node);
+    rhs_node=__CPROVER_jsa__internal_get_next(&copy, rhs_node);
   }
   return __CPROVER_jsa_null == rhs_node;
 }
 
-__CPROVER_jsa_inline void __CPROVER_jsa_query_execute(
-    abstract_heapt * const heap, const __CPROVER_jsa_list_id_t list,
-    const __CPROVER_jsa_instructiont * const query)
-{
-}
+#define __CPROVER_jsa_query_compare(heap, lhs_list, rhs_list, query) \
+    __CPROVER_jsa_query_compare_up_to(heap, lhs_list, __CPROVER_jsa_null, rhs_list, query)
+
 #endif
