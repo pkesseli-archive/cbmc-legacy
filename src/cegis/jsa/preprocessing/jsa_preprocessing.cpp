@@ -6,10 +6,6 @@
 #include <cegis/jsa/preprocessing/inline_user_program.h>
 #include <cegis/jsa/preprocessing/jsa_preprocessing.h>
 
-// XXX: Debug
-#include <iostream>
-// XXX: Debug
-
 jsa_preprocessingt::jsa_preprocessingt(const optionst &options,
     const symbol_tablet &st, const goto_functionst &gf) :
     options(options), original_program(st, gf)
@@ -39,12 +35,6 @@ void jsa_preprocessingt::operator()(const size_t max_length)
   create_tmp_variables(safety, max_length);
   add_invariant_variables(safety, get_Ix0(), get_Ix, get_Ix_prime);
   safety.gf.update();
-  // XXX: Debug
-  const namespacet ns(safety.st);
-  std::cout << "<jsa_preprocessing>" << std::endl;
-  safety.gf.output(ns, std::cout);
-  std::cout << "</jsa_preprocessing>" << std::endl;
-  // XXX: Debug
 }
 
 size_t jsa_preprocessingt::get_min_solution_size() const

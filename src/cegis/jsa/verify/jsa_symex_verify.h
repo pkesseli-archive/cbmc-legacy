@@ -7,11 +7,10 @@ Author: Daniel Kroening, kroening@kroening.com
 
 \*******************************************************************/
 
-#ifndef CEGIS_JSA_SYMEX_LEARN_H_
-#define CEGIS_JSA_SYMEX_LEARN_H_
+#ifndef CEGIS_JSA_SYMEX_VERIFY_H_
+#define CEGIS_JSA_SYMEX_VERIFY_H_
 
 #include <deque>
-#include <util/message.h>
 #include <cegis/jsa/options/jsa_program.h>
 #include <cegis/jsa/value/jsa_solution.h>
 
@@ -20,7 +19,7 @@ Author: Daniel Kroening, kroening@kroening.com
  *
  * @details
  */
-class jsa_symex_learnt
+class jsa_symex_verifyt
 {
   const jsa_programt &original_program;
   jsa_programt program;
@@ -46,57 +45,23 @@ public:
    *
    * @param program
    */
-  jsa_symex_learnt(const jsa_programt &program);
+  jsa_symex_verifyt(const jsa_programt &program);
 
   /**
    * @brief
    *
    * @details
    */
-  ~jsa_symex_learnt();
+  ~jsa_symex_verifyt();
 
   /**
    * @brief
    *
    * @details
    *
-   * @param counterexamples
-   * @param max_solution_size
+   * @param candidate
    */
-  void process(const counterexamplest &counterexamples,
-      size_t max_solution_size);
-
-  /**
-   * @brief Process the goto program using template data.
-   *
-   * @details Creates template counterexamples and processes the goto
-   * program with them. This is useful for GA source code generation.
-   *
-   * @param max_solution_size
-   */
-  void process(size_t max_solution_size);
-
-  /**
-   * @brief
-   *
-   * @details
-   *
-   * @param word_width_in_bits
-   */
-  void set_word_width(size_t word_width_in_bits);
-
-  /**
-   * @brief
-   *
-   * @details
-   *
-   * @param current_candidate
-   * @param trace
-   * @param max_solution_size
-   */
-  void convert(candidatet &current_candidate,
-      const class goto_tracet &trace,
-      size_t max_solution_size);
+  void process(const candidatet &candidate);
 
   /**
    * @brief
@@ -121,11 +86,11 @@ public:
    *
    * @details
    *
-   * @param os
-   * @param candidate
+   * @param counterexamples
+   * @param trace
    */
-  void show_candidate(messaget::mstreamt &os,
-      const candidatet &candidate);
+  void convert(counterexamplest &counterexamples,
+      const class goto_tracet &trace);
 };
 
-#endif /* CEGIS_JSA_SYMEX_LEARN_H_ */
+#endif /* CEGIS_JSA_SYMEX_VERIFY_H_ */

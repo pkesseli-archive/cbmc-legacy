@@ -19,7 +19,7 @@ int main(void)
       __CPROVER_jsa_hasNext(heap, it);)
   {
     const __CPROVER_jsa_data_t value=__CPROVER_jsa_next(heap, it);
-    if (value < 3)
+    if (value <= 3)
     {
       __CPROVER_jsa_remove(heap, it);
     }
