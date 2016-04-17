@@ -18,13 +18,19 @@ bool need_temp_variables(const size_t max_program_length)
 void create_tmp_variables(invariant_programt &program,
     const size_t max_program_length)
 {
+  create_tmp_variables(program, max_program_length,
+      cegis_default_integer_type());
+}
+
+void create_tmp_variables(invariant_programt &program,
+    const size_t max_program_length, const typet &type)
+{
   if (!need_temp_variables(max_program_length)) return;
   symbol_tablet &st=program.st;
   goto_functionst &gf=program.gf;
   goto_programt &body=get_entry_body(gf);
   goto_programt::targett insert_after=program.invariant_range.begin;
   --insert_after;
-  const typet type(cegis_default_integer_type());
   for (size_t i=0; i < max_program_length - 1; ++i)
   {
     const std::string name(get_tmp(i));
@@ -41,19 +47,19 @@ class create_meta_variables_for_loopt
   goto_functionst &gf;
   const inv_name_factoryt &inv_name;
   const inv_name_factoryt &inv_prime_name;
+  const typet &type;
   size_t loop_id;
 public:
   create_meta_variables_for_loopt(invariant_programt &prog,
       const inv_name_factoryt &inv_name,
-      const inv_name_factoryt &inv_prime_name) :
+      const inv_name_factoryt &inv_prime_name, const typet &type) :
       st(prog.st), gf(prog.gf), inv_name(inv_name), inv_prime_name(
-          inv_prime_name), loop_id(0u)
+          inv_prime_name), type(type), loop_id(0u)
   {
   }
 
   void operator()(invariant_programt::invariant_loopt * const loop)
   {
-    const typet type(cegis_default_integer_type());
     invariant_programt::meta_vars_positionst &im=loop->meta_variables;
     goto_programt::targett pos=loop->body.begin;
     const std::string inv(inv_name(loop_id));
@@ -71,23 +77,22 @@ public:
   }
 };
 
-void createAx(invariant_programt &program)
+void createAx(invariant_programt &program, const typet &type)
 {
   symbol_tablet &st=program.st;
   goto_functionst &gf=program.gf;
   goto_programt::targett pos=program.get_loops().back()->body.begin;
   const std::string base_name(get_Ax());
-  const typet type(cegis_default_integer_type());
   program.Ax=declare_cegis_meta_variable(st, gf, --pos, get_Ax(), type);
   assign_cegis_meta_variable(st, gf, program.Ax, base_name, program.assertion);
 }
 
-void createIx0(invariant_programt &program, const std::string &inv0_name)
+void createIx0(invariant_programt &program, const std::string &inv0_name,
+    const typet &type)
 {
   const invariant_programt &prog=program;
   invariant_programt::const_invariant_loopst loops(prog.get_loops());
   assert(!loops.empty() && "At least one loop required.");
-  const typet type(cegis_default_integer_type());
   const invariant_programt::invariant_loopt &first=*loops.front();
   goto_programt::targett &meta=program.Ix0;
   goto_programt::targett pos=first.meta_variables.Ix;
@@ -97,13 +102,21 @@ void createIx0(invariant_programt &program, const std::string &inv0_name)
 }
 }
 
-void add_invariant_variables(invariant_programt &prog,
+void add_invariant_variables(invariant_programt &p,
     const std::string &inv0_name, const inv_name_factoryt inv_name,
     const inv_name_factoryt inv_prime_name)
 {
-  const invariant_programt::invariant_loopst loops(prog.get_loops());
-  const create_meta_variables_for_loopt create(prog, inv_name, inv_prime_name);
-  std::for_each(loops.begin(), loops.end(), create);
-  createIx0(prog, inv0_name);
-  createAx(prog);
+  add_invariant_variables(p, inv0_name, inv_name, inv_prime_name,
+      cegis_default_integer_type());
+}
+
+void add_invariant_variables(invariant_programt &p,
+    const std::string &inv0_name, const inv_name_factoryt inv_name,
+    const inv_name_factoryt inv_prime_name, const typet &type)
+{
+  const invariant_programt::invariant_loopst loops(p.get_loops());
+  const create_meta_variables_for_loopt c(p, inv_name, inv_prime_name, type);
+  std::for_each(loops.begin(), loops.end(), c);
+  createIx0(p, inv0_name, type);
+  createAx(p, type);
 }

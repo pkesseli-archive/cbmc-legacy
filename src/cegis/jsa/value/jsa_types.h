@@ -7,16 +7,18 @@ Author: Daniel Kroening, kroening@kroening.com
 
 \*******************************************************************/
 
-#ifndef JSA_CONSTRAINT_FACTORY_H_
-#define JSA_CONSTRAINT_FACTORY_H_
+#ifndef CEGIS_JSA_TYPES_H_
+#define CEGIS_JSA_TYPES_H_
+
+#include <util/type.h>
 
 /**
  * @brief
  *
  * @details
  *
- * @param prog
+ * @return
  */
-void insert_jsa_constraint(class jsa_programt &prog);
+typet jsa_word_type();
 
-#endif /* JSA_CONSTRAINT_FACTORY_H_ */
+#endif /* CEGIS_JSA_TYPES_H_ */

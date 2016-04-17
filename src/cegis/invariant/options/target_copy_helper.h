@@ -55,6 +55,20 @@ public:
    *
    * @details
    *
+   * @param target_targets
+   * @param src_targets
+   *
+   * @return
+   */
+  void operator()(
+      goto_programt::targetst &target_targets,
+      const goto_programt::targetst &src_targets) const;
+
+  /**
+   * @brief
+   *
+   * @details
+   *
    * @param range
    *
    * @return

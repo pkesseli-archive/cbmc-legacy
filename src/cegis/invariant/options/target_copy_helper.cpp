@@ -21,6 +21,13 @@ goto_programt::targett target_copy_helpert::operator()(
   return copy_iterator(old_instrs, new_instrs, target);
 }
 
+void target_copy_helpert::operator()(goto_programt::targetst &tgt,
+    const goto_programt::targetst &src) const
+{
+  tgt.resize(src.size());
+  std::transform(src.begin(), src.end(), tgt.begin(), *this);
+}
+
 invariant_programt::program_ranget target_copy_helpert::operator()(
     const invariant_programt::program_ranget &range) const
 {

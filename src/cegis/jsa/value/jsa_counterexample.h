@@ -7,16 +7,19 @@ Author: Daniel Kroening, kroening@kroening.com
 
 \*******************************************************************/
 
-#ifndef JSA_CONSTRAINT_FACTORY_H_
-#define JSA_CONSTRAINT_FACTORY_H_
+#ifndef CEGIS_JSA_COUNTEREXAMPLE_H_
+#define CEGIS_JSA_COUNTEREXAMPLE_H_
+
+#include <deque>
+#include <map>
 
 /**
  * @brief
  *
- * @details
- *
- * @param prog
+ * @details List of values per program location.
  */
-void insert_jsa_constraint(class jsa_programt &prog);
+typedef std::map<unsigned, std::deque<exprt> > counterexamplet;
 
-#endif /* JSA_CONSTRAINT_FACTORY_H_ */
+typedef std::deque<counterexamplet> counterexamplest;
+
+#endif /* CEGIS_JSA_COUNTEREXAMPLE_H_ */

@@ -69,7 +69,6 @@ goto_programt::targetst find_nondet_instructions(goto_programt &body);
  */
 const irep_idt &get_affected_variable(const goto_programt::instructiont &instr);
 
-
 /**
  * @brief
  *

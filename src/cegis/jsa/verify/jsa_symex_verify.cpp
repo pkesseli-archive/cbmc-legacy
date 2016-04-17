@@ -1,3 +1,4 @@
+#include <cegis/jsa/constraint/jsa_constraint_factory.h>
 #include <cegis/jsa/verify/jsa_symex_verify.h>
 
 // XXX: Debug
@@ -16,6 +17,7 @@ jsa_symex_verifyt::~jsa_symex_verifyt()
 void jsa_symex_verifyt::process(const candidatet &candidate)
 {
   program=original_program;
+  insert_jsa_constraint(program);
   // XXX: Debug
   std::cout << "<jsa_symex_verifyt>" << std::endl;
   const namespacet ns(program.get_st());

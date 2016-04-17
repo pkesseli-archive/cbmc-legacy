@@ -18,6 +18,11 @@ public:
   safety_programt safety;
 
   /**
+   * All nondet instructions in the user program, including in loop bodies.
+   */
+  goto_programt::targetst input_locations;
+
+  /**
    * @brief
    *
    * @details
