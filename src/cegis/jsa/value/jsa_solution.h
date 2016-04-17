@@ -29,19 +29,19 @@ public:
    */
   predicatest predicates;
 
-  struct jsa_constraintt
-  {
-    goto_programt invariant;
-    goto_programt postcondition;
-  };
-  typedef std::vector<jsa_constraintt> jsa_constraintst;
+  /**
+   * @brief
+   *
+   * @details
+   */
+  goto_programt invariant;
 
   /**
    * @brief
    *
    * @details
    */
-  jsa_constraintst constraints;
+  goto_programt postcondition;
 };
 
 #endif /* CEGIS_JSA_SOLUTION_H_ */

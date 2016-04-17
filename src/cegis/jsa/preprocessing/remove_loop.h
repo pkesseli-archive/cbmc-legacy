@@ -7,19 +7,16 @@ Author: Daniel Kroening, kroening@kroening.com
 
 \*******************************************************************/
 
-#ifndef CEGIS_JSA_COUNTEREXAMPLE_H_
-#define CEGIS_JSA_COUNTEREXAMPLE_H_
-
-#include <deque>
-#include <map>
+#ifndef CEGIS_JSA_REMOVE_LOOP_H_
+#define CEGIS_JSA_REMOVE_LOOP_H_
 
 /**
  * @brief
  *
- * @details List of values per program location.
+ * @details
+ *
+ * @param prog
  */
-typedef std::map<unsigned, exprt> jsa_counterexamplet;
+void remove_loop(class jsa_programt &prog);
 
-typedef std::deque<jsa_counterexamplet> jsa_counterexamplest;
-
-#endif /* CEGIS_JSA_COUNTEREXAMPLE_H_ */
+#endif /* CEGIS_JSA_REMOVE_LOOP_H_ */

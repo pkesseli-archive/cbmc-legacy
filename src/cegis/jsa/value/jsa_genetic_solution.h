@@ -31,19 +31,19 @@ public:
    */
   predicatest predicates;
 
-  struct jsa_constraintt
-  {
-    std::vector<__CPROVER_jsa_query_instructiont> invariant;
-    std::vector<__CPROVER_jsa_query_instructiont> postcondition;
-  };
-  typedef std::vector<jsa_constraintt> jsa_constraintst;
+  /**
+   * @brief
+   *
+   * @details
+   */
+  std::vector<__CPROVER_jsa_query_instructiont> invariant;
 
   /**
    * @brief
    *
    * @details
    */
-  jsa_constraintst constraints;
+  std::vector<__CPROVER_jsa_query_instructiont> postcondition;
 };
 
 #endif /* CEGIS_JSA_GENETIC_SOLUTION_H_ */

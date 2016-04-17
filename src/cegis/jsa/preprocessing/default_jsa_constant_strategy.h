@@ -10,6 +10,8 @@
 #ifndef CEGIS_DEFAULT_JSA_CONSTANT_STRATEGY_H_
 #define CEGIS_DEFAULT_JSA_CONSTANT_STRATEGY_H_
 
+#include <goto-programs/goto_program.h>
+
 /**
  * @brief
  *
@@ -18,7 +20,7 @@
  * @param st
  * @param gf
  */
-void default_jsa_constant_strategy(
+goto_programt::targett default_jsa_constant_strategy(
     class symbol_tablet &st,
     class goto_functionst &gf);
 

@@ -31,11 +31,15 @@ SRC = danger/meta/meta_variable_names.cpp danger/facade/danger_runner.cpp danger
       bjc/facade/bjc_runner.cpp bjc/options/bjc_program.cpp bjc/preprocessing/bjc_preprocessing.cpp \
       bjc/preprocessing/bjc_query_factory.cpp bjc/symex/learn/bjc_symex_learn.cpp \
       bjc/symex/verify/bjc_symex_verify.cpp bjc/symex/verify/insert_bjc_candidate.cpp \
-      jsa/facade/jsa_runner.cpp jsa/options/jsa_program.cpp jsa/preprocessing/jsa_preprocessing.cpp \
-      jsa/preprocessing/inline_user_program.cpp jsa/learn/jsa_symex_learn.cpp \
-      jsa/verify/jsa_symex_verify.cpp jsa/constraint/jsa_constraint_factory.cpp \
+      jsa/facade/jsa_runner.cpp jsa/options/jsa_program.cpp \
+      jsa/preprocessing/jsa_preprocessing.cpp jsa/preprocessing/remove_loop.cpp \
+      jsa/preprocessing/add_constraint_meta_variables.cpp jsa/preprocessing/inline_user_program.cpp \
+      jsa/preprocessing/default_jsa_constant_strategy.cpp \
+      jsa/learn/jsa_symex_learn.cpp \
+      jsa/verify/jsa_symex_verify.cpp \
+      jsa/constraint/jsa_constraint_factory.cpp \
       jsa/converters/counterexample.cbb jsa/converters/solution.cpp \
-      jsa/instrument/jsa_meta_data.cpp jsa/constant/default_jsa_constant_strategy.cpp \
+      jsa/instrument/jsa_meta_data.cpp \
       jsa/value/jsa_types.cpp \
       wordsize/restrict_bv_size.cpp value/program_individual_serialisation.cpp \
       seed/literals_seed.cpp genetic/tournament_select.cpp genetic/match_select.cpp \

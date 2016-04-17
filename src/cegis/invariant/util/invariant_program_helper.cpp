@@ -9,13 +9,13 @@
 void erase_target(goto_programt::instructionst &body,
     const goto_programt::targett &target)
 {
-  goto_programt::targett succ=target;
-  assert(++succ != body.end());
+  goto_programt::targett succ=std::next(target);
+  assert(succ != body.end());
+
   for (goto_programt::instructiont &instr : body)
-  {
     for (goto_programt::targett &t : instr.targets)
       if (target == t) t=succ;
-  }
+
   body.erase(target);
 }
 

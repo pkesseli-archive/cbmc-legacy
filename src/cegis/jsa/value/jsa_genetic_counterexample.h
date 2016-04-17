@@ -26,7 +26,7 @@ public:
   __CPROVER_jsa_abstract_heapt init;
   __CPROVER_jsa_abstract_heapt inductive;
 
-  typedef std::map<unsigned, std::deque<__CPROVER_jsa_word_t> > assignments_per_program_locationt;
+  typedef std::map<unsigned, __CPROVER_jsa_word_t> assignments_per_program_locationt;
   assignments_per_program_locationt assignments_per_program_location;
 };
 

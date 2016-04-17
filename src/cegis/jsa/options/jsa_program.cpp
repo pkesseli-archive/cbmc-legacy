@@ -10,23 +10,32 @@ namespace
 {
 jsa_programt &assign(jsa_programt &lhs, const jsa_programt &rhs)
 {
-  goto_programt &new_body=get_entry_body(lhs.get_gf());
-  const goto_programt &old_body=get_entry_body(rhs.get_gf());
+  lhs.gf.copy_from(rhs.gf);
+  goto_programt &new_body=get_entry_body(lhs.gf);
+  const goto_programt &old_body=get_entry_body(rhs.gf);
   const target_copy_helpert copy(old_body, new_body);
   copy(lhs.input_locations, rhs.input_locations);
+  lhs.synthetic_variables=copy(rhs.synthetic_variables);
+  lhs.base_case=copy(rhs.base_case);
+  lhs.inductive_assumption=copy(rhs.inductive_assumption);
+  lhs.inductive_step=copy(rhs.inductive_step);
+  lhs.property_entailment=copy(rhs.property_entailment);
+  lhs.body.first=copy(rhs.body.first);
+  lhs.body.second=copy(rhs.body.second);
   return lhs;
 }
 }
 
 jsa_programt::jsa_programt(const jsa_programt &other) :
-    safety(other.safety)
+    st(other.st)
 {
   assign(*this, other);
 }
 
 jsa_programt::jsa_programt(const symbol_tablet &st, const goto_functionst &gf) :
-    safety(st, gf)
+    st(st)
 {
+  this->gf.copy_from(gf);
 }
 
 jsa_programt::~jsa_programt()
@@ -35,26 +44,6 @@ jsa_programt::~jsa_programt()
 
 jsa_programt &jsa_programt::operator =(const jsa_programt &other)
 {
-  safety=other.safety;
+  st=other.st;
   return assign(*this, other);
-}
-
-symbol_tablet &jsa_programt::get_st()
-{
-  return safety.st;
-}
-
-const symbol_tablet &jsa_programt::get_st() const
-{
-  return safety.st;
-}
-
-goto_functionst &jsa_programt::get_gf()
-{
-  return safety.gf;
-}
-
-const goto_functionst &jsa_programt::get_gf() const
-{
-  return safety.gf;
 }

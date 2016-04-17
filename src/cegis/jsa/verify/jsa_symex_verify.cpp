@@ -20,23 +20,23 @@ void jsa_symex_verifyt::process(const candidatet &candidate)
   insert_jsa_constraint(program);
   // XXX: Debug
   std::cout << "<jsa_symex_verifyt>" << std::endl;
-  const namespacet ns(program.get_st());
-  program.get_gf().output(ns, std::cout);
+  const namespacet ns(program.st);
+  program.gf.output(ns, std::cout);
   std::cout << "</jsa_symex_verifyt>" << std::endl;
   // XXX: Debug
-  if (candidate.constraints.empty()) return;
+  if (candidate.postcondition.empty()) return;
   // TODO: Implement!
   assert(false);
 }
 
 const symbol_tablet &jsa_symex_verifyt::get_symbol_table() const
 {
-  return program.get_st();
+  return program.st;
 }
 
 const goto_functionst &jsa_symex_verifyt::get_goto_functions() const
 {
-  return program.get_gf();
+  return program.gf;
 }
 
 void jsa_symex_verifyt::convert(counterexamplest &counterexamples,

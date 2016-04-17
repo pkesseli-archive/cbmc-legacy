@@ -36,12 +36,12 @@ void jsa_symex_learnt::convert(candidatet &current_candidate,
 
 const symbol_tablet &jsa_symex_learnt::get_symbol_table() const
 {
-  return program.get_st();
+  return program.st;
 }
 
 const goto_functionst &jsa_symex_learnt::get_goto_functions() const
 {
-  return program.get_gf();
+  return program.gf;
 }
 
 void jsa_symex_learnt::show_candidate(messaget::mstreamt &os,

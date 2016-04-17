@@ -25,7 +25,6 @@ int main(void)
       __CPROVER_jsa_remove(heap, it);
     }
   }
-  __CPROVER_assert(0 == 1, "");
 
   return 0;
 }

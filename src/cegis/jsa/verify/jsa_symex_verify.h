@@ -12,6 +12,7 @@ Author: Daniel Kroening, kroening@kroening.com
 
 #include <deque>
 #include <cegis/jsa/options/jsa_program.h>
+#include <cegis/jsa/value/jsa_counterexample.h>
 #include <cegis/jsa/value/jsa_solution.h>
 
 /**
@@ -24,18 +25,8 @@ class jsa_symex_verifyt
   const jsa_programt &original_program;
   jsa_programt program;
 public:
-  /**
-   * @brief
-   *
-   * @details Maps goto program locations to values in order.
-   */
-  typedef std::map<unsigned, std::vector<exprt> > counterexamplet;
-  typedef std::deque<counterexamplet> counterexamplest;
-  /**
-   * @brief
-   *
-   * @details Predicates, query-up-to (invariant) and query (postcondition)
-   */
+  typedef jsa_counterexamplet counterexamplet;
+  typedef jsa_counterexamplest counterexamplest;
   typedef jsa_solutiont candidatet;
 
   /**
