@@ -1,4 +1,4 @@
-/* FUNCTION: __CPROVER_jsa_create_heap */
+/* FUNCTION: __CPROVER_jsa_assume_valid_heap */
 
 #ifndef __CPROVER
 #include <string.h>
@@ -351,17 +351,8 @@ void __CPROVER_jsa__internal_unused(void)
 {
 }
 
-__CPROVER_jsa_abstract_heapt __CPROVER_jsa_heap;
-#ifdef __CPROVER
-__CPROVER_jsa_abstract_heapt nondet_heap();
-#endif
-
-__CPROVER_jsa_inline __CPROVER_jsa_abstract_heapt *__CPROVER_jsa_create_heap(void)
+__CPROVER_jsa_inline void __CPROVER_jsa_assume_valid_heap(const __CPROVER_jsa_abstract_heapt * const h)
 {
-#ifdef __CPROVER
-  __CPROVER_jsa_heap=nondet_heap();
-#endif
-  const __CPROVER_jsa_abstract_heapt * const h=&__CPROVER_jsa_heap;
 // Lists point to valid head nodes.
 // Enforce strictly ascending head node ids (unless null).
   __CPROVER_jsa_id_t max_head_node=h->list_head_nodes[0];
@@ -444,7 +435,6 @@ __CPROVER_jsa_inline __CPROVER_jsa_abstract_heapt *__CPROVER_jsa_create_heap(voi
     }
   }
   __CPROVER_jsa_assume(h->iterator_count == iterator_count);
-  return &__CPROVER_jsa_heap;
 }
 
 #endif /* CEGIS_JSA_TRANSFORMERS_H_ */

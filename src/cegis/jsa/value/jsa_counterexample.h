@@ -13,6 +13,8 @@ Author: Daniel Kroening, kroening@kroening.com
 #include <deque>
 #include <map>
 
+#include <util/expr.h>
+
 /**
  * @brief
  *

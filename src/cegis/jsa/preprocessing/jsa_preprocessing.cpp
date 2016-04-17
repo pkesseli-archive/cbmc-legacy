@@ -35,9 +35,9 @@ void jsa_preprocessingt::operator()()
   goto_functionst &gf=original_program.gf;
   symbol_tablet &st=original_program.st;
   inline_jsa_user_program(st, gf);
+  store_input_locations(original_program);
   remove_loop(original_program);
   add_jsa_constraint_meta_variables(original_program);
-  store_input_locations(original_program);
   original_program.synthetic_variables=default_jsa_constant_strategy(st, gf);
   gf.update();
   current_program=original_program;
