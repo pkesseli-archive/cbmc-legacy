@@ -7,8 +7,10 @@ Author: Daniel Kroening, kroening@kroening.com
 
 \*******************************************************************/
 
-#ifndef JSA_CONSTRAINT_FACTORY_H_
-#define JSA_CONSTRAINT_FACTORY_H_
+#ifndef CEGIS_JSA_CREATE_TEMP_VARIABLES_H_
+#define CEGIS_JSA_CREATE_TEMP_VARIABLES_H_
+
+#include <cstddef>
 
 /**
  * @brief
@@ -16,8 +18,8 @@ Author: Daniel Kroening, kroening@kroening.com
  * @details
  *
  * @param prog
- * @param use_assume
+ * @param max_size
  */
-void insert_jsa_constraint(class jsa_programt &prog, bool use_assume);
+void create_jsa_temp_variables(class jsa_programt &prog, size_t max_size);
 
-#endif /* JSA_CONSTRAINT_FACTORY_H_ */
+#endif /* CEGIS_JSA_CREATE_TEMP_VARIABLES_H_ */

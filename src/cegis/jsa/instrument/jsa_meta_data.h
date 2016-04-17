@@ -7,16 +7,19 @@ Author: Daniel Kroening, kroening@kroening.com
 
 \*******************************************************************/
 
+#include <util/cprover_prefix.h>
 #include <util/source_location.h>
 
 #ifndef CEGIS_JSA_META_DATA_H_
 #define CEGIS_JSA_META_DATA_H_
 
 #define JSA_MODULE "<builtin-library-jsa>"
-#define JSA_BASE_CASE "__CPROVER_jsa_base_case"
-#define JSA_IND_ASSUME "__CPROVER_jsa_inductive_assume"
-#define JSA_IND_STEP "__CPROVER_jsa_inductive_step"
-#define JSA_PROP_ENTAIL "__CPROVER_jsa_property_entailment"
+#define JSA_PREFIX CPROVER_PREFIX "jsa_"
+#define JSA_BASE_CASE JSA_PREFIX "base_case"
+#define JSA_IND_ASSUME JSA_PREFIX "inductive_assume"
+#define JSA_IND_STEP JSA_PREFIX "inductive_step"
+#define JSA_PROP_ENTAIL JSA_PREFIX "property_entailment"
+#define JSA_TMP_PREFIX JSA_PREFIX "tmp_"
 
 /**
  * @brief

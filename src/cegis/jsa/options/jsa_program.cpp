@@ -22,6 +22,7 @@ jsa_programt &assign(jsa_programt &lhs, const jsa_programt &rhs)
   lhs.property_entailment=copy(rhs.property_entailment);
   lhs.body.first=copy(rhs.body.first);
   lhs.body.second=copy(rhs.body.second);
+  lhs.guard=rhs.guard;
   return lhs;
 }
 }

@@ -2,8 +2,8 @@
 
 #include <cegis/cegis-util/program_helper.h>
 
-#include <cegis/jsa/value/jsa_types.h>
 #include <cegis/jsa/preprocessing/add_constraint_meta_variables.h>
+#include <cegis/jsa/preprocessing/create_temp_variables.h>
 #include <cegis/jsa/preprocessing/default_jsa_constant_strategy.h>
 #include <cegis/jsa/preprocessing/inline_user_program.h>
 #include <cegis/jsa/preprocessing/remove_loop.h>
@@ -37,9 +37,9 @@ void jsa_preprocessingt::operator()()
   inline_jsa_user_program(st, gf);
   remove_loop(original_program);
   add_jsa_constraint_meta_variables(original_program);
-  gf.update();
   store_input_locations(original_program);
   original_program.synthetic_variables=default_jsa_constant_strategy(st, gf);
+  gf.update();
   current_program=original_program;
 }
 
@@ -47,15 +47,13 @@ void jsa_preprocessingt::operator()(const size_t max_length)
 {
   current_program=original_program;
   goto_functionst &gf=current_program.gf;
-  //create_tmp_variables(safety, max_length, jsa_word_type());
-  const typet meta_type(c_bool_type());
-  //add_invariant_variables(safety, get_Ix0(), get_Ix, get_Ix_prime, meta_type);
+  create_jsa_temp_variables(current_program, max_length);
   gf.update();
 }
 
 size_t jsa_preprocessingt::get_min_solution_size() const
 {
-  return 2u;
+  return 1u;
 }
 
 const jsa_programt &jsa_preprocessingt::get_jsa_program() const

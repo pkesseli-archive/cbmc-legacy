@@ -17,7 +17,7 @@ jsa_symex_verifyt::~jsa_symex_verifyt()
 void jsa_symex_verifyt::process(const candidatet &candidate)
 {
   program=original_program;
-  insert_jsa_constraint(program);
+  insert_jsa_constraint(program, false);
   // XXX: Debug
   std::cout << "<jsa_symex_verifyt>" << std::endl;
   const namespacet ns(program.st);

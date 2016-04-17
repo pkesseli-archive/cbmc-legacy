@@ -34,7 +34,7 @@ SRC = danger/meta/meta_variable_names.cpp danger/facade/danger_runner.cpp danger
       jsa/facade/jsa_runner.cpp jsa/options/jsa_program.cpp \
       jsa/preprocessing/jsa_preprocessing.cpp jsa/preprocessing/remove_loop.cpp \
       jsa/preprocessing/add_constraint_meta_variables.cpp jsa/preprocessing/inline_user_program.cpp \
-      jsa/preprocessing/default_jsa_constant_strategy.cpp \
+      jsa/preprocessing/default_jsa_constant_strategy.cpp jsa/preprocessing/create_temp_variables.cpp \
       jsa/learn/jsa_symex_learn.cpp \
       jsa/verify/jsa_symex_verify.cpp \
       jsa/constraint/jsa_constraint_factory.cpp \

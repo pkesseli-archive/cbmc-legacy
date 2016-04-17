@@ -61,7 +61,7 @@ void add_jsa_constraint_meta_variables(jsa_programt &p)
   declare_jsa_meta_variable(st, p.base_case, JSA_BASE_CASE, type);
   p.inductive_assumption=body.insert_after(p.base_case);
   declare_jsa_meta_variable(st, p.inductive_assumption, JSA_IND_ASSUME, type);
-  p.inductive_step=body.insert_after(p.inductive_assumption);
+  p.inductive_step=insert_before_preserve_labels(body, p.body.second);
   declare_jsa_meta_variable(st, p.inductive_step, JSA_IND_STEP, type);
   p.property_entailment=insert_before_preserve_labels(body, p.body.second);
   declare_jsa_meta_variable(st, p.property_entailment, JSA_PROP_ENTAIL, type);
