@@ -20,7 +20,7 @@ void jsa_symex_verifyt::process(const candidatet &candidate)
 {
   program=original_program;
   insert_jsa_constraint(program, false);
-  renondet_inputs(program);
+  assume_renondet_inputs_valid(program);
   // XXX: Debug
   std::cout << "<jsa_symex_verifyt>" << std::endl;
   const namespacet ns(program.st);

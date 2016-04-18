@@ -347,8 +347,18 @@ _Bool __CPROVER_jsa__internal_is_neighbour(
   return false;
 }
 
-void __CPROVER_jsa__internal_unused(void)
+__CPROVER_jsa_inline void __CPROVER_jsa_assume_valid_list(
+    const __CPROVER_jsa_abstract_heapt * const h,
+    const __CPROVER_jsa_list_id_t list)
 {
+  // TODO: Implement
+}
+
+__CPROVER_jsa_inline void __CPROVER_jsa_assume_valid_iterator(
+    const __CPROVER_jsa_abstract_heapt * const h,
+    const __CPROVER_jsa_iterator_id_t it)
+{
+  // TODO: Implement
 }
 
 __CPROVER_jsa_inline void __CPROVER_jsa_assume_valid_heap(const __CPROVER_jsa_abstract_heapt * const h)

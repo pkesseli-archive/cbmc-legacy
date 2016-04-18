@@ -14,7 +14,8 @@ jsa_programt &assign(jsa_programt &lhs, const jsa_programt &rhs)
   goto_programt &new_body=get_entry_body(lhs.gf);
   const goto_programt &old_body=get_entry_body(rhs.gf);
   const target_copy_helpert copy(old_body, new_body);
-  copy(lhs.input_locations, rhs.input_locations);
+  copy(lhs.inductive_step_renondets, rhs.inductive_step_renondets);
+  copy(lhs.counterexample_locations, rhs.counterexample_locations);
   lhs.synthetic_variables=copy(rhs.synthetic_variables);
   lhs.base_case=copy(rhs.base_case);
   lhs.inductive_assumption=copy(rhs.inductive_assumption);

@@ -20,7 +20,39 @@ Author: Daniel Kroening, kroening@kroening.com
 #define JSA_IND_STEP JSA_PREFIX "inductive_step"
 #define JSA_PROP_ENTAIL JSA_PREFIX "property_entailment"
 #define JSA_TMP_PREFIX JSA_PREFIX "tmp_"
-#define JSA_HEAP "main::1::heap"
+
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @param type
+ *
+ * @return
+ */
+bool is_jsa_heap(const typet &type);
+
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @param id
+ *
+ * @return
+ */
+bool is_jsa_iterator(const irep_idt &id);
+
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @param id
+ *
+ * @return
+ */
+bool is_jsa_list(const irep_idt &id);
 
 /**
  * @brief

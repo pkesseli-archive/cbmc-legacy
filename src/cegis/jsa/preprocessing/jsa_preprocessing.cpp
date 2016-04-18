@@ -3,6 +3,7 @@
 #include <cegis/cegis-util/program_helper.h>
 
 #include <cegis/jsa/preprocessing/add_constraint_meta_variables.h>
+#include <cegis/jsa/preprocessing/collect_variables.h>
 #include <cegis/jsa/preprocessing/create_temp_variables.h>
 #include <cegis/jsa/preprocessing/default_jsa_constant_strategy.h>
 #include <cegis/jsa/preprocessing/inline_user_program.h>
@@ -19,25 +20,15 @@ jsa_preprocessingt::~jsa_preprocessingt()
 {
 }
 
-namespace
-{
-void store_input_locations(jsa_programt &prog)
-{
-  goto_programt::instructionst &body=get_entry_body(prog.gf).instructions;
-  const goto_programt::targett end(body.end());
-  for (auto instr=body.begin(); instr != body.end(); ++instr)
-    if (is_nondet(instr, end)) prog.input_locations.push_back(instr);
-}
-}
-
 void jsa_preprocessingt::operator()()
 {
   goto_functionst &gf=original_program.gf;
   symbol_tablet &st=original_program.st;
   inline_jsa_user_program(st, gf);
-  store_input_locations(original_program);
   remove_loop(original_program);
   add_jsa_constraint_meta_variables(original_program);
+  add_inductive_step_renondets(original_program);
+  collect_counterexample_vars(original_program);
   original_program.synthetic_variables=default_jsa_constant_strategy(st, gf);
   gf.update();
   current_program=original_program;

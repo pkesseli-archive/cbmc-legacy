@@ -26,9 +26,16 @@ public:
   /**
    * @brief
    *
-   * @details All nondet instructions in the user program, including in loop bodies.
+   * @details All variables which get non-determinised at the inductive step.
    */
-  goto_programt::targetst input_locations;
+  goto_programt::targetst inductive_step_renondets;
+
+  /**
+   * @brief
+   *
+   * @details All variable locations to be considered in counterexamles (including loop bodies).
+   */
+  goto_programt::targetst counterexample_locations;
 
   /**
    * @brief

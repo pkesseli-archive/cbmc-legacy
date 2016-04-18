@@ -15,15 +15,15 @@ int main(void)
 {
   __CPROVER_jsa_abstract_heapt heap;
   __CPROVER_jsa_assume_valid_heap(&heap);
-  const __CPROVER_jsa_list_id_t list=__CPROVER_jsa_create_list(&heap);
+  const __CPROVER_jsa_list_id_t __CPROVER_jsa_list_list=__CPROVER_jsa_create_list(&heap);
   const __CPROVER_jsa_data_t limit;
-  for (const __CPROVER_jsa_iterator_id_t it=__CPROVER_jsa_iterator(&heap, list);
-      __CPROVER_jsa_hasNext(&heap, it);)
+  for (__CPROVER_jsa_iterator_id_t __CPROVER_jsa_iterator_it=__CPROVER_jsa_iterator(&heap, __CPROVER_jsa_list_list);
+      __CPROVER_jsa_hasNext(&heap, __CPROVER_jsa_iterator_it);)
   {
-    const __CPROVER_jsa_data_t value=__CPROVER_jsa_next(&heap, it);
+    const __CPROVER_jsa_data_t value=__CPROVER_jsa_next(&heap, __CPROVER_jsa_iterator_it);
     if (value <= limit)
     {
-      __CPROVER_jsa_remove(&heap, it);
+      __CPROVER_jsa_remove(&heap, __CPROVER_jsa_iterator_it);
     }
   }
 
