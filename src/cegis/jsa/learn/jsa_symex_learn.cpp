@@ -18,12 +18,6 @@ void jsa_symex_learnt::process(const counterexamplest &counterexamples,
   // TODO: Add counterexample value retrieval at each prog.ce_target
 }
 
-void jsa_symex_learnt::process(const size_t max_solution_size)
-{
-  assert(false);
-  // TODO: Add empty counterexample (for genetic source code)
-}
-
 void jsa_symex_learnt::set_word_width(const size_t word_width_in_bits)
 {
   // XXX: Unsupported

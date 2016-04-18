@@ -58,16 +58,6 @@ public:
       size_t max_solution_size);
 
   /**
-   * @brief Process the goto program using template data.
-   *
-   * @details Creates template counterexamples and processes the goto
-   * program with them. This is useful for GA source code generation.
-   *
-   * @param max_solution_size
-   */
-  void process(size_t max_solution_size);
-
-  /**
    * @brief
    *
    * @details
