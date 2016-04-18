@@ -31,7 +31,6 @@ void jsa_preprocessingt::operator()()
   collect_counterexample_vars(original_program);
   original_program.synthetic_variables=default_jsa_constant_strategy(st, gf);
   gf.update();
-  current_program=original_program;
 }
 
 void jsa_preprocessingt::operator()(const size_t max_length)

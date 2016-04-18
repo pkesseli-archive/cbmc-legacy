@@ -12,6 +12,7 @@ jsa_symex_learnt::~jsa_symex_learnt()
 void jsa_symex_learnt::process(const counterexamplest &counterexamples,
     const size_t max_solution_size)
 {
+  program=original_program;
   assert(false);
   // TODO: Add counterexamples loop
   // TODO: Add counterexample array declarations
