@@ -17,6 +17,9 @@ void jsa_symex_learnt::process(const counterexamplest &counterexamples,
   // TODO: Add counterexamples loop
   // TODO: Add counterexample array declarations
   // TODO: Add counterexample value retrieval at each prog.ce_target
+  // TODO: Add nondet predicate/query declarations
+  // TODO: Add invariant query execution
+  // TODO: Add postcondition query execution
 }
 
 void jsa_symex_learnt::set_word_width(const size_t word_width_in_bits)
@@ -27,6 +30,7 @@ void jsa_symex_learnt::set_word_width(const size_t word_width_in_bits)
 void jsa_symex_learnt::convert(candidatet &current_candidate,
     const goto_tracet &trace, const size_t max_solution_size)
 {
+  // TODO: Implement
 }
 
 const symbol_tablet &jsa_symex_learnt::get_symbol_table() const
