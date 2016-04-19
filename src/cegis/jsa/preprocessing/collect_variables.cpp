@@ -22,6 +22,7 @@ bool is_return_value(const std::string &name)
 bool is_meta(const goto_programt::targett pos)
 {
   const std::string &name=id2string(get_affected_variable(*pos));
+  if (is_jsa_list(name) || is_jsa_iterator(name)) return false;
   return contains(name, CPROVER_PREFIX) || is_return_value(name);
 }
 
@@ -43,7 +44,7 @@ void add_inductive_step_renondets(jsa_programt &prog)
   {
     if (goto_program_instruction_typet::DECL != it->type) continue;
     const irep_idt &id=get_affected_variable(*it);
-    if (is_meta(it) && !is_jsa_list(id) && !is_jsa_iterator(id)) continue;
+    if (is_meta(it)) continue;
     const symbol_exprt symbol(st.lookup(id).symbol_expr());
     if (is_const(symbol)) continue;
     const typet &type=symbol.type();

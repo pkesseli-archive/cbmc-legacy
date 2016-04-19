@@ -3,10 +3,6 @@
 #include <cegis/jsa/verify/renondet_inputs.h>
 #include <cegis/jsa/verify/jsa_symex_verify.h>
 
-// XXX: Debug
-#include <iostream>
-// XXX: Debug
-
 jsa_symex_verifyt::jsa_symex_verifyt(const jsa_programt &program) :
     original_program(program)
 {
@@ -21,12 +17,6 @@ void jsa_symex_verifyt::process(const candidatet &candidate)
   program=original_program;
   insert_jsa_constraint(program, false);
   assume_renondet_inputs_valid(program);
-  // XXX: Debug
-  std::cout << "<jsa_symex_verifyt>" << std::endl;
-  const namespacet ns(program.st);
-  program.gf.output(ns, std::cout);
-  std::cout << "</jsa_symex_verifyt>" << std::endl;
-  // XXX: Debug
   if (candidate.postcondition.empty()) return;
   // TODO: Implement!
   assert(false);

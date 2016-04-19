@@ -1,3 +1,6 @@
+#include <cegis/jsa/learn/add_synthesis_library.h>
+#include <cegis/jsa/learn/insert_counterexample.h>
+#include <cegis/jsa/learn/insert_predicates_and_queries.h>
 #include <cegis/jsa/learn/jsa_symex_learn.h>
 
 jsa_symex_learnt::jsa_symex_learnt(const jsa_programt &program) :
@@ -13,10 +16,9 @@ void jsa_symex_learnt::process(const counterexamplest &counterexamples,
     const size_t max_solution_size)
 {
   program=original_program;
-  assert(false);
-  // TODO: Add counterexamples loop
-  // TODO: Add counterexample array declarations
-  // TODO: Add counterexample value retrieval at each prog.ce_target
+  //add_jsa_synthesis_library(program, max_solution_size);
+  insert_counterexamples(program, counterexamples);
+  declare_jsa_predicates(program, max_solution_size);
   // TODO: Add nondet predicate/query declarations
   // TODO: Add invariant query execution
   // TODO: Add postcondition query execution

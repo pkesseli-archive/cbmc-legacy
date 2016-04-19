@@ -36,7 +36,8 @@ SRC = danger/meta/meta_variable_names.cpp danger/facade/danger_runner.cpp danger
       jsa/preprocessing/add_constraint_meta_variables.cpp jsa/preprocessing/inline_user_program.cpp \
       jsa/preprocessing/default_jsa_constant_strategy.cpp jsa/preprocessing/create_temp_variables.cpp \
       jsa/preprocessing/collect_variables.cpp \
-      jsa/learn/jsa_symex_learn.cpp \
+      jsa/learn/jsa_symex_learn.cpp jsa/learn/insert_counterexample.cpp jsa/learn/insert_predicates_and_queries.cpp \
+      jsa/learn/add_synthesis_library.cpp \
       jsa/verify/jsa_symex_verify.cpp jsa/verify/extract_counterexample.cpp jsa/verify/renondet_inputs.cpp \
       jsa/constraint/jsa_constraint_factory.cpp \
       jsa/converters/counterexample.cbb jsa/converters/solution.cpp \
@@ -48,6 +49,7 @@ SRC = danger/meta/meta_variable_names.cpp danger/facade/danger_runner.cpp danger
       genetic/random_individual.cpp genetic/genetic_constant_strategy.cpp instructions/instruction_set_factory.cpp \
       genetic/concrete_test_runner.cpp genetic/dynamic_test_runner_helper.cpp genetic/genetic_settings.cpp \
       cegis-util/task_pool.cpp cegis-util/constant_width.cpp cegis-util/irep_pipe.cpp cegis-util/program_helper.cpp \
+      cegis-util/temporary_output_block.cpp \
       constant/add_constant.cpp constant/literals_collector.cpp constant/default_cegis_constant_strategy.cpp \
       instrument/cegis_library.cpp instrument/instrument_var_ops.cpp instrument/meta_variables.cpp \
       runner/cegis_parse_options.cpp runner/cegis_main.cpp \

@@ -9,6 +9,9 @@
 #define __CPROVER_JSA_MAX_ABSTRACT_NODES 0u
 #define __CPROVER_JSA_MAX_ITERATORS 1u
 #define JSA_SYNTHESIS_H_
+#define __CPROVER_jsa_extern extern
+#else
+#define __CPROVER_jsa_extern
 #endif
 
 #ifndef JSA_TRANSFORMERS_H_
@@ -147,7 +150,7 @@ typedef struct __CPROVER_jsa_abstract_heap
 #ifdef __CPROVER
 #define __CPROVER_jsa_assume(c) __CPROVER_assume(c)
 #else
-_Bool __CPROVER_jsa_assume_violated;
+__CPROVER_jsa_extern _Bool __CPROVER_jsa_assume_violated;
 #define __CPROVER_jsa_assume(c) if (!(c)) __CPROVER_jsa_assume_violated=true
 #endif
 
@@ -261,12 +264,12 @@ __CPROVER_jsa_inline void __CPROVER_jsa__internal_remove(
 }
 
 // Heap sanity functions
-_Bool __CPROVER_jsa__internal_is_valid_node_id(const __CPROVER_jsa_node_id_t node_id)
+__CPROVER_jsa_inline _Bool __CPROVER_jsa__internal_is_valid_node_id(const __CPROVER_jsa_node_id_t node_id)
 {
   return __CPROVER_jsa_null == node_id || node_id < __CPROVER_JSA_MAX_NODES;
 }
 
-_Bool __CPROVER_jsa__internal_is_in_valid_list(
+__CPROVER_jsa_inline _Bool __CPROVER_jsa__internal_is_in_valid_list(
     const __CPROVER_jsa_abstract_heapt * const heap,
     const __CPROVER_jsa_node_id_t node_id)
 {
@@ -275,7 +278,7 @@ _Bool __CPROVER_jsa__internal_is_in_valid_list(
   return __CPROVER_jsa_null == list || list < heap->list_count;
 }
 
-_Bool __CPROVER_jsa__internal_is_linking_correct(
+__CPROVER_jsa_inline _Bool __CPROVER_jsa__internal_is_linking_correct(
     const __CPROVER_jsa_abstract_heapt * const heap,
     const __CPROVER_jsa_node_id_t node_id,
     const __CPROVER_jsa_node_id_t prev,
@@ -290,7 +293,7 @@ _Bool __CPROVER_jsa__internal_is_linking_correct(
               && node_id < next));
 }
 
-_Bool __CPROVER_jsa__internal_is_valid_iterator_linking(
+__CPROVER_jsa_inline _Bool __CPROVER_jsa__internal_is_valid_iterator_linking(
     const __CPROVER_jsa_abstract_heapt * const h,
     const __CPROVER_jsa_list_id_t list,
     const __CPROVER_jsa_node_id_t node_id,
@@ -307,7 +310,7 @@ _Bool __CPROVER_jsa__internal_is_valid_iterator_linking(
   return index < h->abstract_ranges[value_ref].size;
 }
 
-__CPROVER_jsa_index_t  __CPROVER_jsa__internal_get_max_index(
+__CPROVER_jsa_inline __CPROVER_jsa_index_t  __CPROVER_jsa__internal_get_max_index(
     const __CPROVER_jsa_abstract_heapt * const heap,
     const __CPROVER_jsa_node_id_t node_id)
 
@@ -319,7 +322,7 @@ __CPROVER_jsa_index_t  __CPROVER_jsa__internal_get_max_index(
   return heap->abstract_ranges[value_ref].size - 1;
 }
 
-_Bool __CPROVER_jsa__internal_is_neighbour(
+__CPROVER_jsa_inline _Bool __CPROVER_jsa__internal_is_neighbour(
     const __CPROVER_jsa_abstract_heapt * const heap,
     const __CPROVER_jsa_node_id_t lhs_node_id,
     const __CPROVER_jsa_index_t lhs_index,
@@ -517,7 +520,7 @@ __CPROVER_jsa_inline void __CPROVER_jsa_remove(
   heap->iterators[it].previous_node_id=__CPROVER_jsa_null;
 }
 
-/* FUNCTION: __CPROVER_jsa_query_execute */
+/* FUNCTION: __CPROVER_jsa_query_execute_up_to */
 #if defined(JSA_SYNTHESIS_H_) || defined(JSA_VERIFICATION_H_)
 #ifndef __CPROVER_JSA_NUM_PRED_OPS
 #define __CPROVER_JSA_NUM_PRED_OPS 10
@@ -535,8 +538,8 @@ __CPROVER_jsa_inline void __CPROVER_jsa_remove(
 #define __CPROVER_JSA_NUM_PREDS __CPROVER_JSA_MAX_QUERY_SIZE
 #endif
 
-__CPROVER_jsa_word_t *__CPROVER_JSA_PRED_OPS[__CPROVER_JSA_NUM_PRED_OPS];
-__CPROVER_jsa_word_t *__CPROVER_JSA_PRED_RESULT_OPS[__CPROVER_JSA_MAX_PRED_SIZE];
+__CPROVER_jsa_extern __CPROVER_jsa_word_t *__CPROVER_JSA_PRED_OPS[__CPROVER_JSA_NUM_PRED_OPS];
+__CPROVER_jsa_extern __CPROVER_jsa_word_t *__CPROVER_JSA_PRED_RESULT_OPS[__CPROVER_JSA_MAX_PRED_SIZE];
 
 #ifdef JSA_SYNTHESIS_H_
 typedef __CPROVER_jsa_word_t __CPROVER_jsa_opcodet;
@@ -549,8 +552,8 @@ typedef struct __CPROVER_jsa_pred_instruction
   __CPROVER_jsa_opt op1;
 } __CPROVER_jsa_pred_instructiont;
 
-const __CPROVER_jsa_pred_instructiont *__CPROVER_JSA_PREDICATES[__CPROVER_JSA_NUM_PREDS];
-__CPROVER_jsa__internal_index_t __CPROVER_JSA_PREDICATE_SIZES[__CPROVER_JSA_NUM_PREDS];
+__CPROVER_jsa_extern const __CPROVER_jsa_pred_instructiont *__CPROVER_JSA_PREDICATES[__CPROVER_JSA_NUM_PREDS];
+__CPROVER_jsa_extern __CPROVER_jsa__internal_index_t __CPROVER_JSA_PREDICATE_SIZES[__CPROVER_JSA_NUM_PREDS];
 #endif
 
 typedef __CPROVER_jsa_word_t __CPROVER_jsa_pred_id_t;

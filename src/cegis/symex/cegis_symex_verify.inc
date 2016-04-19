@@ -3,6 +3,8 @@
 #include <cbmc/cbmc_solvers.h>
 #include <cbmc/bmc.h>
 
+#include <cegis/cegis-util/temporary_output_block.h>
+
 template<class verify_configurationt>
 cegis_symex_verifyt<verify_configurationt>::cegis_symex_verifyt(
     const optionst &options, verify_configurationt &config) :
@@ -28,14 +30,13 @@ void cegis_symex_verifyt<verify_configurationt>::verify(
   config.process(candidate);
   const symbol_tablet &st=config.get_symbol_table();
   const goto_functionst &gf=config.get_goto_functions();
-  //null_message_handlert msg;
-  // XXX: Debug
-  ui_message_handlert msg(ui_message_handlert::PLAIN, "");
-  // XXX: Debug
+  null_message_handlert msg;
   cbmc_solverst solvers(options, st, msg);
   const std::unique_ptr<cbmc_solverst::solvert> solver=solvers.get_solver();
   bmct bmc(options, st, msg, solver->prop_conv());
+  const temporary_output_blockt block_output;
   const safety_checkert::resultt result=bmc(gf);
+  block_output.release();
   const goto_tracet &trace=bmc.safety_checkert::error_trace;
   switch (result)
   {

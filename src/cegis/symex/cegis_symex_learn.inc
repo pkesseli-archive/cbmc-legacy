@@ -6,6 +6,7 @@
 #include <cbmc/bmc.h>
 
 #include <cegis/cegis-util/constant_width.h>
+#include <cegis/cegis-util/temporary_output_block.h>
 
 #define CONSTANT_WIDTH_OPTION "max-constant-width"
 #define CEGIS_DEFAULT_MIN_WORD_WIDTH 4u
@@ -48,7 +49,9 @@ safety_checkert::resultt cegis_learn_run_bmc(goto_tracet &trace,
   const std::unique_ptr<cbmc_solverst::solvert> solver=solvers.get_solver();
   bmct bmc(opt, st, msg, solver->prop_conv());
 
+  const temporary_output_blockt block_temporary;
   const safety_checkert::resultt bmc_result=bmc(gf);
+  block_temporary.release();
   if (safety_checkert::UNSAFE != bmc_result) return bmc_result;
   trace=bmc.safety_checkert::error_trace;
   return safety_checkert::UNSAFE;
@@ -64,7 +67,9 @@ safety_checkert::resultt cegis_symex_learnt<preproct, learn_configurationt>::run
   const std::unique_ptr<cbmc_solverst::solvert> solver=solvers.get_solver();
   bmct bmc(opt, st, msg, solver->prop_conv());
 
+  const temporary_output_blockt block_temporary;
   const safety_checkert::resultt bmc_result=bmc(config.get_goto_functions());
+  block_temporary.release();
   if (safety_checkert::UNSAFE != bmc_result) return bmc_result;
   const goto_tracet &trace=bmc.safety_checkert::error_trace;
   config.process(counterexamples, current_solution_size);

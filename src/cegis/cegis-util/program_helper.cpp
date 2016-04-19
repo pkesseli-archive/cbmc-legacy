@@ -73,8 +73,13 @@ bool is_nondet(const goto_programt::targett &target,
   {
   case goto_program_instruction_typet::DECL:
   {
-    goto_programt::targett next=target;
-    if (++next == end) return true;
+    goto_programt::targett next=std::next(target);
+    if (next == end) return true;
+    if (goto_program_instruction_typet::FUNCTION_CALL == next->type)
+    {
+      if (to_code_function_call(next->code).lhs().is_not_nil()) return false;
+      else ++next;
+    }
     const goto_programt::instructiont next_instr=*next;
     if (goto_program_instruction_typet::ASSIGN != next_instr.type) return true;
     const irep_idt id(get_affected_variable(instr));
@@ -86,6 +91,11 @@ bool is_nondet(const goto_programt::targett &target,
     const exprt &rhs=to_code_assign(instr.code).rhs();
     if (ID_side_effect != rhs.id()) return false;
     return ID_nondet == to_side_effect_expr(rhs).get_statement();
+  }
+  case goto_program_instruction_typet::FUNCTION_CALL:
+  {
+    const code_function_callt &call=to_code_function_call(instr.code);
+    if (call.lhs().is_not_nil()) return false;
   }
   default:
     return false;
