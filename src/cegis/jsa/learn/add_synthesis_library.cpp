@@ -8,6 +8,10 @@
 #include <cegis/jsa/instrument/jsa_meta_data.h>
 #include <cegis/jsa/learn/add_synthesis_library.h>
 
+// XXX: Debug
+#include <util/ui_message.h>
+// XXX: Debug
+
 #define CPROVER_INIT "__CPROVER_initialize"
 
 namespace
@@ -94,7 +98,7 @@ void zero_new_global_vars(const symbol_tablet &st, goto_functionst &gf)
 }
 
 #define JSA_LIB "__CPROVER_jsa_assume_valid_heap"
-#define QUERY_LIB "__CPROVER_jsa_query_execute_up_to"
+#define QUERY_LIB "__CPROVER_jsa_query_execute"
 
 void add_jsa_synthesis_library(jsa_programt &prog, const size_t max_sz,
     const size_t num_pred_ops)
@@ -110,7 +114,10 @@ void add_jsa_synthesis_library(jsa_programt &prog, const size_t max_sz,
   add_placenholder(blank, QUERY_LIB);
   library_text+=get_cprover_library_text(functions, blank);
   blank.clear();
-  null_message_handlert msg;
+  //null_message_handlert msg;
+  // XXX: Debug
+  ui_message_handlert msg(ui_message_handlert::PLAIN, "");
+  // XXX: Debug
   add_library(library_text, blank, msg);
 
   symbol_tablet &st=prog.st;

@@ -22,10 +22,10 @@ void jsa_symex_learnt::process(const counterexamplest &counterexamples,
   instrument_pred_ops(program, pred_ops);
   insert_counterexamples(program, counterexamples);
   declare_jsa_predicates(program, max_solution_size);
-  declare_jsa_queries(program, max_solution_size);
-  // TODO: Add nondet predicate/query declarations
-  // TODO: Add invariant query execution
-  // TODO: Add postcondition query execution
+  declare_jsa_query(program, max_solution_size);
+  declare_jsa_invariant(program, max_solution_size);
+  declare_jsa_postcondition(program, max_solution_size);
+  // TODO: Execute query/invariant/postcondition
 }
 
 void jsa_symex_learnt::set_word_width(const size_t word_width_in_bits)

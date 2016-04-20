@@ -34,6 +34,13 @@ public:
    *
    * @details
    */
+  goto_programt query;
+
+  /**
+   * @brief
+   *
+   * @details
+   */
   goto_programt invariant;
 
   /**

@@ -23,6 +23,12 @@ Author: Daniel Kroening, kroening@kroening.com
 #define JSA_HEAP_TAG "tag-" JSA_PREFIX "abstract_heap"
 #define JSA_LAMBDA_OP JSA_PREFIX "lambda_op"
 #define JSA_CONSTANT_PREFIX CPROVER_PREFIX "jsa_constant_"
+#define JSA_QUERY JSA_PREFIX "query"
+#define JSA_QUERY_SIZE JSA_PREFIX "query_size"
+#define JSA_INV JSA_PREFIX "invariant"
+#define JSA_INV_SZ JSA_PREFIX "invariant_size"
+#define JSA_POST JSA_PREFIX "postcondition"
+#define JSA_POST_SZ JSA_PREFIX "postcondition_size"
 
 /**
  * @brief

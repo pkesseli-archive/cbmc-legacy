@@ -36,14 +36,21 @@ public:
    *
    * @details
    */
-  std::vector<__CPROVER_jsa_query_instructiont> invariant;
+  std::vector<__CPROVER_jsa_query_instructiont> query;
 
   /**
    * @brief
    *
    * @details
    */
-  std::vector<__CPROVER_jsa_query_instructiont> postcondition;
+  std::vector<__CPROVER_jsa_invariant_instructiont> invariant;
+
+  /**
+   * @brief
+   *
+   * @details
+   */
+  std::vector<__CPROVER_jsa_postcondition_instructiont> postcondition;
 };
 
 #endif /* CEGIS_JSA_GENETIC_SOLUTION_H_ */

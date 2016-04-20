@@ -57,6 +57,46 @@ array_typet jsa_predicate_type(const exprt &size);
  *
  * @return
  */
+symbol_typet jsa_invariant_instruction_type();
+
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @param size
+ *
+ * @return
+ */
+array_typet jsa_invariant_type(const exprt & size);
+
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @return
+ */
+symbol_typet jsa_postcondition_instruction_type();
+
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @param size
+ *
+ * @return
+ */
+array_typet jsa_postcondition_type(const exprt & size);
+
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @return
+ */
 symbol_typet jsa_query_instruction_type();
 
 /**

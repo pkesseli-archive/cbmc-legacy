@@ -30,6 +30,26 @@ void declare_jsa_predicates(class jsa_programt &prog, size_t max_size);
  * @param prog
  * @param max_size
  */
-void declare_jsa_queries(jsa_programt &prog, size_t max_size);
+void declare_jsa_query(jsa_programt &prog, size_t max_size);
+
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @param prog
+ * @param max_size
+ */
+void declare_jsa_invariant(jsa_programt &prog, size_t max_size);
+
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @param prog
+ * @param max_size
+ */
+void declare_jsa_postcondition(jsa_programt &prog, size_t max_size);
 
 #endif /* CEGIS_JSA_INSERT_PREDICATES_AND_QUERIES_H_ */
