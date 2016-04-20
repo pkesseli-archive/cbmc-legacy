@@ -5,6 +5,7 @@
 #include <cegis/invariant/util/invariant_program_helper.h>
 
 #include <cegis/jsa/options/jsa_program.h>
+#include <cegis/jsa/value/jsa_types.h>
 #include <cegis/jsa/instrument/jsa_meta_data.h>
 #include <cegis/jsa/preprocessing/add_constraint_meta_variables.h>
 
@@ -27,6 +28,13 @@ symbolt &create_jsa_symbol(symbol_tablet &st, const std::string &full_name,
   new_symbol.is_lvalue=true;
   assert(!st.add(new_symbol));
   return st.lookup(new_symbol.name);
+}
+
+void declare_lambda(jsa_programt &p, goto_programt &body)
+{
+  p.synthetic_variables=body.insert_after(p.synthetic_variables);
+  const typet type(jsa_word_type());
+  declare_jsa_meta_variable(p.st, p.synthetic_variables, JSA_LAMBDA_OP, type);
 }
 }
 
@@ -63,6 +71,7 @@ void add_jsa_constraint_meta_variables(jsa_programt &p)
   symbol_tablet &st=p.st;
   goto_programt &body=get_entry_body(p.gf);
   const typet type(c_bool_type());
+  declare_lambda(p, body);
   p.base_case=insert_before_preserve_labels(body, p.body.first);
   declare_jsa_meta_variable(st, p.base_case, JSA_BASE_CASE, type);
   p.inductive_assumption=body.insert_after(p.base_case);

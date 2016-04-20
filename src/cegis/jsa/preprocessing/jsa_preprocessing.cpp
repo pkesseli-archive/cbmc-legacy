@@ -26,11 +26,10 @@ void jsa_preprocessingt::operator()()
   symbol_tablet &st=original_program.st;
   inline_jsa_user_program(st, gf);
   remove_loop(original_program);
-  // TODO: Declare lambda variable
+  original_program.synthetic_variables=default_jsa_constant_strategy(st, gf);
   add_jsa_constraint_meta_variables(original_program);
   add_inductive_step_renondets(original_program);
   collect_counterexample_vars(original_program);
-  original_program.synthetic_variables=default_jsa_constant_strategy(st, gf);
   gf.update();
 }
 

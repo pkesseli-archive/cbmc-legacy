@@ -3,15 +3,15 @@
 #include <cegis/constant/literals_collector.h>
 #include <cegis/cegis-util/program_helper.h>
 #include <cegis/jsa/value/jsa_types.h>
+#include <cegis/jsa/instrument/jsa_meta_data.h>
 #include <cegis/jsa/preprocessing/add_constraint_meta_variables.h>
 #include <cegis/jsa/preprocessing/default_jsa_constant_strategy.h>
 
 namespace
 {
-const char CONSTANT_PREFIX[]="JSA_CONSTANT_";
 std::string get_name(size_t index)
 {
-  std::string name(CONSTANT_PREFIX);
+  std::string name(JSA_CONSTANT_PREFIX);
   return name+=integer2string(index);
 }
 }

@@ -7,6 +7,11 @@ typet jsa_word_type()
   return unsigned_char_type();
 }
 
+typet jsa_internal_index_type()
+{
+  return jsa_word_type();
+}
+
 #define PRED_INSTR_TYPE "tag-__CPROVER_jsa_pred_instruction"
 symbol_typet jsa_predicate_instruction_type()
 {

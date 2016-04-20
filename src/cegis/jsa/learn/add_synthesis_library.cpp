@@ -8,12 +8,7 @@
 #include <cegis/jsa/instrument/jsa_meta_data.h>
 #include <cegis/jsa/learn/add_synthesis_library.h>
 
-// XXX: Debug
-#include <iostream>
-// XXX: Debug
-
 #define CPROVER_INIT "__CPROVER_initialize"
-#define JSA_CONSTANT_PREFIX CPROVER_PREFIX "JSA_"
 
 namespace
 {

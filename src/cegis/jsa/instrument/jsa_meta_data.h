@@ -21,6 +21,8 @@ Author: Daniel Kroening, kroening@kroening.com
 #define JSA_PROP_ENTAIL JSA_PREFIX "property_entailment"
 #define JSA_TMP_PREFIX JSA_PREFIX "tmp_"
 #define JSA_HEAP_TAG "tag-" JSA_PREFIX "abstract_heap"
+#define JSA_LAMBDA_OP JSA_PREFIX "lambda_op"
+#define JSA_CONSTANT_PREFIX CPROVER_PREFIX "jsa_constant_"
 
 /**
  * @brief
