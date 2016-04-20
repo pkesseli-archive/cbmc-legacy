@@ -16,7 +16,9 @@ void jsa_symex_learnt::process(const counterexamplest &counterexamples,
     const size_t max_solution_size)
 {
   program=original_program;
+  // TODO: Collect pred vars
   //add_jsa_synthesis_library(program, max_solution_size);
+  // TODO: Instrument pred vars
   insert_counterexamples(program, counterexamples);
   declare_jsa_predicates(program, max_solution_size);
   // TODO: Add nondet predicate/query declarations

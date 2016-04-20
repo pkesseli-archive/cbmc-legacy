@@ -19,7 +19,11 @@ Author: Daniel Kroening, kroening@kroening.com
  *
  * @param prog
  * @param max_sz
+ * @param num_pred_ops
  */
-void add_jsa_synthesis_library(class jsa_programt &prog, size_t max_sz);
+void add_jsa_synthesis_library(
+    class jsa_programt &prog,
+    size_t max_sz,
+    size_t num_pred_ops);
 
 #endif /* CEGIS_JSA_ADD_SYNTHESIS_LIBRARY_H_ */

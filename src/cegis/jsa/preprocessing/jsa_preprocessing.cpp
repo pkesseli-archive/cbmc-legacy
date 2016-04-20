@@ -26,6 +26,7 @@ void jsa_preprocessingt::operator()()
   symbol_tablet &st=original_program.st;
   inline_jsa_user_program(st, gf);
   remove_loop(original_program);
+  // TODO: Declare lambda variable
   add_jsa_constraint_meta_variables(original_program);
   add_inductive_step_renondets(original_program);
   collect_counterexample_vars(original_program);

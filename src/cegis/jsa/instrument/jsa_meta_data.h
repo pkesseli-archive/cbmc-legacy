@@ -20,6 +20,7 @@ Author: Daniel Kroening, kroening@kroening.com
 #define JSA_IND_STEP JSA_PREFIX "inductive_step"
 #define JSA_PROP_ENTAIL JSA_PREFIX "property_entailment"
 #define JSA_TMP_PREFIX JSA_PREFIX "tmp_"
+#define JSA_HEAP_TAG "tag-" JSA_PREFIX "abstract_heap"
 
 /**
  * @brief

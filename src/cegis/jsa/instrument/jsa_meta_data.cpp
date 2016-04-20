@@ -2,8 +2,6 @@
 
 #include <cegis/jsa/instrument/jsa_meta_data.h>
 
-#define JSA_HEAP_TAG "tag-__CPROVER_jsa_abstract_heap"
-
 bool is_jsa_heap(const typet &type)
 {
   const irep_idt &type_id=type.id();
