@@ -78,5 +78,6 @@ std::map<size_t, symbol_exprt> instrument_pred_ops(jsa_programt &prog,
     }
     if (is_synth_begin) prog.synthetic_variables=op;
   }
+  // TODO: dead
   return result;
 }

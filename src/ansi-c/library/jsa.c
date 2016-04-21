@@ -152,6 +152,59 @@ typedef struct __CPROVER_jsa_abstract_heap
 #define __CPROVER_jsa_assume(c) assert(c)
 #endif
 
+// Heap comparison
+#ifdef __CPROVER
+#define __CPROVER_jsa__internal_are_heaps_equal(lhs, rhs) (*(lhs) == *(rhs))
+#else
+__CPROVER_jsa_inline _Bool __CPROVER_jsa__internal_are_heaps_equal(
+    const __CPROVER_jsa_abstract_heapt * const lhs,
+    const __CPROVER_jsa_abstract_heapt * const rhs)
+{
+  __CPROVER_jsa__internal_index_t i;
+  for (i=0; i < __CPROVER_JSA_MAX_ABSTRACT_NODES; ++i)
+  {
+    const __CPROVER_jsa_abstract_nodet lhs_node=lhs->abstract_nodes[i];
+    const __CPROVER_jsa_abstract_nodet rhs_node=rhs->abstract_nodes[i];
+    if (lhs_node.list != rhs_node.list ||
+        lhs_node.next != rhs_node.next ||
+        lhs_node.previous != rhs_node.previous ||
+        lhs_node.value_ref != rhs_node.value_ref) return false;
+  }
+  for (i=0; i < __CPROVER_JSA_MAX_ABSTRACT_RANGES; ++i)
+  {
+    const __CPROVER_jsa_abstract_ranget lhs_range=lhs->abstract_ranges[i];
+    const __CPROVER_jsa_abstract_ranget rhs_range=rhs->abstract_ranges[i];
+    if (lhs_range.max != rhs_range.max ||
+        lhs_range.min != rhs_range.min ||
+        lhs_range.size != rhs_range.size) return false;
+  }
+  for (i=0; i < __CPROVER_JSA_MAX_CONCRETE_NODES; ++i)
+  {
+    const __CPROVER_jsa_concrete_nodet lhs_node=lhs->concrete_nodes[i];
+    const __CPROVER_jsa_concrete_nodet rhs_node=rhs->concrete_nodes[i];
+    if (lhs_node.list != rhs_node.list ||
+        lhs_node.next != rhs_node.next ||
+        lhs_node.previous != rhs_node.previous ||
+        lhs_node.value != rhs_node.previous) return false;
+  }
+  if (lhs->iterator_count != rhs->iterator_count) return false;
+  for (i=0; i < lhs->iterator_count; ++i)
+  {
+    const __CPROVER_jsa_iteratort lhs_it=lhs->iterators[i];
+    const __CPROVER_jsa_iteratort rhs_it=rhs->iterators[i];
+    if (lhs_it.index != rhs_it.index ||
+        lhs_it.list != rhs_it.list ||
+        lhs_it.node_id != rhs_it.node_id ||
+        lhs_it.previous_index != rhs_it.previous_index ||
+        lhs_it.previous_node_id != rhs_it.previous_node_id) return false;
+  }
+  if (lhs->list_count != rhs->list_count) return false;
+  for (i=0; i < lhs->list_count; ++i)
+    if (lhs->list_head_nodes[i] != rhs->list_head_nodes[i]) return false;
+  return true;
+}
+#endif
+
 // Node utility functions
 __CPROVER_jsa_inline __CPROVER_jsa_node_id_t __CPROVER_jsa__internal_get_head_node(const __CPROVER_jsa_abstract_heapt * const heap,
     const __CPROVER_jsa_list_id_t list)
@@ -684,26 +737,22 @@ __CPROVER_jsa_inline _Bool __CPROVER_jsa_compare_up_to(
 typedef struct __CPROVER_jsa_invariant_instruction
 {
   __CPROVER_jsa_opcodet opcode;
-  __CPROVER_jsa_opt op0;
 } __CPROVER_jsa_invariant_instructiont;
 
 __CPROVER_jsa_inline _Bool __CPROVER_jsa_invariant_execute(
     const __CPROVER_jsa_abstract_heapt * const h1,
     const __CPROVER_jsa_abstract_heapt * const h2,
     const __CPROVER_jsa_invariant_instructiont * const inv,
+    const __CPROVER_jsa__internal_index_t inv_size,
+    const __CPROVER_jsa_query_instructiont * const query,
     const __CPROVER_jsa__internal_index_t query_size)
 {
-  __CPROVER_jsa_assume(query_size == 1u);
+  __CPROVER_jsa_assume(inv_size == 1u);
   const __CPROVER_jsa_invariant_instructiont instr=inv[0];
-  const __CPROVER_jsa_list_id_t list=instr.opcode;
-  __CPROVER_jsa_assume_valid_list(h1, list);
-  __CPROVER_jsa_assume_valid_list(h2, list);
-  const __CPROVER_jsa_iterator_id_t it=instr.op0;
-  __CPROVER_jsa_assume_valid_iterator(h1, it);
-  __CPROVER_jsa_assume(h1->iterators[it].list == list);
-  __CPROVER_jsa_assume_valid_iterator(h2, it);
-  __CPROVER_jsa_assume(h2->iterators[it].list == list);
-  return __CPROVER_jsa_compare_up_to(h1, h2, list, it);
+  __CPROVER_jsa_assume(instr.opcode == 0); // Single instruction
+  __CPROVER_jsa_abstract_heapt tmp=*h1;
+  __CPROVER_jsa_query_execute(&tmp, query, query_size);
+  return __CPROVER_jsa__internal_are_heaps_equal(h2, &tmp);
 }
 
 typedef struct __CPROVER_jsa_postcondition_instruction
@@ -719,10 +768,8 @@ __CPROVER_jsa_inline _Bool __CPROVER_jsa_postcondition_execute(
 {
   __CPROVER_jsa_assume(query_size == 1u);
   const __CPROVER_jsa_postcondition_instructiont instr=post[0];
-  const __CPROVER_jsa_list_id_t list=instr.opcode;
-  __CPROVER_jsa_assume_valid_list(h1, list);
-  __CPROVER_jsa_assume_valid_list(h2, list);
-  return __CPROVER_jsa_compare_up_to(h1, h2, list, __CPROVER_jsa_null);
+  __CPROVER_jsa_assume(instr.opcode == 0); // Single instruction
+  return __CPROVER_jsa__internal_are_heaps_equal(h1, h2);
 }
 #endif
 

@@ -2,6 +2,7 @@
 #include <cegis/jsa/learn/insert_counterexample.h>
 #include <cegis/jsa/learn/insert_predicates_and_queries.h>
 #include <cegis/jsa/learn/instrument_pred_ops.h>
+#include <cegis/jsa/learn/execute_jsa_programs.h>
 #include <cegis/jsa/learn/jsa_symex_learn.h>
 
 jsa_symex_learnt::jsa_symex_learnt(const jsa_programt &program) :
@@ -25,7 +26,7 @@ void jsa_symex_learnt::process(const counterexamplest &counterexamples,
   declare_jsa_query(program, max_solution_size);
   declare_jsa_invariant(program, max_solution_size);
   declare_jsa_postcondition(program, max_solution_size);
-  // TODO: Execute query/invariant/postcondition
+  execute_jsa_learn_programs(program);
 }
 
 void jsa_symex_learnt::set_word_width(const size_t word_width_in_bits)
@@ -53,4 +54,5 @@ void jsa_symex_learnt::show_candidate(messaget::mstreamt &os,
     const candidatet &candidate)
 {
   // TODO: Implement (Java 8 Stream query formatter?)
+  os << "TODO: print candidate" << messaget::mstreamt::end;
 }

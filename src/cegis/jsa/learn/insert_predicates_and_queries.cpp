@@ -14,10 +14,6 @@
 #include <cegis/jsa/preprocessing/add_constraint_meta_variables.h>
 #include <cegis/jsa/learn/insert_predicates_and_queries.h>
 
-// XXX: Debug
-#include <iostream>
-// XXX: Debug
-
 #define PREDS "__CPROVER_JSA_PREDICATES"
 #define PRED_SIZES "__CPROVER_JSA_PREDICATE_SIZES"
 #define LOCAL_PRED "__CPROVER_jsa_predicate_"
@@ -87,7 +83,7 @@ void declare_jsa_predicates(jsa_programt &prog, const size_t max_sz)
 
 void declare_jsa_query(jsa_programt &prog, const size_t max_size)
 {
-  declare_size_and_prog(prog, JSA_QUERY, JSA_QUERY_SIZE, jsa_query_type,
+  declare_size_and_prog(prog, JSA_QUERY, JSA_QUERY_SZ, jsa_query_type,
       max_size + 1);
 }
 
@@ -99,11 +95,4 @@ void declare_jsa_invariant(jsa_programt &prog, const size_t max_size)
 void declare_jsa_postcondition(jsa_programt &prog, const size_t max_size)
 {
   declare_size_and_prog(prog, JSA_POST, JSA_POST_SZ, jsa_query_type, 1);
-  // XXX: Debug
-  std::cout << "<jsa_symex_verifyt>" << std::endl;
-  const namespacet ns(prog.st);
-  prog.gf.output(ns, std::cout);
-  std::cout << "</jsa_symex_verifyt>" << std::endl;
-  assert(false);
-  // XXX: Debug
 }
