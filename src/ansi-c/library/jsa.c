@@ -146,8 +146,10 @@ typedef struct __CPROVER_jsa_abstract_heap
 #ifdef __CPROVER
 #define __CPROVER_jsa_assume(c) __CPROVER_assume(c)
 #else
-__CPROVER_jsa_extern _Bool __CPROVER_jsa_assume_violated;
-#define __CPROVER_jsa_assume(c) if (!(c)) __CPROVER_jsa_assume_violated=true
+//__CPROVER_jsa_extern _Bool __CPROVER_jsa_assume_violated;
+//#define __CPROVER_jsa_assume(c) if (!(c)) __CPROVER_jsa_assume_violated=true
+// Violating an assumption with concrete inputs is an error!
+#define __CPROVER_jsa_assume(c) assert(c)
 #endif
 
 // Node utility functions
@@ -600,8 +602,7 @@ __CPROVER_jsa_inline void __CPROVER_jsa_filter(
   __CPROVER_jsa_node_id_t node=__CPROVER_jsa__internal_get_head_node(heap, list);
   for (__CPROVER_jsa__internal_index_t i=0; i < __CPROVER_JSA_MAX_NODES_PER_LIST; ++i)
   {
-    if (node == it) break;
-    __CPROVER_jsa_assume(__CPROVER_jsa_null != node);
+    if (node == it || __CPROVER_jsa_null == node) break;
     if (__CPROVER_jsa__internal_is_concrete_node(node))
     {
       *__CPROVER_JSA_PRED_OPS[__CPROVER_jsa__internal_lambda_op_id]=heap->concrete_nodes[node].value;
@@ -699,7 +700,9 @@ __CPROVER_jsa_inline _Bool __CPROVER_jsa_invariant_execute(
   __CPROVER_jsa_assume_valid_list(h2, list);
   const __CPROVER_jsa_iterator_id_t it=instr.op0;
   __CPROVER_jsa_assume_valid_iterator(h1, it);
+  __CPROVER_jsa_assume(h1->iterators[it].list == list);
   __CPROVER_jsa_assume_valid_iterator(h2, it);
+  __CPROVER_jsa_assume(h2->iterators[it].list == list);
   return __CPROVER_jsa_compare_up_to(h1, h2, list, it);
 }
 

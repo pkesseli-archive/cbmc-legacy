@@ -110,4 +110,13 @@ symbol_typet jsa_query_instruction_type();
  */
 array_typet jsa_query_type(const exprt & size);
 
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @return
+ */
+symbol_typet jsa_heap_type();
+
 #endif /* CEGIS_JSA_TYPES_H_ */

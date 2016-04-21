@@ -1,5 +1,6 @@
 #include <ansi-c/c_types.h>
 
+#include <cegis/jsa/instrument/jsa_meta_data.h>
 #include <cegis/jsa/value/jsa_types.h>
 
 typet jsa_word_type()
@@ -54,4 +55,9 @@ symbol_typet jsa_query_instruction_type()
 array_typet jsa_query_type(const exprt &size)
 {
   return array_typet(jsa_query_instruction_type(), size);
+}
+
+symbol_typet jsa_heap_type()
+{
+  return symbol_typet(JSA_HEAP_TAG);
 }

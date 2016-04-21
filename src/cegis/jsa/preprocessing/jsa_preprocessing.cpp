@@ -3,6 +3,7 @@
 #include <cegis/cegis-util/program_helper.h>
 
 #include <cegis/jsa/preprocessing/add_constraint_meta_variables.h>
+#include <cegis/jsa/preprocessing/clone_heap.h>
 #include <cegis/jsa/preprocessing/collect_variables.h>
 #include <cegis/jsa/preprocessing/create_temp_variables.h>
 #include <cegis/jsa/preprocessing/default_jsa_constant_strategy.h>
@@ -29,6 +30,7 @@ void jsa_preprocessingt::operator()()
   original_program.synthetic_variables=default_jsa_constant_strategy(st, gf);
   add_jsa_constraint_meta_variables(original_program);
   add_inductive_step_renondets(original_program);
+  clone_heap(original_program);
   collect_counterexample_vars(original_program);
   gf.update();
 }

@@ -20,7 +20,6 @@ Author: Daniel Kroening, kroening@kroening.com
 #define JSA_IND_STEP JSA_PREFIX "inductive_step"
 #define JSA_PROP_ENTAIL JSA_PREFIX "property_entailment"
 #define JSA_TMP_PREFIX JSA_PREFIX "tmp_"
-#define JSA_HEAP_TAG "tag-" JSA_PREFIX "abstract_heap"
 #define JSA_LAMBDA_OP JSA_PREFIX "lambda_op"
 #define JSA_CONSTANT_PREFIX CPROVER_PREFIX "jsa_constant_"
 #define JSA_QUERY JSA_PREFIX "query"
@@ -29,6 +28,8 @@ Author: Daniel Kroening, kroening@kroening.com
 #define JSA_INV_SZ JSA_PREFIX "invariant_size"
 #define JSA_POST JSA_PREFIX "postcondition"
 #define JSA_POST_SZ JSA_PREFIX "postcondition_size"
+#define JSA_HEAP_CLONE JSA_PREFIX "heap_clone"
+#define JSA_HEAP_TAG "tag-" JSA_PREFIX "abstract_heap"
 
 /**
  * @brief
