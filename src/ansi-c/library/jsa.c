@@ -702,37 +702,6 @@ __CPROVER_jsa_inline void __CPROVER_jsa_query_execute(
 }
 #endif
 
-__CPROVER_jsa_inline _Bool __CPROVER_jsa_compare_up_to(
-    const __CPROVER_jsa_abstract_heapt * const h1,
-    const __CPROVER_jsa_abstract_heapt * const h2,
-    const __CPROVER_jsa_list_id_t list,
-    const __CPROVER_jsa_iterator_id_t it)
-{
-  if (__CPROVER_jsa_null == list) return true;
-  __CPROVER_jsa_node_id_t lhs_node=__CPROVER_jsa__internal_get_head_node(h1, list);
-  const __CPROVER_jsa_iteratort iterator=h1->iterators[it];
-  const __CPROVER_jsa_node_id_t it_node=iterator.node_id;
-  __CPROVER_jsa_node_id_t rhs_node=__CPROVER_jsa__internal_get_head_node(h2, list);
-  for (__CPROVER_jsa__internal_index_t i = 0; i < __CPROVER_JSA_MAX_NODES_PER_LIST; ++i)
-  {
-    if (lhs_node == it_node) break;
-    if (lhs_node == __CPROVER_jsa_null) return rhs_node == __CPROVER_jsa_null;
-    if (rhs_node == __CPROVER_jsa_null) return false;
-    if (__CPROVER_jsa__internal_is_concrete_node(lhs_node))
-    {
-      if (__CPROVER_jsa__internal_is_abstract_node(rhs_node)) return false;
-      if (h1->concrete_nodes[lhs_node].value != h2->concrete_nodes[rhs_node].value) return false;
-    }
-    else
-    {
-      // TODO: Implement comparison for abstract value segments!
-    }
-    lhs_node=__CPROVER_jsa__internal_get_next(h1, lhs_node);
-    rhs_node=__CPROVER_jsa__internal_get_next(h2, rhs_node);
-  }
-  return true;
-}
-
 #ifdef JSA_SYNTHESIS_H_
 typedef struct __CPROVER_jsa_invariant_instruction
 {
@@ -755,20 +724,14 @@ __CPROVER_jsa_inline _Bool __CPROVER_jsa_invariant_execute(
   return __CPROVER_jsa__internal_are_heaps_equal(h2, &tmp);
 }
 
-typedef struct __CPROVER_jsa_postcondition_instruction
-{
-  __CPROVER_jsa_opcodet opcode;
-} __CPROVER_jsa_postcondition_instructiont;
-
 __CPROVER_jsa_inline _Bool __CPROVER_jsa_postcondition_execute(
-    const __CPROVER_jsa_abstract_heapt * const h1,
+    __CPROVER_jsa_abstract_heapt * const h1,
     const __CPROVER_jsa_abstract_heapt * const h2,
-    const __CPROVER_jsa_postcondition_instructiont * const post,
+    __CPROVER_jsa_query_instructiont * const query,
     const __CPROVER_jsa__internal_index_t query_size)
 {
-  __CPROVER_jsa_assume(query_size == 1u);
-  const __CPROVER_jsa_postcondition_instructiont instr=post[0];
-  __CPROVER_jsa_assume(instr.opcode == 0); // Single instruction
+  query[0].op=__CPROVER_jsa_null; // Test that query holds for full list
+  __CPROVER_jsa_query_execute(h1, query, query_size);
   return __CPROVER_jsa__internal_are_heaps_equal(h1, h2);
 }
 #endif

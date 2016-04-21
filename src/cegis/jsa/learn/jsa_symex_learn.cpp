@@ -25,7 +25,6 @@ void jsa_symex_learnt::process(const counterexamplest &counterexamples,
   declare_jsa_predicates(program, max_solution_size);
   declare_jsa_query(program, max_solution_size);
   declare_jsa_invariant(program, max_solution_size);
-  declare_jsa_postcondition(program, max_solution_size);
   execute_jsa_learn_programs(program);
 }
 

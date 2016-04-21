@@ -91,8 +91,3 @@ void declare_jsa_invariant(jsa_programt &prog, const size_t max_size)
 {
   declare_size_and_prog(prog, JSA_INV, JSA_INV_SZ, jsa_query_type, 1);
 }
-
-void declare_jsa_postcondition(jsa_programt &prog, const size_t max_size)
-{
-  declare_size_and_prog(prog, JSA_POST, JSA_POST_SZ, jsa_query_type, 1);
-}

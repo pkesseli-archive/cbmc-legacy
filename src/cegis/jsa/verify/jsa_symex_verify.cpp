@@ -17,7 +17,7 @@ void jsa_symex_verifyt::process(const candidatet &candidate)
   program=original_program;
   insert_jsa_constraint(program, false);
   assume_renondet_inputs_valid(program);
-  if (candidate.postcondition.empty()) return;
+  if (candidate.query.empty()) return;
   // TODO: Implement!
   assert(false);
 }

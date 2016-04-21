@@ -42,13 +42,6 @@ public:
    * @details
    */
   goto_programt invariant;
-
-  /**
-   * @brief
-   *
-   * @details
-   */
-  goto_programt postcondition;
 };
 
 #endif /* CEGIS_JSA_SOLUTION_H_ */
