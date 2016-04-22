@@ -116,6 +116,10 @@ void add_ce_goto(jsa_programt &prog, const size_t ces_size)
   pos->targets.push_back(std::next(prog.synthetic_variables));
   const binary_relation_exprt guard(lhs, ID_lt, get_size_expr(ces_size));
   pos->guard=guard;
+  pos=body.insert_after(pos);
+  pos->source_location=jsa_builtin_source_location();
+  pos->type=goto_program_instruction_typet::ASSERT;
+  pos->guard=false_exprt();
   body.compute_target_numbers();
 }
 

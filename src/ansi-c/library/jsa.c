@@ -405,14 +405,14 @@ __CPROVER_jsa_inline void __CPROVER_jsa_assume_valid_list(
     const __CPROVER_jsa_abstract_heapt * const h,
     const __CPROVER_jsa_list_id_t list)
 {
-  // TODO: Implement
+  __CPROVER_jsa_assume(list < h->list_count);
 }
 
 __CPROVER_jsa_inline void __CPROVER_jsa_assume_valid_iterator(
     const __CPROVER_jsa_abstract_heapt * const h,
     const __CPROVER_jsa_iterator_id_t it)
 {
-  // TODO: Implement
+  __CPROVER_jsa_assume(it < h->iterator_count);
 }
 
 __CPROVER_jsa_inline void __CPROVER_jsa_assume_valid_heap(const __CPROVER_jsa_abstract_heapt * const h)
@@ -420,6 +420,8 @@ __CPROVER_jsa_inline void __CPROVER_jsa_assume_valid_heap(const __CPROVER_jsa_ab
   return;
   // Lists point to valid head nodes.
   // Enforce strictly ascending head node ids (unless null).
+  __CPROVER_jsa_assume(__CPROVER_JSA_MAX_LISTS > 0);
+  __CPROVER_jsa_assume(h->list_count < __CPROVER_JSA_MAX_LISTS);
   __CPROVER_jsa_id_t max_head_node=h->list_head_nodes[0];
   __CPROVER_jsa_assume(__CPROVER_jsa__internal_is_valid_node_id(max_head_node));
   __CPROVER_jsa_list_id_t list_count=0;
@@ -683,7 +685,6 @@ __CPROVER_jsa_inline void __CPROVER_jsa_query_execute(
     const __CPROVER_jsa_query_instructiont * const query,
     const __CPROVER_jsa__internal_index_t query_size)
 {
-  // TODO: __CPROVER_jsa_assume(...)
   const __CPROVER_jsa_list_id_t list=query[0].opcode;
   __CPROVER_jsa_assume_valid_list(heap, list);
   const __CPROVER_jsa_iterator_id_t it=query[0].op;
@@ -702,6 +703,15 @@ __CPROVER_jsa_inline void __CPROVER_jsa_query_execute(
       __CPROVER_jsa_assume(false); // TODO: Speed-up, slow-down?
     }
   }
+}
+
+__CPROVER_jsa_inline void __CPROVER_jsa_full_query_execute(
+    __CPROVER_jsa_abstract_heapt * const heap,
+    __CPROVER_jsa_query_instructiont * const query,
+    const __CPROVER_jsa__internal_index_t query_size)
+{
+  query[0].op=__CPROVER_jsa_null; // Apply query to full list.
+  __CPROVER_jsa_query_execute(heap, query, query_size);
 }
 #endif
 

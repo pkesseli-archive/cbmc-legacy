@@ -27,9 +27,11 @@ goto_programt::targett assume_less_than(goto_programt &body,
   pos=body.insert_after(pos);
   pos->source_location=jsa_builtin_source_location();
   pos->type=goto_program_instruction_typet::ASSUME;
-  const constant_exprt max_expr(from_integer(max, signed_int_type()));
+  const constant_exprt max_expr(from_integer(max, jsa_internal_index_type()));
   const binary_relation_exprt size_limit(lhs, ID_le, max_expr);
-  pos->guard=size_limit;
+  const exprt min(gen_one(jsa_internal_index_type()));
+  const binary_relation_exprt min_size(lhs, ID_ge, min);
+  pos->guard=and_exprt(min_size, size_limit);
   return pos;
 }
 

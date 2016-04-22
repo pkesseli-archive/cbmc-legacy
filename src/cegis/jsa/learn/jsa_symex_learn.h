@@ -15,6 +15,7 @@ Author: Daniel Kroening, kroening@kroening.com
 #include <cegis/jsa/options/jsa_program.h>
 #include <cegis/jsa/value/jsa_counterexample.h>
 #include <cegis/jsa/value/jsa_solution.h>
+#include <cegis/jsa/learn/instrument_pred_ops.h>
 
 /**
  * @brief
@@ -25,6 +26,8 @@ class jsa_symex_learnt
 {
   const jsa_programt &original_program;
   jsa_programt program;
+  pred_op_idst op_ids;
+  pred_op_idst const_op_ids;
 public:
   typedef jsa_counterexamplet counterexamplet;
   typedef jsa_counterexamplest counterexamplest;

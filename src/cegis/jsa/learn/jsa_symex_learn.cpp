@@ -1,8 +1,8 @@
 #include <cegis/jsa/learn/add_synthesis_library.h>
 #include <cegis/jsa/learn/insert_counterexample.h>
 #include <cegis/jsa/learn/insert_predicates_and_queries.h>
-#include <cegis/jsa/learn/instrument_pred_ops.h>
 #include <cegis/jsa/learn/execute_jsa_programs.h>
+#include <cegis/jsa/learn/extract_candidate.h>
 #include <cegis/jsa/learn/jsa_symex_learn.h>
 
 // XXX: Debug
@@ -24,7 +24,7 @@ void jsa_symex_learnt::process(const counterexamplest &counterexamples,
   program=original_program;
   const goto_programt::targetst pred_ops(collect_pred_ops(program));
   add_jsa_synthesis_library(program, max_solution_size, pred_ops.size());
-  instrument_pred_ops(program, pred_ops);
+  instrument_pred_ops(program, pred_ops, op_ids, const_op_ids);
   insert_counterexamples(program, counterexamples);
   declare_jsa_predicates(program, max_solution_size);
   declare_jsa_query(program, max_solution_size);
@@ -39,9 +39,9 @@ void jsa_symex_learnt::set_word_width(const size_t word_width_in_bits)
 }
 
 void jsa_symex_learnt::convert(candidatet &current_candidate,
-    const goto_tracet &trace, const size_t max_solution_size)
+    const goto_tracet &trace, const size_t max_sz)
 {
-  // TODO: Implement
+  extract_jsa_candidate(current_candidate, trace, max_sz, op_ids, const_op_ids);
 
   // XXX: Debug
   std::cout << "<jsa_symex_verifyt>" << std::endl;

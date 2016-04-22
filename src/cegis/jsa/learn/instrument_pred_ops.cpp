@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include <ansi-c/c_types.h>
 #include <util/arith_tools.h>
 #include <util/type_eq.h>
@@ -50,10 +52,20 @@ bool is_const(const symbol_exprt &symbol)
   if (std::string::npos != id.find(JSA_CONSTANT_PREFIX)) return true;
   return symbol.type().get_bool(ID_C_constant);
 }
+
+void mark_dead(goto_programt &body, goto_programt::targett pos)
+{
+  const irep_idt &id=get_affected_variable(*pos);
+  goto_programt::instructionst &instrs=body.instructions;
+  const goto_programt::targett end(instrs.end());
+  pos=std::find_if(pos, end, [&id](const goto_programt::instructiont &instr)
+  { return DEAD == instr.type && id == get_affected_variable(instr);});
+  pos=body.insert_after(pos);
+}
 }
 
-std::map<size_t, symbol_exprt> instrument_pred_ops(jsa_programt &prog,
-    const goto_programt::targetst &ops)
+void instrument_pred_ops(jsa_programt &prog, const goto_programt::targetst &ops,
+    pred_op_idst &op_ids, pred_op_idst &const_op_ids)
 {
   const symbol_tablet &st=prog.st;
   goto_functionst &gf=prog.gf;
@@ -62,16 +74,17 @@ std::map<size_t, symbol_exprt> instrument_pred_ops(jsa_programt &prog,
   const typet sz_type(signed_int_type());
   size_t op_index=0;
   size_t res_op_idx=0;
-  std::map<size_t, symbol_exprt> result;
   for (goto_programt::targett op : ops)
   {
     const bool is_synth_begin=op == prog.synthetic_variables;
     const symbol_exprt var(st.lookup(get_affected_variable(*op)).symbol_expr());
+    const_op_ids.insert(std::make_pair(op_index, var));
     const constant_exprt op_index_expr(from_integer(op_index++, sz_type));
     const index_exprt op_elem(pred_ops, op_index_expr);
     op=jsa_assign(st, gf, op, op_elem, address_of_exprt(var));
     if (!is_const(var))
     {
+      op_ids.insert(std::make_pair(res_op_idx, var));
       const constant_exprt res_op_idx_expr(from_integer(res_op_idx++, sz_type));
       const index_exprt res_op_elem(pred_res_ops, res_op_idx_expr);
       op=jsa_assign(st, gf, op, res_op_elem, address_of_exprt(var));
@@ -79,5 +92,4 @@ std::map<size_t, symbol_exprt> instrument_pred_ops(jsa_programt &prog,
     if (is_synth_begin) prog.synthetic_variables=op;
   }
   // TODO: dead
-  return result;
 }
