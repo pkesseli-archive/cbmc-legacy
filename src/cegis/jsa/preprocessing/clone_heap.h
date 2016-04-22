@@ -18,7 +18,7 @@ Author: Daniel Kroening, kroening@kroening.com
  * @param gf
  * @return
  */
-const class symbol_exprt &get_user_heap_variable(const class goto_functionst &gf);
+const class symbol_exprt &get_user_heap(const class goto_functionst &gf);
 
 /**
  * @brief
@@ -28,7 +28,17 @@ const class symbol_exprt &get_user_heap_variable(const class goto_functionst &gf
  * @param st
  * @return
  */
-symbol_exprt get_cloned_heap_variable(const class symbol_tablet &st);
+symbol_exprt get_queried_heap(const class symbol_tablet &st);
+
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @param st
+ * @return
+ */
+symbol_exprt get_org_heap(const symbol_tablet &st);
 
 /**
  * @brief

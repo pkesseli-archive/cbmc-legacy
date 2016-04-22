@@ -28,7 +28,8 @@ Author: Daniel Kroening, kroening@kroening.com
 #define JSA_INV_SZ JSA_INV "_size"
 #define JSA_POST JSA_PREFIX "postcondition"
 #define JSA_POST_SZ JSA_POST "_size"
-#define JSA_HEAP_CLONE JSA_PREFIX "heap_clone"
+#define JSA_QUERIED_HEAP JSA_PREFIX "queried_heap"
+#define JSA_ORG_HEAP JSA_PREFIX "org_heap"
 #define JSA_HEAP_TAG "tag-" JSA_PREFIX "abstract_heap"
 
 /**

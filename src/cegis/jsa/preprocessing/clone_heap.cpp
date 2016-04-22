@@ -24,7 +24,7 @@ bool is_heap(const goto_programt::instructiont &instr)
 }
 }
 
-const symbol_exprt &get_user_heap_variable(const goto_functionst &gf)
+const symbol_exprt &get_user_heap(const goto_functionst &gf)
 {
   const goto_programt::instructionst &i=get_entry_body(gf).instructions;
   const goto_programt::const_targett end(i.end());
@@ -33,16 +33,31 @@ const symbol_exprt &get_user_heap_variable(const goto_functionst &gf)
   return to_symbol_expr(to_code_decl(p->code).symbol());
 }
 
-symbol_exprt get_cloned_heap_variable(const symbol_tablet &st)
+symbol_exprt get_queried_heap(const symbol_tablet &st)
 {
-  return st.lookup(get_cegis_meta_name(JSA_HEAP_CLONE)).symbol_expr();
+  return st.lookup(get_cegis_meta_name(JSA_QUERIED_HEAP)).symbol_expr();
+}
+
+symbol_exprt get_org_heap(const symbol_tablet &st)
+{
+  return st.lookup(get_cegis_meta_name(JSA_ORG_HEAP)).symbol_expr();
 }
 
 void clone_heap(jsa_programt &prog)
 {
   symbol_tablet &st=prog.st;
-  goto_programt &body=get_entry_body(prog.gf);
-  goto_programt::targett pos=prog.inductive_assumption;
+  goto_functionst &gf=prog.gf;
+  goto_programt &body=get_entry_body(gf);
+  goto_programt::targett pos=prog.base_case;
   pos=insert_before_preserve_labels(body, pos);
-  declare_jsa_meta_variable(st, pos, JSA_HEAP_CLONE, jsa_heap_type());
+  const symbol_typet heap_type(jsa_heap_type());
+  declare_jsa_meta_variable(st, pos, JSA_QUERIED_HEAP, heap_type);
+  jsa_assign(st, gf, pos, get_queried_heap(st), get_user_heap(gf));
+  pos=insert_before_preserve_labels(body, prog.inductive_assumption);
+  declare_jsa_meta_variable(st, pos, JSA_ORG_HEAP, heap_type);
+  pos=jsa_assign(st, gf, pos, get_org_heap(st), get_user_heap(gf));
+  jsa_assign(st, gf, pos, get_queried_heap(st), get_org_heap(st));
+  pos=std::prev(prog.inductive_step);
+  pos=jsa_assign(st, gf, pos, get_queried_heap(st), get_org_heap(st));
+  move_labels(body, prog.inductive_step, pos);
 }
