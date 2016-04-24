@@ -311,6 +311,17 @@ __CPROVER_jsa_inline void __CPROVER_jsa__internal_remove(
   __CPROVER_jsa__internal_set_previous(heap, next_node_id, previous_node_id);
 }
 
+// Iterator utility functions
+__CPROVER_jsa_inline void __CPROVER_jsa__internal_make_null(
+    __CPROVER_jsa_abstract_heapt * const heap,
+    const __CPROVER_jsa_iterator_id_t it)
+{
+  heap->iterators[it].index=0;
+  heap->iterators[it].previous_index=0;
+  heap->iterators[it].node_id=__CPROVER_jsa_null;
+  heap->iterators[it].previous_node_id=__CPROVER_jsa_null;
+}
+
 // Heap sanity functions
 __CPROVER_jsa_inline _Bool __CPROVER_jsa__internal_is_valid_node_id(const __CPROVER_jsa_node_id_t node_id)
 {
@@ -698,8 +709,21 @@ __CPROVER_jsa_inline void __CPROVER_jsa_full_query_execute(
     __CPROVER_jsa_query_instructiont * const query,
     const __CPROVER_jsa__internal_index_t query_size)
 {
-  query[0].op=__CPROVER_jsa_null; // Apply query to full list.
+  const __CPROVER_jsa_iterator_id_t it=query[0].op;
+  __CPROVER_jsa_assume_valid_iterator(heap, it);
+  __CPROVER_jsa__internal_make_null(heap, it); // Apply query to full list.
   __CPROVER_jsa_query_execute(heap, query, query_size);
+}
+
+__CPROVER_jsa_inline void __CPROVER_jsa_synchronise_iterator(
+    const __CPROVER_jsa_abstract_heapt * const heap,
+    __CPROVER_jsa_abstract_heapt * const queried_heap,
+    const __CPROVER_jsa_query_instructiont * const query,
+    const __CPROVER_jsa__internal_index_t query_size)
+{
+  const __CPROVER_jsa_iterator_id_t it=query[0].op;
+  __CPROVER_jsa_assume_valid_iterator(heap, it);
+  queried_heap->iterators[it]=heap->iterators[it];
 }
 #endif
 

@@ -14,7 +14,7 @@ int main(void)
   const __CPROVER_jsa_list_id_t __CPROVER_jsa_list_list;
   __CPROVER_jsa_assume_valid_list(&heap, __CPROVER_jsa_list_list);
   const __CPROVER_jsa_data_t limit;
-  for (__CPROVER_jsa_iterator_id_t __CPROVER_jsa_iterator_it=__CPROVER_jsa_iterator(&heap, __CPROVER_jsa_list_list);
+  for (const __CPROVER_jsa_iterator_id_t __CPROVER_jsa_iterator_it=__CPROVER_jsa_iterator(&heap, __CPROVER_jsa_list_list);
        __CPROVER_jsa_hasNext(&heap, __CPROVER_jsa_iterator_it);)
   {
     const __CPROVER_jsa_data_t value=__CPROVER_jsa_next(&heap, __CPROVER_jsa_iterator_it);
