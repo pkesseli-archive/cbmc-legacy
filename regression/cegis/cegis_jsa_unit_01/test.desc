@@ -1,0 +1,7 @@
+CORE
+main.c
+--gcc -D __CPROVER --unwind 2
+^EXIT=0$
+^SIGNAL=0$
+--
+^warning: ignoring

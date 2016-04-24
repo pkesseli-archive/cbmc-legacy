@@ -105,6 +105,8 @@ void add_jsa_synthesis_library(jsa_programt &prog, const size_t max_sz,
 {
   std::string library_text("#define JSA_SYNTHESIS_H_");
   library_text+="\n#define __CPROVER_JSA_MAX_QUERY_SIZE ";
+  library_text+=std::to_string(max_sz + 1);
+  library_text+="\n#define __CPROVER_JSA_MAX_PRED_SIZE ";
   library_text+=std::to_string(max_sz);
   library_text+='\n';
   library_text+=get_sizes(prog.st);

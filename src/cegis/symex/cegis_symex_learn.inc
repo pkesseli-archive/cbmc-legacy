@@ -8,6 +8,10 @@
 #include <cegis/cegis-util/constant_width.h>
 #include <cegis/cegis-util/temporary_output_block.h>
 
+// XXX: Debug
+#include <iostream>
+// XXX: Debug
+
 #define CONSTANT_WIDTH_OPTION "max-constant-width"
 #define CEGIS_DEFAULT_MIN_WORD_WIDTH 4u
 
@@ -50,7 +54,13 @@ safety_checkert::resultt cegis_learn_run_bmc(goto_tracet &trace,
   bmct bmc(opt, st, msg, solver->prop_conv());
 
   const temporary_output_blockt block_temporary;
+  // XXX: Debug
+  std::cout << "<cegis_symex_learn_trace>" << std::endl;
+  // XXX: Debug
   const safety_checkert::resultt bmc_result=bmc(gf);
+  // XXX: Debug
+  std::cout << "</cegis_symex_learn_trace>" << std::endl;
+  // XXX: Debug
   block_temporary.release();
   if (safety_checkert::UNSAFE != bmc_result) return bmc_result;
   trace=bmc.safety_checkert::error_trace;
@@ -68,7 +78,13 @@ safety_checkert::resultt cegis_symex_learnt<preproct, learn_configurationt>::run
   bmct bmc(opt, st, msg, solver->prop_conv());
 
   const temporary_output_blockt block_temporary;
+  // XXX: Debug
+  std::cout << "<cegis_symex_learn_trace>" << std::endl;
+  // XXX: Debug
   const safety_checkert::resultt bmc_result=bmc(config.get_goto_functions());
+  // XXX: Debug
+  std::cout << "</cegis_symex_learn_trace>" << std::endl;
+  // XXX: Debug
   block_temporary.release();
   if (safety_checkert::UNSAFE != bmc_result) return bmc_result;
   const goto_tracet &trace=bmc.safety_checkert::error_trace;
@@ -96,7 +112,9 @@ bool cegis_symex_learnt<preproct, learn_configurationt>::learn_at_current_size()
 {
   word_width=calculate_word_width(options);
   //null_message_handlert msg;
+  // XXX: Debug
   ui_message_handlert msg(ui_message_handlert::PLAIN, "");
+  // XXX: Debug
   optionst o(options);
   o.set_option("unwinding-assertions", false);
   const symbol_tablet &st=config.get_symbol_table();
@@ -118,6 +136,12 @@ bool cegis_symex_learnt<preproct, learn_configurationt>::learn_at_current_size()
     }
   }
   config.process(counterexamples, current_solution_size);
+  // XXX: Debug
+  const namespacet ns(st);
+  std::cout << "<cegis_symex_learn_prog>" << std::endl;
+  gf.output(ns, std::cout);
+  std::cout << "</cegis_symex_learn_prog>" << std::endl;
+  // XXX: Debug
   if (safety_checkert::ERROR == full_width_result) full_width_result=
       cegis_learn_run_bmc(full_width_trace, st, gf, msg, o);
   if (safety_checkert::UNSAFE != full_width_result) return false;
