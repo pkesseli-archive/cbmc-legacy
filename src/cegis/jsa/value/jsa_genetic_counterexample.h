@@ -23,8 +23,9 @@ Author: Daniel Kroening, kroening@kroening.com
 class jsa_genetic_counterexamplet
 {
 public:
-  __CPROVER_jsa_abstract_heapt init;
-  __CPROVER_jsa_abstract_heapt inductive;
+  __CPROVER_jsa_abstract_heapt init_org;
+  __CPROVER_jsa_abstract_heapt inductive_org;
+  __CPROVER_jsa_abstract_heapt inductive_body_result;
 
   typedef std::map<unsigned, __CPROVER_jsa_word_t> assignments_per_program_locationt;
   assignments_per_program_locationt assignments_per_program_location;

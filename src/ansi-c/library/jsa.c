@@ -470,7 +470,6 @@ __CPROVER_jsa_inline void __CPROVER_jsa_assume_valid_heap(const __CPROVER_jsa_ab
     __CPROVER_jsa_assume(r.min <= r.max);
   }
   // Iterators point to valid nodes
-  __CPROVER_jsa_iterator_id_t iterator_count=0;
   __CPROVER_jsa_assume(h->iterator_count <= __CPROVER_JSA_MAX_ITERATORS);
   for (__CPROVER_jsa_iterator_id_t it=0; it < __CPROVER_JSA_MAX_ITERATORS; ++it)
   {
@@ -539,12 +538,7 @@ __CPROVER_jsa_inline __CPROVER_jsa_iterator_id_t __CPROVER_jsa_iterator(
 }
 
 /* FUNCTION: __CPROVER_jsa_hasNext */
-__CPROVER_jsa_inline _Bool __CPROVER_jsa_hasNext(
-    const __CPROVER_jsa_abstract_heapt * const heap,
-    const __CPROVER_jsa_iterator_id_t it)
-{
-  return __CPROVER_jsa_null != heap->iterators[it].node_id;
-}
+#define __CPROVER_jsa_hasNext(heap, it) __CPROVER_jsa_null != (heap)->iterators[it].node_id
 
 /* FUNCTION: __CPROVER_jsa_next */
 __CPROVER_jsa_inline __CPROVER_jsa_data_t __CPROVER_jsa_next(
@@ -740,8 +734,10 @@ __CPROVER_jsa_inline _Bool __CPROVER_jsa_invariant_execute(
     const __CPROVER_jsa__internal_index_t inv_size)
 {
   __CPROVER_jsa_assume(inv_size == 1u);
-  const __CPROVER_jsa_invariant_instructiont instr=inv[0];
-  __CPROVER_jsa_assume(instr.opcode == 0); // Single instruction
+  //__CPROVER_jsa_assume(inv[0].opcode == 0); // Single instruction
+#ifdef __CPROVER
+  __CPROVER_assert(inv[0].opcode == 0, "");
+#endif
   return __CPROVER_jsa__internal_are_heaps_equal(heap, queried_heap);
 }
 #endif

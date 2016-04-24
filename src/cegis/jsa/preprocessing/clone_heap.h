@@ -49,4 +49,20 @@ symbol_exprt get_org_heap(const symbol_tablet &st);
  */
 void clone_heap(class jsa_programt &prog);
 
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @param st
+ * @param body
+ * @param pos
+ * @param heap_ptr
+ */
+goto_programt::targett assume_valid_heap(
+    const symbol_tablet &st,
+    goto_programt &body,
+    goto_programt::targett pos,
+    const exprt &heap_ptr);
+
 #endif /* CEGIS_JSA_CLONE_HEAP_H_ */

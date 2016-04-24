@@ -56,8 +56,26 @@ void clone_heap(jsa_programt &prog)
   pos=insert_before_preserve_labels(body, prog.inductive_assumption);
   declare_jsa_meta_variable(st, pos, JSA_ORG_HEAP, heap_type);
   pos=jsa_assign(st, gf, pos, get_org_heap(st), get_user_heap(gf));
+  const side_effect_expr_nondett nondet_heap(heap_type);
+  pos=jsa_assign(st, gf, pos, get_user_heap(gf), nondet_heap);
+  pos=assume_valid_heap(st, body, pos, address_of_exprt(get_user_heap(gf)));
   jsa_assign(st, gf, pos, get_queried_heap(st), get_org_heap(st));
   pos=std::prev(prog.inductive_step);
   pos=jsa_assign(st, gf, pos, get_queried_heap(st), get_org_heap(st));
   move_labels(body, prog.inductive_step, pos);
+}
+
+#define VALID_HEAP JSA_PREFIX "assume_valid_heap"
+
+goto_programt::targett assume_valid_heap(const symbol_tablet &st,
+    goto_programt &body, goto_programt::targett pos, const exprt &heap_ptr)
+{
+  pos=body.insert_after(pos);
+  pos->source_location=jsa_builtin_source_location();
+  pos->type=goto_program_instruction_typet::FUNCTION_CALL;
+  code_function_callt call;
+  call.function()=st.lookup(VALID_HEAP).symbol_expr();
+  call.arguments().push_back(heap_ptr);
+  pos->code=call;
+  return pos;
 }

@@ -46,16 +46,16 @@ int main(void)
   __CPROVER_JSA_PRED_RESULT_OPS[2]=&tmp2;
   unsigned char query_size=2;
   __CPROVER_assume(query_size >= 1 && query_size <= __CPROVER_JSA_MAX_QUERY_SIZE);
-  __CPROVER_jsa_query_instructiont query[] = { { .opcode=0, .op=0 }, { .opcode=0, .op=0 } };
+  __CPROVER_jsa_query_instructiont __CPROVER_jsa_query[] = { { .opcode=0, .op=0 }, { .opcode=0, .op=0 } };
   unsigned char invariant_size;
   __CPROVER_assume(invariant_size >= 1 && invariant_size <= 1);
   __CPROVER_jsa_invariant_instructiont invariant[] = { { .opcode=0 } };
   __CPROVER_jsa_abstract_heapt queried_heap=heap;
-  __CPROVER_jsa_query_execute(&queried_heap, query, query_size);
+  __CPROVER_jsa_query_execute(&queried_heap, __CPROVER_jsa_query, query_size);
   _Bool base_case=__CPROVER_jsa_invariant_execute(&heap, &queried_heap, invariant, invariant_size);
   __CPROVER_assume(base_case);
 
-  __CPROVER_jsa_abstract_heapt org_heap=
+  const __CPROVER_jsa_abstract_heapt __tmp=
   {
     .concrete_nodes={ { .next=255, .previous=255, .list=0, .value=16 } },
     .abstract_nodes=((struct __CPROVER_jsa_abstract_node *)0),
@@ -65,10 +65,10 @@ int main(void)
     .list_head_nodes={ 0 },
     .list_count=1
   };
-  __CPROVER_jsa_assume_valid_heap(&org_heap);
+  heap=__tmp;
+  __CPROVER_jsa_abstract_heapt org_heap = heap;
   queried_heap=org_heap;
-  __CPROVER_jsa_query_execute(&queried_heap, query, query_size);
-  heap=nondet_heap();
+  __CPROVER_jsa_query_execute(&queried_heap, __CPROVER_jsa_query, query_size);
   _Bool invariant_assume=__CPROVER_jsa_invariant_execute(&heap, &queried_heap, invariant, invariant_size);
   __CPROVER_assume(invariant_assume);
 
@@ -82,15 +82,15 @@ int main(void)
     }
 
     queried_heap=org_heap;
-    __CPROVER_jsa_synchronise_iterator(&heap, &queried_heap, query, query_size);
-    __CPROVER_jsa_query_execute(&queried_heap, query, query_size);
+    __CPROVER_jsa_synchronise_iterator(&heap, &queried_heap, __CPROVER_jsa_query, query_size);
+    __CPROVER_jsa_query_execute(&queried_heap, __CPROVER_jsa_query, query_size);
     _Bool invariant_step=__CPROVER_jsa_invariant_execute(&heap, &queried_heap, invariant, invariant_size);
     __CPROVER_assume(invariant_step);
   }
   else
   {
     queried_heap=org_heap;
-    __CPROVER_jsa_full_query_execute(&queried_heap, query, query_size);
+    __CPROVER_jsa_full_query_execute(&queried_heap, __CPROVER_jsa_query, query_size);
     _Bool property_entailment=__CPROVER_jsa_invariant_execute(&org_heap, &queried_heap, invariant, invariant_size);
     __CPROVER_assume(invariant_assume);
   }

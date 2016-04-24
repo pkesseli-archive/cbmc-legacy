@@ -17,15 +17,27 @@ symbol_exprt as_symbol(const symbol_tablet &st, const irep_idt &id)
   return st.lookup(id).symbol_expr();
 }
 
-void restrict_true(const jsa_programt &prog, goto_programt &body,
+const notequal_exprt get_base_case(const jsa_programt &prog)
+{
+  const irep_idt &id=get_affected_variable(*prog.base_case);
+  const symbol_exprt symbol(prog.st.lookup(id).symbol_expr());
+  return notequal_exprt(symbol, gen_zero(symbol.type()));
+}
+
+void imply_true(const jsa_programt &prog, goto_programt &body,
     const goto_programt::targett &pos,
     const goto_program_instruction_typet instr_type)
 {
-  const goto_programt::targett assume=body.insert_after(pos);
-  assume->type=instr_type;
+  const goto_programt::targett restriction=body.insert_after(pos);
+  restriction->type=instr_type;
   const symbol_exprt smb(as_symbol(prog.st, get_affected_variable(*pos)));
-  assume->guard=notequal_exprt(smb, gen_zero(smb.type()));
-  assume->source_location=jsa_builtin_source_location();
+  const notequal_exprt consequent(smb, gen_zero(smb.type()));
+  const irep_idt &sid=get_affected_variable(*prog.inductive_assumption);
+  const symbol_exprt si(as_symbol(prog.st, sid));
+  const equal_exprt antecedent(si, gen_zero(si.type()));
+  const or_exprt safety_implication(antecedent, consequent);
+  restriction->guard=and_exprt(get_base_case(prog), safety_implication);
+  restriction->source_location=jsa_builtin_source_location();
 }
 
 void add_guard_goto(const jsa_programt &prog, goto_programt &body)
@@ -48,9 +60,7 @@ void insert_jsa_constraint(jsa_programt &prog, const bool use_assume)
 {
   const goto_program_instruction_typet instr_type(use_assume ? ASSUME : ASSERT);
   goto_programt &body=get_entry_body(prog.gf);
-  restrict_true(prog, body, prog.base_case, instr_type);
-  restrict_true(prog, body, prog.inductive_assumption, ASSUME);
-  restrict_true(prog, body, prog.inductive_step, instr_type);
-  restrict_true(prog, body, prog.property_entailment, instr_type);
+  imply_true(prog, body, prog.inductive_step, instr_type);
+  imply_true(prog, body, prog.property_entailment, instr_type);
   add_guard_goto(prog, body);
 }

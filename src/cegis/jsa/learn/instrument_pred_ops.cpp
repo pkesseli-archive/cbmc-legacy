@@ -2,6 +2,7 @@
 
 #include <ansi-c/c_types.h>
 #include <util/arith_tools.h>
+#include <util/expr_util.h>
 #include <util/type_eq.h>
 
 #include <cegis/cegis-util/program_helper.h>
@@ -53,14 +54,19 @@ bool is_const(const symbol_exprt &symbol)
   return symbol.type().get_bool(ID_C_constant);
 }
 
-void mark_dead(goto_programt &body, goto_programt::targett pos)
+void mark_dead(goto_programt &body, goto_programt::targett pos,
+    const index_exprt &op_elem)
 {
   const irep_idt &id=get_affected_variable(*pos);
   goto_programt::instructionst &instrs=body.instructions;
   const goto_programt::targett end(instrs.end());
   pos=std::find_if(pos, end, [&id](const goto_programt::instructiont &instr)
   { return DEAD == instr.type && id == get_affected_variable(instr);});
+  if (end != pos) return;
   pos=body.insert_after(pos);
+  pos->type=goto_program_instruction_typet::ASSIGN;
+  pos->source_location=jsa_builtin_source_location();
+  pos->code=code_assignt(op_elem, gen_zero(op_elem.type()));
 }
 }
 
@@ -69,27 +75,29 @@ void instrument_pred_ops(jsa_programt &prog, const goto_programt::targetst &ops,
 {
   const symbol_tablet &st=prog.st;
   goto_functionst &gf=prog.gf;
+  goto_programt &body=get_entry_body(gf);
   const symbol_exprt pred_ops(st.lookup(PRED_OPS).symbol_expr());
   const symbol_exprt pred_res_ops(st.lookup(PRED_RES_OPS).symbol_expr());
   const typet sz_type(signed_int_type());
   size_t op_index=0;
   size_t res_op_idx=0;
-  for (goto_programt::targett op : ops)
+  for (const goto_programt::targett &op : ops)
   {
-    const bool is_synth_begin=op == prog.synthetic_variables;
     const symbol_exprt var(st.lookup(get_affected_variable(*op)).symbol_expr());
+    const address_of_exprt var_ptr(var);
     const_op_ids.insert(std::make_pair(op_index, var));
     const constant_exprt op_index_expr(from_integer(op_index++, sz_type));
     const index_exprt op_elem(pred_ops, op_index_expr);
-    op=jsa_assign(st, gf, op, op_elem, address_of_exprt(var));
+    mark_dead(body, op, op_elem);
+    goto_programt::targett pos=jsa_assign(st, gf, op, op_elem, var_ptr);
     if (!is_const(var))
     {
       op_ids.insert(std::make_pair(res_op_idx, var));
       const constant_exprt res_op_idx_expr(from_integer(res_op_idx++, sz_type));
       const index_exprt res_op_elem(pred_res_ops, res_op_idx_expr);
-      op=jsa_assign(st, gf, op, res_op_elem, address_of_exprt(var));
+      mark_dead(body, op, res_op_elem);
+      pos=jsa_assign(st, gf, pos, res_op_elem, address_of_exprt(var));
     }
-    if (is_synth_begin) prog.synthetic_variables=op;
+    if (op == prog.synthetic_variables) prog.synthetic_variables=op;
   }
-  // TODO: dead
 }

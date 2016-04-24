@@ -12,6 +12,7 @@
 #define EXEC_INV "__CPROVER_jsa_invariant_execute"
 #define EXEC_QUERY "__CPROVER_jsa_query_execute"
 #define EXEC_FULL "__CPROVER_jsa_full_query_execute"
+#define SYNC "__CPROVER_jsa_synchronise_iterator"
 
 namespace
 {
@@ -58,6 +59,24 @@ void make_query_call(const symbol_tablet &st, goto_functionst &gf,
   args.push_back(st.lookup(get_cegis_meta_name(JSA_QUERY_SZ)).symbol_expr());
   pos->code=call;
 }
+
+void make_sync_call(const symbol_tablet &st, goto_functionst &gf,
+    goto_programt::targett pos)
+{
+  goto_programt &body=get_entry_body(gf);
+  pos=insert_before_preserve_labels(body, pos);
+  pos->type=goto_program_instruction_typet::FUNCTION_CALL;
+  pos->source_location=jsa_builtin_source_location();
+  code_function_callt call;
+  call.function()=st.lookup(SYNC).symbol_expr();
+  code_function_callt::argumentst &args=call.arguments();
+  args.push_back(address_of_exprt(get_user_heap(gf)));
+  args.push_back(address_of_exprt(get_queried_heap(st)));
+  const symbol_exprt p(st.lookup(get_cegis_meta_name(JSA_QUERY)).symbol_expr());
+  args.push_back(address_of_exprt(index_exprt(p, gen_zero(signed_int_type()))));
+  args.push_back(st.lookup(get_cegis_meta_name(JSA_QUERY_SZ)).symbol_expr());
+  pos->code=call;
+}
 }
 
 void execute_jsa_learn_programs(jsa_programt &prog)
@@ -69,6 +88,7 @@ void execute_jsa_learn_programs(jsa_programt &prog)
   make_constraint_call(st, gf, prog.inductive_assumption);
   make_query_call(st, gf, prog.inductive_assumption);
   make_constraint_call(st, gf, prog.inductive_step);
+  make_sync_call(st, gf, prog.inductive_step);
   make_query_call(st, gf, prog.inductive_step);
   make_constraint_call(st, gf, prog.property_entailment);
   make_query_call(st, gf, prog.property_entailment, true);

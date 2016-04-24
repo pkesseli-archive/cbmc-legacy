@@ -2,9 +2,9 @@
 
 #include <cegis/jsa/options/jsa_program.h>
 #include <cegis/jsa/instrument/jsa_meta_data.h>
+#include <cegis/jsa/preprocessing/clone_heap.h>
 #include <cegis/jsa/verify/renondet_inputs.h>
 
-#define VALID_HEAP JSA_PREFIX "assume_valid_heap"
 #define VALID_LIST JSA_PREFIX "assume_valid_list"
 #define VALID_IT JSA_PREFIX "assume_valid_iterator"
 
@@ -54,7 +54,7 @@ void assume_renondet_inputs_valid(jsa_programt &prog)
     if (is_jsa_heap(type))
     {
       h=address_of_exprt(lhs);
-      call_assume(st, VALID_HEAP, h, body, pos);
+      assume_valid_heap(st, body, pos, h);
     } else if (is_jsa_list(id)) call_assume(st, VALID_LIST, h, lhs, body, pos);
     else if (is_jsa_iterator(id)) call_assume(st, VALID_IT, h, lhs, body, pos);
   }
