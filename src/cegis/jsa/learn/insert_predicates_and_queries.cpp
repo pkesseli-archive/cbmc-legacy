@@ -16,8 +16,6 @@
 
 #define PREDS "__CPROVER_JSA_PREDICATES"
 #define PRED_SIZES "__CPROVER_JSA_PREDICATE_SIZES"
-#define LOCAL_PRED "__CPROVER_jsa_predicate_"
-#define LOCAL_SIZE_SUFFIX "_size"
 
 namespace
 {
@@ -68,9 +66,9 @@ void declare_jsa_predicates(jsa_programt &prog, const size_t max_sz)
   for (mp_integer::ullong_t i=0; i < num_preds; ++i)
   {
     goto_programt::targett &pos=prog.synthetic_variables;
-    std::string base_name(LOCAL_PRED);
+    std::string base_name(JSA_PRED_PREFIX);
     base_name+=std::to_string(i);
-    const std::string sz_name(base_name + LOCAL_SIZE_SUFFIX);
+    const std::string sz_name(base_name + JSA_SIZE_SUFFIX);
     declare_size_and_prog(prog, base_name, sz_name, jsa_predicate_type, max_sz);
     const constant_exprt index(from_integer(i, sz_type));
     const index_exprt preds_elem(preds, index);

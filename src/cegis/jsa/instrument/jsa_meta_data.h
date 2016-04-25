@@ -31,6 +31,8 @@ Author: Daniel Kroening, kroening@kroening.com
 #define JSA_QUERIED_HEAP JSA_PREFIX "queried_heap"
 #define JSA_ORG_HEAP JSA_PREFIX "org_heap"
 #define JSA_HEAP_TAG "tag-" JSA_PREFIX "abstract_heap"
+#define JSA_PRED_PREFIX JSA_PREFIX "predicate_"
+#define JSA_SIZE_SUFFIX "_size"
 
 /**
  * @brief
