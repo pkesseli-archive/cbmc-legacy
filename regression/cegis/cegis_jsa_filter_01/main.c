@@ -5,6 +5,7 @@
 #define __CPROVER_JSA_MAX_LISTS 1u
 #endif
 
+//#define JSA_SYNTHESIS_H_
 #include "../../../src/ansi-c/library/jsa.c"
 
 int main(void)

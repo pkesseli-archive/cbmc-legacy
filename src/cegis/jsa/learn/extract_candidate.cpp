@@ -15,15 +15,9 @@ array_exprt find_query(const goto_tracet &trace)
   const std::string query_name(get_cegis_meta_name(JSA_QUERY));
   for (const goto_trace_stept &step : trace.steps)
   {
-    //if (goto_trace_stept::ASSIGNMENT != step.type) continue;
+    if (goto_trace_stept::DECL != step.type) continue;
     if (query_name != id2string(step.lhs_object.get_identifier())) continue;
-    // XXX: Debug
-    const symbol_tablet st;
-    const namespacet ns(st);
-    step.output(ns, std::cout);
-    std::cout << "<value>" << step.full_lhs_value.to_string() << "</value>" << std::endl;
-    // XXX: Debug
-    //return to_array_expr(step.full_lhs_value);
+    return to_array_expr(step.full_lhs_value);
   }
   assert(!"JSA query not found.");
 }

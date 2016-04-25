@@ -734,10 +734,7 @@ __CPROVER_jsa_inline _Bool __CPROVER_jsa_invariant_execute(
     const __CPROVER_jsa__internal_index_t inv_size)
 {
   __CPROVER_jsa_assume(inv_size == 1u);
-  //__CPROVER_jsa_assume(inv[0].opcode == 0); // Single instruction
-#ifdef __CPROVER
-  __CPROVER_assert(inv[0].opcode == 0, "");
-#endif
+  __CPROVER_jsa_assume(inv[0].opcode == 0); // Single instruction
   return __CPROVER_jsa__internal_are_heaps_equal(heap, queried_heap);
 }
 #endif

@@ -1,5 +1,4 @@
 #include <ansi-c/c_types.h>
-#include <util/symbol_table.h>
 
 #include <cegis/jsa/instrument/jsa_meta_data.h>
 #include <cegis/jsa/value/jsa_types.h>
@@ -15,39 +14,39 @@ typet jsa_internal_index_type()
 }
 
 #define PRED_INSTR_TYPE "tag-__CPROVER_jsa_pred_instruction"
-const typet &jsa_predicate_instruction_type(const symbol_tablet &st)
+symbol_typet jsa_predicate_instruction_type()
 {
-  return st.lookup(PRED_INSTR_TYPE).type;
+  return symbol_typet(PRED_INSTR_TYPE);
 }
 
-array_typet jsa_predicate_type(const symbol_tablet &st, const exprt &size)
+array_typet jsa_predicate_type(const exprt &size)
 {
-  return array_typet(jsa_predicate_instruction_type(st), size);
+  return array_typet(jsa_predicate_instruction_type(), size);
 }
 
 #define INV_INSTR_TYPE "tag-__CPROVER_jsa_invariant_instruction"
-const typet &jsa_invariant_instruction_type(const symbol_tablet &st)
+symbol_typet jsa_invariant_instruction_type()
 {
-  return st.lookup(INV_INSTR_TYPE).type;
+  return symbol_typet(INV_INSTR_TYPE);
 }
 
-array_typet jsa_invariant_type(const symbol_tablet &st, const exprt & size)
+array_typet jsa_invariant_type(const exprt & size)
 {
-  return array_typet(jsa_invariant_instruction_type(st), size);
+  return array_typet(jsa_invariant_instruction_type(), size);
 }
 
 #define QUERY_INSTR_TYPE "tag-__CPROVER_jsa_query_instruction"
-const typet &jsa_query_instruction_type(const symbol_tablet &st)
+symbol_typet jsa_query_instruction_type()
 {
-  return st.lookup(QUERY_INSTR_TYPE).type;
+  return symbol_typet(QUERY_INSTR_TYPE);
 }
 
-array_typet jsa_query_type(const symbol_tablet &st, const exprt &size)
+array_typet jsa_query_type(const exprt &size)
 {
-  return array_typet(jsa_query_instruction_type(st), size);
+  return array_typet(jsa_query_instruction_type(), size);
 }
 
-const typet &jsa_heap_type(const symbol_tablet &st)
+symbol_typet jsa_heap_type()
 {
-  return st.lookup(JSA_HEAP_TAG).type;
+  return symbol_typet(JSA_HEAP_TAG);
 }

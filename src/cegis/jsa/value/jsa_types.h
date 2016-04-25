@@ -35,11 +35,9 @@ typet jsa_internal_index_type();
  *
  * @details
  *
- * @param st
- *
  * @return
  */
-const typet &jsa_predicate_instruction_type(const class symbol_tablet &st);
+symbol_typet jsa_predicate_instruction_type();
 
 /**
  * @brief
@@ -50,29 +48,7 @@ const typet &jsa_predicate_instruction_type(const class symbol_tablet &st);
  *
  * @return
  */
-array_typet jsa_predicate_type(const symbol_tablet &st, const exprt &size);
-
-/**
- * @brief
- *
- * @details
- *
- * @param st
- *
- * @return
- */
-const typet &jsa_invariant_instruction_type(const symbol_tablet &st);
-
-/**
- * @brief
- *
- * @details
- *
- * @param size
- *
- * @return
- */
-array_typet jsa_invariant_type(const symbol_tablet &st, const exprt & size);
+array_typet jsa_predicate_type(const exprt &size);
 
 /**
  * @brief
@@ -81,7 +57,7 @@ array_typet jsa_invariant_type(const symbol_tablet &st, const exprt & size);
  *
  * @return
  */
-const typet &jsa_query_instruction_type(const symbol_tablet &st);
+symbol_typet jsa_invariant_instruction_type();
 
 /**
  * @brief
@@ -92,7 +68,7 @@ const typet &jsa_query_instruction_type(const symbol_tablet &st);
  *
  * @return
  */
-array_typet jsa_query_type(const symbol_tablet &st, const exprt & size);
+array_typet jsa_invariant_type(const exprt & size);
 
 /**
  * @brief
@@ -101,6 +77,26 @@ array_typet jsa_query_type(const symbol_tablet &st, const exprt & size);
  *
  * @return
  */
-const typet &jsa_heap_type(const symbol_tablet &st);
+symbol_typet jsa_query_instruction_type();
+
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @param size
+ *
+ * @return
+ */
+array_typet jsa_query_type(const exprt & size);
+
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @return
+ */
+symbol_typet jsa_heap_type();
 
 #endif /* CEGIS_JSA_TYPES_H_ */
