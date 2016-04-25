@@ -37,7 +37,7 @@ goto_programt::targett assume_less_than(goto_programt &body,
 
 void declare_size_and_prog(jsa_programt &prog, const std::string &prog_name,
     const std::string &size_name,
-    const std::function<array_typet(const exprt &)> type_factory,
+    const std::function<array_typet(const symbol_tablet &, const exprt &)> type_factory,
     const size_t max_size)
 {
   symbol_tablet &st=prog.st;
@@ -50,7 +50,7 @@ void declare_size_and_prog(jsa_programt &prog, const std::string &prog_name,
   const symbol_exprt sz_expr(st.lookup(size_id).symbol_expr());
   pos=assume_less_than(body, pos, sz_expr, max_size);
   pos=body.insert_after(pos);
-  declare_jsa_meta_variable(st, pos, prog_name, type_factory(sz_expr));
+  declare_jsa_meta_variable(st, pos, prog_name, type_factory(st, sz_expr));
 }
 }
 
@@ -91,5 +91,5 @@ void declare_jsa_query(jsa_programt &prog, const size_t max_size)
 
 void declare_jsa_invariant(jsa_programt &prog, const size_t max_size)
 {
-  declare_size_and_prog(prog, JSA_INV, JSA_INV_SZ, jsa_query_type, 1);
+  declare_size_and_prog(prog, JSA_INV, JSA_INV_SZ, jsa_invariant_type, 1);
 }

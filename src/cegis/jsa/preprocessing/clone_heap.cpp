@@ -50,7 +50,7 @@ void clone_heap(jsa_programt &prog)
   goto_programt &body=get_entry_body(gf);
   goto_programt::targett pos=prog.base_case;
   pos=insert_before_preserve_labels(body, pos);
-  const symbol_typet heap_type(jsa_heap_type());
+  const typet &heap_type(jsa_heap_type(st));
   declare_jsa_meta_variable(st, pos, JSA_QUERIED_HEAP, heap_type);
   jsa_assign(st, gf, pos, get_queried_heap(st), get_user_heap(gf));
   pos=insert_before_preserve_labels(body, prog.inductive_assumption);

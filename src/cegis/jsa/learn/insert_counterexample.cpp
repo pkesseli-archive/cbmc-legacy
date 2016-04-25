@@ -18,14 +18,14 @@
 
 namespace
 {
-typet clean_up_type(const symbol_tablet &st, const typet &type)
+const typet &clean_up_type(const symbol_tablet &st, const typet &type)
 {
   const irep_idt &type_id=type.id();
   if (ID_struct != type_id && ID_incomplete_struct != type_id
       && ID_union != type_id && ID_incomplete_union != type_id) return type;
   std::string tag(TAG_PREFIX);
   tag+=id2string(to_struct_union_type(type).get_tag());
-  return symbol_typet(tag);
+  return st.lookup(tag).type;
 }
 
 constant_exprt get_size_expr(const size_t size)
@@ -42,7 +42,7 @@ array_valuest get_array_values(const symbol_tablet &st,
   std::map<jsa_counterexamplet::key_type, array_exprt> array_values;
   for (const jsa_counterexamplet::value_type &value : prototype)
   {
-    const typet element_type(clean_up_type(st, value.second.type()));
+    const typet &element_type=clean_up_type(st, value.second.type());
     const array_typet array_type(element_type, size_expr);
     array_values.insert(std::make_pair(value.first, array_exprt(array_type)));
   }

@@ -41,6 +41,9 @@ void jsa_symex_learnt::process(const counterexamplest &counterexamples,
   std::cout << "<jsa_symex_learnt_src>" << std::endl;
   dump_c(program.gf, true, ns, std::cout);
   std::cout << "</jsa_symex_learnt_src>" << std::endl;
+  std::cout << "<jsa_symex_learnt_st>" << std::endl;
+  program.st.show(std::cout);
+  std::cout << "</jsa_symex_learnt_st>" << std::endl;
   // XXX: Debug
 }
 
