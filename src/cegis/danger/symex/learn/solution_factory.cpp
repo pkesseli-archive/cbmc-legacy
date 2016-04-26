@@ -208,7 +208,7 @@ void extract_instruction_set(instruction_sett &instr_set,
   const function_mapt &function_map=gf.function_map;
   const function_mapt::const_iterator it=function_map.find(DANGER_EXECUTE);
   assert(function_map.end() != it);
-  extract_instruction_set(instr_set, it->second.body);
+  instr_set=extract_instruction_set(it->second.body);
 }
 }
 

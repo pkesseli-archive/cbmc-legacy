@@ -104,8 +104,8 @@ void create_safety_solution(safety_goto_solutiont &solution,
     const operand_variable_idst &var_ids, const size_t max_sz)
 {
   solution.clear();
-  instruction_sett instr_set;
-  extract_instruction_set(instr_set, get_execute_body(prog.gf));
+  const goto_programt &execute_body=get_execute_body(prog.gf);
+  const instruction_sett instr_set(extract_instruction_set(execute_body));
   invariant_variable_namest var_names;
   reverse_invariant_var_ids(var_names, var_ids);
   invariant_variable_namest result_var_names;
@@ -150,8 +150,8 @@ void create_safety_solution(safety_goto_solutiont &solution,
     const symbol_tablet &st, const goto_functionst &gf,
     const program_individualt &ind, const operand_variable_idst &var_ids)
 {
-  instruction_sett instr_set;
-  extract_instruction_set(instr_set, get_execute_body(gf));
+  const goto_programt &execute_body=get_execute_body(gf);
+  const instruction_sett instr_set(extract_instruction_set(execute_body));
   create_safety_solution(solution, st, gf, ind, var_ids, instr_set);
 }
 

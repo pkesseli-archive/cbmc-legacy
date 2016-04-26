@@ -1,6 +1,8 @@
 #include <util/bv_arithmetic.h>
+#include <goto-programs/goto_functions.h>
 #include <goto-programs/goto_trace.h>
 
+#include <cegis/instructions/instruction_set_factory.h>
 #include <cegis/instrument/meta_variables.h>
 #include <cegis/jsa/instrument/jsa_meta_data.h>
 #include <cegis/jsa/learn/extract_candidate.h>
@@ -48,6 +50,18 @@ bool find_prog(encoded_programt &result,
     return true;
   }
   return false;
+}
+
+void translate_program(goto_programt &prog, const goto_functionst &gf,
+    const encoded_programt &encoded, const std::string func_name,
+    const pred_op_idst &const_pred_ops, const pred_op_idst &pred_ops)
+{
+  const goto_functionst::function_mapt &fm=gf.function_map;
+  const goto_functionst::function_mapt::const_iterator it=fm.find(func_name);
+  assert(fm.end() != it);
+  const goto_functionst::goto_functiont &function=it->second;
+  assert(function.body_available());
+  const instruction_sett instr_set(extract_instruction_set(function.body));
 }
 }
 

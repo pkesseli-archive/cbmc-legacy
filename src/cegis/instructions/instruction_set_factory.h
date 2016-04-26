@@ -19,10 +19,9 @@ typedef std::map<size_t, goto_programt::instructionst> instruction_sett;
  *
  * @details
  *
- * @param instruction_set
  * @param body
+ * @return
  */
-void extract_instruction_set(instruction_sett &instruction_set,
-    const goto_programt &body);
+instruction_sett extract_instruction_set(const goto_programt &body);
 
 #endif /* CEGIS_DANGER_INSTRUCTION_SET_FACTORY_H_ */

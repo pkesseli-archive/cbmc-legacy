@@ -75,11 +75,12 @@ public:
 };
 }
 
-void extract_instruction_set(instruction_sett &instruction_set,
-    const goto_programt &body)
+instruction_sett extract_instruction_set(const goto_programt &body)
 {
   const goto_programt::instructionst &instrs=body.instructions;
+  instruction_sett instruction_set;
   execute_instruction_handlert handler(instruction_set);
   for (goto_programt::const_targett it=instrs.begin(); it != instrs.end(); ++it)
     handler(it);
+  return instruction_set;
 }
