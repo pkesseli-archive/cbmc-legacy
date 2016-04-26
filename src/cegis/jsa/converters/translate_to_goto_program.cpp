@@ -2,6 +2,7 @@
 #include <cegis/instructions/instruction_set_factory.h>
 #include <cegis/jsa/options/jsa_program.h>
 #include <cegis/jsa/instrument/jsa_meta_data.h>
+#include <cegis/jsa/converters/replace_operators.h>
 #include <cegis/jsa/converters/translate_to_goto_program.h>
 
 // XXX: Debug
@@ -46,6 +47,7 @@ goto_programt::instructionst convert(const jsa_programt &prog,
     copy(result, it->second);
   }
   copy.finalize();
+  replace_pred_ops(result, pred_ops, result_pred_ops);
 
   // XXX: Debug
   const namespacet ns(prog.st);
