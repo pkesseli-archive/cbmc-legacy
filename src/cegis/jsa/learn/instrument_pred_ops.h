@@ -1,7 +1,17 @@
+/*******************************************************************
+
+Module: Counterexample-Guided Inductive Synthesis
+
+Author: Daniel Kroening, kroening@kroening.com
+        Pascal Kesseli, pascal.kesseli@cs.ox.ac.uk
+
+\*******************************************************************/
+
 #ifndef CEGIS_JSA_INSTRUMENT_PRED_OPS_H_
 #define CEGIS_JSA_INSTRUMENT_PRED_OPS_H_
 
 #include <goto-programs/goto_program.h>
+#include <cegis/jsa/value/pred_ops.h>
 
 /**
  * @brief
@@ -12,8 +22,6 @@
  * @return
  */
 goto_programt::targetst collect_pred_ops(class jsa_programt &prog);
-
-typedef std::map<size_t, symbol_exprt> pred_op_idst;
 
 /**
  * @brief

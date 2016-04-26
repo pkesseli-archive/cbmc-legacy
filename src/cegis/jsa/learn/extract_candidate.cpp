@@ -2,8 +2,11 @@
 #include <goto-programs/goto_functions.h>
 #include <goto-programs/goto_trace.h>
 
-#include <cegis/instructions/instruction_set_factory.h>
 #include <cegis/instrument/meta_variables.h>
+#include <cegis/jsa/value/jsa_solution.h>
+#include <cegis/jsa/value/jsa_genetic_solution.h>
+#include <cegis/jsa/options/jsa_program.h>
+#include <cegis/jsa/converters/solution.h>
 #include <cegis/jsa/instrument/jsa_meta_data.h>
 #include <cegis/jsa/learn/extract_candidate.h>
 
@@ -52,36 +55,80 @@ bool find_prog(encoded_programt &result,
   return false;
 }
 
-void translate_program(goto_programt &prog, const goto_functionst &gf,
-    const encoded_programt &encoded, const std::string func_name,
-    const pred_op_idst &const_pred_ops, const pred_op_idst &pred_ops)
+std::vector<__CPROVER_jsa_pred_instructiont> to_genetic_pred(const encoded_programt &prog)
 {
-  const goto_functionst::function_mapt &fm=gf.function_map;
-  const goto_functionst::function_mapt::const_iterator it=fm.find(func_name);
-  assert(fm.end() != it);
-  const goto_functionst::goto_functiont &function=it->second;
-  assert(function.body_available());
-  const instruction_sett instr_set(extract_instruction_set(function.body));
+  std::vector<__CPROVER_jsa_pred_instructiont> result(prog.first);
+  const array_exprt::operandst &ops=prog.second.operands();
+  for (size_t i=0; i < result.size(); ++i)
+  {
+    const struct_exprt::operandst &members=to_struct_expr(ops[i]).operands();
+    assert(members.size() == 4u);
+    __CPROVER_jsa_pred_instruction &instr=result[i];
+    struct_exprt::operandst::const_iterator member=members.begin();
+    instr.opcode=bv_arithmetict(*member++).to_integer().to_ulong();
+    instr.result_op=bv_arithmetict(*member++).to_integer().to_ulong();
+    instr.op0=bv_arithmetict(*member++).to_integer().to_ulong();
+    instr.op1=bv_arithmetict(*member).to_integer().to_ulong();
+  }
+  return result;
+}
+
+std::vector<__CPROVER_jsa_query_instructiont> to_genetic_query(const encoded_programt &prog)
+{
+  std::vector<__CPROVER_jsa_query_instructiont> result(prog.first);
+  const array_exprt::operandst &ops=prog.second.operands();
+  for (size_t i=0; i < result.size(); ++i)
+  {
+    const struct_exprt::operandst &members=to_struct_expr(ops[i]).operands();
+    assert(members.size() == 2u);
+    __CPROVER_jsa_query_instructiont &instr=result[i];
+    struct_exprt::operandst::const_iterator member=members.begin();
+    instr.opcode=bv_arithmetict(*member++).to_integer().to_ulong();
+    instr.op=bv_arithmetict(*member).to_integer().to_ulong();
+  }
+  return result;
+}
+
+std::vector<__CPROVER_jsa_invariant_instructiont> to_genetic_inv(const encoded_programt &prog)
+{
+  std::vector<__CPROVER_jsa_invariant_instructiont> result(prog.first);
+  const array_exprt::operandst &ops=prog.second.operands();
+  for (size_t i=0; i < result.size(); ++i)
+  {
+    const struct_exprt::operandst &members=to_struct_expr(ops[i]).operands();
+    assert(members.size() == 1u);
+    __CPROVER_jsa_invariant_instructiont &instr=result[i];
+    instr.opcode=bv_arithmetict(members.front()).to_integer().to_ulong();
+  }
+  return result;
 }
 }
 
-void extract_jsa_candidate(jsa_solutiont &solution, const goto_tracet &trace,
-    const size_t max_solution_size, const pred_op_idst &const_pred_ops,
-    const pred_op_idst &pred_ops)
+void extract_jsa_candidate(jsa_genetic_solutiont &solution,
+    const jsa_programt &prog, const goto_tracet &trace)
 {
   goto_tracet::stepst::const_iterator first(trace.steps.begin());
   const goto_tracet::stepst::const_iterator last(trace.steps.end());
-  encoded_programst predicates;
   goto_tracet::stepst::const_iterator last_pred;
   encoded_programt tmp;
   while (find_prog(tmp, first, last, JSA_PRED_PREFIX))
   {
-    predicates.push_back(tmp);
+    solution.predicates.push_back(to_genetic_pred(tmp));
     last_pred=first;
   }
   first=last_pred;
-  encoded_programt query;
-  assert(find_prog(query, first, last, JSA_QUERY));
-  encoded_programt invariant;
-  assert(find_prog(invariant, first, last, JSA_INV));
+  assert(find_prog(tmp, first, last, JSA_QUERY));
+  solution.query=to_genetic_query(tmp);
+  assert(find_prog(tmp, first, last, JSA_INV));
+  solution.invariant=to_genetic_inv(tmp);
+}
+
+void extract_jsa_candidate(jsa_solutiont &solution, const jsa_programt &prog,
+    const goto_tracet &trace, const pred_op_idst &const_pred_ops,
+    const pred_op_idst &pred_ops)
+{
+  jsa_genetic_solutiont tmp;
+  extract_jsa_candidate(tmp, prog, trace);
+  // TODO: Call convert
+  solution=convert(tmp, prog, const_pred_ops, pred_ops);
 }

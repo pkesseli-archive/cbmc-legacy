@@ -10,8 +10,21 @@ Author: Daniel Kroening, kroening@kroening.com
 #ifndef CEGIS_JSA_EXTRACT_CANDIDATE_H_
 #define CEGIS_JSA_EXTRACT_CANDIDATE_H_
 
-#include <cegis/jsa/value/jsa_solution.h>
-#include <cegis/jsa/learn/instrument_pred_ops.h>
+#include <cegis/jsa/value/pred_ops.h>
+
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @param solution
+ * @param prog
+ * @param trace
+ */
+void extract_jsa_candidate(
+    class jsa_genetic_solutiont &solution,
+    const class jsa_programt &prog,
+    const class goto_tracet &trace);
 
 /**
  * @brief
@@ -20,14 +33,13 @@ Author: Daniel Kroening, kroening@kroening.com
  *
  * @param solution
  * @param trace
- * @param max_solution_size
  * @param const_pred_ops
  * @param pred_ops
  */
 void extract_jsa_candidate(
-    jsa_solutiont &solution,
-    const class goto_tracet &trace,
-    const size_t max_solution_size,
+    class jsa_solutiont &solution,
+    const jsa_programt &prog,
+    const goto_tracet &trace,
     const pred_op_idst &const_pred_ops,
     const pred_op_idst &pred_ops);
 

@@ -6,7 +6,6 @@
 #include <cegis/jsa/learn/jsa_symex_learn.h>
 
 // XXX: Debug
-#include <goto-instrument/dump_c.h>
 #include <iostream>
 // XXX: Debug
 
@@ -32,19 +31,6 @@ void jsa_symex_learnt::process(const counterexamplest &counterexamples,
   declare_jsa_invariant(program, max_solution_size);
   execute_jsa_learn_programs(program);
   program.gf.update();
-
-  // XXX: Debug
-  std::cout << "<jsa_symex_learnt>" << std::endl;
-  const namespacet ns(program.st);
-  program.gf.output(ns, std::cout);
-  std::cout << "</jsa_symex_learnt>" << std::endl;
-  std::cout << "<jsa_symex_learnt_src>" << std::endl;
-  dump_c(program.gf, true, ns, std::cout);
-  std::cout << "</jsa_symex_learnt_src>" << std::endl;
-  std::cout << "<jsa_symex_learnt_st>" << std::endl;
-  program.st.show(std::cout);
-  std::cout << "</jsa_symex_learnt_st>" << std::endl;
-  // XXX: Debug
 }
 
 void jsa_symex_learnt::set_word_width(const size_t word_width_in_bits)
@@ -52,10 +38,10 @@ void jsa_symex_learnt::set_word_width(const size_t word_width_in_bits)
   // XXX: Unsupported
 }
 
-void jsa_symex_learnt::convert(candidatet &current_candidate,
-    const goto_tracet &trace, const size_t max_sz)
+void jsa_symex_learnt::convert(candidatet &result, const goto_tracet &trace,
+    const size_t max_sz)
 {
-  extract_jsa_candidate(current_candidate, trace, max_sz, op_ids, const_op_ids);
+  extract_jsa_candidate(result, program, trace, op_ids, const_op_ids);
 
   // XXX: Debug
   std::cout << "<jsa_symex_verifyt>" << std::endl;

@@ -33,6 +33,9 @@ Author: Daniel Kroening, kroening@kroening.com
 #define JSA_HEAP_TAG "tag-" JSA_PREFIX "abstract_heap"
 #define JSA_PRED_PREFIX JSA_PREFIX "predicate_"
 #define JSA_SIZE_SUFFIX "_size"
+#define JSA_INV_EXEC "__CPROVER_jsa_invariant_execute"
+#define JSA_QUERY_EXEC "__CPROVER_jsa_query_execute"
+#define JSA_PRED_EXEC "__CPROVER_jsa_execute_pred"
 
 /**
  * @brief

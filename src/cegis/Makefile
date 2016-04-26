@@ -41,7 +41,7 @@ SRC = danger/meta/meta_variable_names.cpp danger/facade/danger_runner.cpp danger
       jsa/learn/extract_candidate.cpp \
       jsa/verify/jsa_symex_verify.cpp jsa/verify/extract_counterexample.cpp jsa/verify/renondet_inputs.cpp \
       jsa/constraint/jsa_constraint_factory.cpp \
-      jsa/converters/counterexample.cbb jsa/converters/solution.cpp \
+      jsa/converters/counterexample.cbb jsa/converters/solution.cpp jsa/converters/translate_to_goto_program.cpp \
       jsa/instrument/jsa_meta_data.cpp \
       jsa/value/jsa_types.cpp \
       wordsize/restrict_bv_size.cpp value/program_individual_serialisation.cpp \

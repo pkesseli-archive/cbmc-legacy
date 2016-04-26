@@ -9,8 +9,6 @@
 #include <cegis/jsa/preprocessing/clone_heap.h>
 #include <cegis/jsa/learn/execute_jsa_programs.h>
 
-#define EXEC_INV "__CPROVER_jsa_invariant_execute"
-#define EXEC_QUERY "__CPROVER_jsa_query_execute"
 #define EXEC_FULL "__CPROVER_jsa_full_query_execute"
 #define SYNC "__CPROVER_jsa_synchronise_iterator"
 
@@ -26,7 +24,7 @@ void make_constraint_call(const symbol_tablet &st, goto_functionst &gf,
   pos->source_location=jsa_builtin_source_location();
   code_function_callt call;
   call.lhs()=lhs;
-  call.function()=st.lookup(EXEC_INV).symbol_expr();
+  call.function()=st.lookup(JSA_INV_EXEC).symbol_expr();
   call.arguments()=args;
   pos->code=call;
 }
@@ -51,7 +49,7 @@ void make_query_call(const symbol_tablet &st, goto_functionst &gf,
   pos->type=goto_program_instruction_typet::FUNCTION_CALL;
   pos->source_location=jsa_builtin_source_location();
   code_function_callt call;
-  call.function()=st.lookup(full_query ? EXEC_FULL : EXEC_QUERY).symbol_expr();
+  call.function()=st.lookup(full_query ? EXEC_FULL : JSA_QUERY_EXEC).symbol_expr();
   code_function_callt::argumentst &args=call.arguments();
   args.push_back(address_of_exprt(get_queried_heap(st)));
   const symbol_exprt p(st.lookup(get_cegis_meta_name(JSA_QUERY)).symbol_expr());

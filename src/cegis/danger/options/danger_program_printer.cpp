@@ -11,19 +11,21 @@ namespace
 class danger_program_printert
 {
   const namespacet ns;
-  const goto_programt &body_printer;
   messaget::mstreamt &os;
   size_t func_count;
 public:
   danger_program_printert(const danger_programt &prog, messaget::mstreamt &os) :
-      ns(prog.st), body_printer(get_entry_body(prog.gf)), os(os), func_count(0)
+      ns(prog.st), os(os), func_count(0)
   {
   }
 
   void operator()(const goto_programt::instructionst &prog) const
   {
-    for (goto_programt::const_targett it=prog.begin(); it != prog.end(); ++it)
-      body_printer.output_instruction(ns, "", os, it);
+    goto_programt tmp;
+    tmp.instructions=prog;
+    tmp.compute_incoming_edges();
+    tmp.compute_target_numbers();
+    tmp.output(ns, "", os);
   }
 
   void operator()(const danger_goto_solutiont::danger_programt &prog)

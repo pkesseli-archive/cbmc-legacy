@@ -57,7 +57,8 @@ public:
    * @param counterexamples
    * @param max_solution_size
    */
-  void process(const counterexamplest &counterexamples,
+  void process(
+      const counterexamplest &counterexamples,
       size_t max_solution_size);
 
   /**
@@ -78,7 +79,8 @@ public:
    * @param trace
    * @param max_solution_size
    */
-  void convert(candidatet &current_candidate,
+  void convert(
+      candidatet &current_candidate,
       const class goto_tracet &trace,
       size_t max_solution_size);
 
@@ -108,7 +110,8 @@ public:
    * @param os
    * @param candidate
    */
-  void show_candidate(messaget::mstreamt &os,
+  void show_candidate(
+      messaget::mstreamt &os,
       const candidatet &candidate);
 };
 

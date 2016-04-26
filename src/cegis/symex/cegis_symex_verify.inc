@@ -5,10 +5,6 @@
 
 #include <cegis/cegis-util/temporary_output_block.h>
 
-// XXX: Debug
-#include <iostream>
-// XXX: Debug
-
 template<class verify_configurationt>
 cegis_symex_verifyt<verify_configurationt>::cegis_symex_verifyt(
     const optionst &options, verify_configurationt &config) :
@@ -34,25 +30,12 @@ void cegis_symex_verifyt<verify_configurationt>::verify(
   config.process(candidate);
   const symbol_tablet &st=config.get_symbol_table();
   const goto_functionst &gf=config.get_goto_functions();
-  //null_message_handlert msg;
-  // XXX: Debug
-  ui_message_handlert msg(ui_message_handlert::PLAIN, "");
-  std::cout << "<cegis_symex_verify_prog>" << std::endl;
-  const namespacet ns(st);
-  gf.output(ns, std::cout);
-  std::cout << "</cegis_symex_verify_prog>" << std::endl;
-  // XXX: Debug
+  null_message_handlert msg;
   cbmc_solverst solvers(options, st, msg);
   const std::unique_ptr<cbmc_solverst::solvert> solver=solvers.get_solver();
   bmct bmc(options, st, msg, solver->prop_conv());
   const temporary_output_blockt block_output;
-  // XXX: Debug
-  std::cout << "<cegis_symex_verify_trace>" << std::endl;
-  // XXX: Debug
   const safety_checkert::resultt result=bmc(gf);
-  // XXX: Debug
-  std::cout << "</cegis_symex_verify_trace>" << std::endl;
-  // XXX: Debug
   block_output.release();
   const goto_tracet &trace=bmc.safety_checkert::error_trace;
   switch (result)

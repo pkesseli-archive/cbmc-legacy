@@ -12,6 +12,9 @@
 
 #ifndef JSA_TRANSFORMERS_H_
 
+#ifndef __CPROVER
+#include <assert.h>
+#endif
 #include <stdbool.h>
 
 #ifndef __CPROVER_JSA_MAX_CONCRETE_NODES

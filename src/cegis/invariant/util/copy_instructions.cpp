@@ -2,19 +2,22 @@
 
 #include <cegis/invariant/util/copy_instructions.h>
 
-copy_instructionst::copy_instructionst()
-{
-}
-
-copy_instructionst::~copy_instructionst()
-{
-}
-
 void copy_instructionst::operator()(const goto_programt::targett &new_target,
     const goto_programt::const_targett &old_target)
 {
   *new_target=*old_target;
   target_mapping.insert(std::make_pair(old_target, new_target));
+}
+
+void copy_instructionst::operator()(goto_programt::instructionst &new_instrs,
+    const goto_programt::instructionst &old_instrs)
+{
+  for (goto_programt::const_targett pos=old_instrs.begin();
+      pos != old_instrs.end(); ++pos)
+  {
+    new_instrs.push_back(goto_programt::instructiont());
+    operator()(std::prev(new_instrs.end()), pos);
+  }
 }
 
 namespace
@@ -109,16 +112,12 @@ public:
     }
   }
 
-  void operator()(
-      const std::pair<goto_programt::targett, goto_programt::targett> &skip)
-  {
-    for (goto_programt::targett it=instrs.begin(); it != instrs.end(); ++it)
-      replace_targets(*it);
-  }
-
   void remove()
   {
-    std::for_each(skips.begin(), skips.end(), *this);
+    for (goto_programt::instructiont &instr : instrs)
+      replace_targets(instr);
+    for (const skipst::value_type &skip : skips)
+      instrs.erase(skip.first);
   }
 };
 }
@@ -126,8 +125,9 @@ public:
 void invariant_make_presentable(goto_programt::instructionst &instrs)
 {
   const goto_programt::targett &begin=instrs.begin();
-  goto_programt::targett last=instrs.end();
+  const goto_programt::targett &last=instrs.end();
   if (begin == last) return;
   skip_removert op(instrs);
-  op(begin, --last);
+  op(begin, std::prev(last));
+  op.remove();
 }

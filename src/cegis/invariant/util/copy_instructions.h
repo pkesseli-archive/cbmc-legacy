@@ -27,27 +27,23 @@ public:
    *
    * @details
    *
-   * @param old_offset
-   */
-  copy_instructionst();
-
-  /**
-   * @brief
-   *
-   * @details
-   */
-  ~copy_instructionst();
-
-  /**
-   * @brief
-   *
-   * @details
-   *
    * @param new_target
    * @param old_target
    */
   void operator()(const goto_programt::targett &new_target,
       const goto_programt::const_targett &old_target);
+
+  /**
+   * @brief
+   *
+   * @details
+   *
+   * @param new_instrs
+   * @param old_instrs
+   */
+  void operator()(
+      goto_programt::instructionst &new_instrs,
+      const goto_programt::instructionst &old_instrs);
 
   /**
    * @brief
