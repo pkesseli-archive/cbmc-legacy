@@ -5,6 +5,11 @@
 #include <cegis/jsa/learn/extract_candidate.h>
 #include <cegis/jsa/learn/jsa_symex_learn.h>
 
+// XXX: Debug
+#include <iostream>
+#include <goto-instrument/dump_c.h>
+// XXX: Debug
+
 jsa_symex_learnt::jsa_symex_learnt(const jsa_programt &program) :
     original_program(program)
 {
@@ -27,6 +32,20 @@ void jsa_symex_learnt::process(const counterexamplest &counterexamples,
   declare_jsa_invariant(program, max_solution_size);
   execute_jsa_learn_programs(program);
   program.gf.update();
+
+  // XXX: Debug
+  program.gf.function_map.erase("main");
+  const namespacet ns(program.st);
+  std::cout << "<jsa_symex_learnt>" << std::endl;
+  dump_c(program.gf, true, ns, std::cout);
+  std::cout << "</jsa_symex_learnt>" << std::endl;
+  // XXX: Debug
+  // XXX: Debug
+  //const namespacet ns(program.st);
+  //std::cout << "<jsa_symex_verify_program>" << std::endl;
+  //program.gf.output(ns, std::cout);
+  //std::cout << "</jsa_symex_verify_program>" << std::endl;
+  // XXX: Debug
 }
 
 void jsa_symex_learnt::set_word_width(const size_t word_width_in_bits)
@@ -37,6 +56,7 @@ void jsa_symex_learnt::set_word_width(const size_t word_width_in_bits)
 void jsa_symex_learnt::convert(candidatet &result, const goto_tracet &trace,
     const size_t max_sz)
 {
+  result.clear();
   extract_jsa_candidate(result, program, trace, const_op_ids, op_ids, max_sz);
   result.max_size=max_sz;
   result.num_pred_ops=const_op_ids.size();

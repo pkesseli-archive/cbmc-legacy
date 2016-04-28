@@ -30,3 +30,11 @@ jsa_solutiont &jsa_solutiont::operator =(const jsa_solutiont &other)
   num_pred_ops=other.num_pred_ops;
   return copy_instrs(*this, other);
 }
+
+void jsa_solutiont::clear() {
+  max_size=0;
+  num_pred_ops=0;
+  predicates.clear();
+  query.clear();
+  invariant.clear();
+}

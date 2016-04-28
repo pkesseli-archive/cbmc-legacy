@@ -23,7 +23,8 @@ bool is_pred_op_decl(const symbol_tablet &st, const goto_programt::targett &pos)
 {
   if (goto_program_instruction_typet::DECL != pos->type) return false;
   const std::string &id=id2string(get_affected_variable(*pos));
-  if (contains(id, JSA_TMP_PREFIX) || contains(id, JSA_LAMBDA_OP)) return true;
+  if (contains(id, JSA_TMP_PREFIX) || contains(id, JSA_LAMBDA_OP)
+      || contains(id, JSA_CONSTANT_PREFIX)) return true;
   if (contains(id, CPROVER_PREFIX)) return false;
   const namespacet ns(st);
   const typet lhs(jsa_word_type());

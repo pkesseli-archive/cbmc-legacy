@@ -143,7 +143,7 @@ typedef struct __CPROVER_jsa_abstract_heap
 #ifdef __CPROVER
 #define __CPROVER_jsa_inline
 #else
-#define __CPROVER_jsa_inline inline
+#define __CPROVER_jsa_inline static inline
 #endif
 
 #ifdef __CPROVER
@@ -188,7 +188,7 @@ __CPROVER_jsa_inline _Bool __CPROVER_jsa__internal_are_heaps_equal(
     if (lhs_node.list != rhs_node.list ||
         lhs_node.next != rhs_node.next ||
         lhs_node.previous != rhs_node.previous ||
-        lhs_node.value != rhs_node.previous) return false;
+        lhs_node.value != rhs_node.value) return false;
   }
   if (lhs->iterator_count != rhs->iterator_count) return false;
   for (i=0; i < lhs->iterator_count; ++i)
@@ -310,8 +310,15 @@ __CPROVER_jsa_inline void __CPROVER_jsa__internal_remove(
   __CPROVER_jsa_assume(__CPROVER_jsa__internal_is_concrete_node(node_id_to_remove));
   const __CPROVER_jsa_id_t previous_node_id=heap->concrete_nodes[node_id_to_remove].previous;
   const __CPROVER_jsa_id_t next_node_id=heap->concrete_nodes[node_id_to_remove].next;
-  __CPROVER_jsa__internal_set_next(heap, previous_node_id, next_node_id);
-  __CPROVER_jsa__internal_set_previous(heap, next_node_id, previous_node_id);
+  if (__CPROVER_jsa_null != previous_node_id)
+    __CPROVER_jsa__internal_set_next(heap, previous_node_id, next_node_id);
+  else
+  {
+    const __CPROVER_jsa_list_id_t list=__CPROVER_jsa__internal_get_list(heap, node_id_to_remove);
+    heap->list_head_nodes[list]=next_node_id;
+  }
+  if (__CPROVER_jsa_null != next_node_id)
+    __CPROVER_jsa__internal_set_previous(heap, next_node_id, previous_node_id);
 }
 
 // Iterator utility functions
@@ -660,10 +667,12 @@ __CPROVER_jsa_inline void __CPROVER_jsa_filter(
   for (__CPROVER_jsa__internal_index_t i=0; i < __CPROVER_JSA_MAX_NODES_PER_LIST; ++i)
   {
     if (end == node || __CPROVER_jsa_null == node) break;
-    if (__CPROVER_jsa__internal_is_concrete_node(node))
+    const _Bool is_concrete=__CPROVER_jsa__internal_is_concrete_node(node);
+    if (is_concrete)
     {
       *__CPROVER_JSA_PRED_OPS[__CPROVER_jsa__internal_lambda_op_id]=heap->concrete_nodes[node].value;
-      if (__CPROVER_jsa_execute_pred(pred_id) == 0)
+      const __CPROVER_jsa_word_t pred_result=__CPROVER_jsa_execute_pred(pred_id);
+      if (pred_result == 0)
         __CPROVER_jsa__internal_remove(heap, node);
       else
         node=__CPROVER_jsa__internal_get_next(heap, node);

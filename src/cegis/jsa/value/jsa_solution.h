@@ -81,6 +81,13 @@ public:
    * @param other
    */
   jsa_solutiont &operator=(const jsa_solutiont &other);
+
+  /**
+   * @brief
+   *
+   * @details
+   */
+  void clear();
 };
 
 #endif /* CEGIS_JSA_SOLUTION_H_ */

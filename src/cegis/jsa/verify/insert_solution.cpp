@@ -13,6 +13,10 @@
 #include <cegis/jsa/preprocessing/clone_heap.h>
 #include <cegis/jsa/verify/insert_solution.h>
 
+// XXX: Debug
+#include <iostream>
+// XXX: Debug
+
 #define JSA_PRED_RESULT JSA_PREFIX "pred_result"
 #define SYNC_IT "__CPROVER_jsa_synchronise_iterator"
 #define MAKE_NULL "__CPROVER_jsa__internal_make_null"
@@ -136,6 +140,18 @@ void insert_jsa_solution(jsa_programt &prog, const jsa_solutiont &solution)
   const symbol_tablet &st=prog.st;
   goto_functionst &gf=prog.gf;
   goto_programt &body=get_entry_body(gf);
+
+  // XXX: Debug
+  const namespacet ns(st);
+  goto_programt tmp;
+  tmp.instructions=solution.invariant;
+  tmp.compute_incoming_edges();
+  tmp.compute_target_numbers();
+  std::cout << "<invariant>" << std::endl;
+  tmp.output(ns, "", std::cout);
+  std::cout << "</invariant>" << std::endl;
+  // XXX: Debug
+
   goto_programt::instructionst &instrs=body.instructions;
   insert_before(instrs, prog.base_case, solution.query);
   insert_invariant(st, body, prog.base_case, solution.invariant);

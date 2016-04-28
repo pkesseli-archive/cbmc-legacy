@@ -10,6 +10,7 @@ namespace
 {
 jsa_programt &assign(jsa_programt &lhs, const jsa_programt &rhs)
 {
+  lhs.gf.clear();
   lhs.gf.copy_from(rhs.gf);
   goto_programt &new_body=get_entry_body(lhs.gf);
   const goto_programt &old_body=get_entry_body(rhs.gf);
