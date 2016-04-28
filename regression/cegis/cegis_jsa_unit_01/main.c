@@ -1,3 +1,4 @@
+
 #ifdef __CPROVER
 #define __CPROVER_JSA_MAX_CONCRETE_NODES 1u
 #define __CPROVER_JSA_MAX_ABSTRACT_NODES 0u
@@ -9,7 +10,7 @@
 #define __CPROVER_JSA_MAX_PRED_SIZE 1
 #endif
 
-#include "../../../src/ansi-c/library/jsa.c"
+#include "../../../src/ansi-c/library/jsa.c.off"
 
 __CPROVER_jsa_abstract_heapt nondet_heap(void);
 

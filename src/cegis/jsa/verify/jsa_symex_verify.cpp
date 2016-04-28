@@ -1,3 +1,5 @@
+#include <goto-programs/remove_returns.h>
+
 #include <cegis/jsa/constraint/jsa_constraint_factory.h>
 #include <cegis/jsa/preprocessing/add_synthesis_library.h>
 #include <cegis/jsa/learn/instrument_pred_ops.h>
@@ -20,13 +22,14 @@ void jsa_symex_verifyt::process(const candidatet &cand)
 {
   program=original_program;
   const goto_programt::targetst pred_ops(collect_pred_ops(program));
-  add_jsa_verification_library(program, cand.max_size, pred_ops);
+  //add_jsa_verification_library(program, cand.max_size, pred_ops);
   instrument_pred_ops(program, pred_ops);
   insert_jsa_constraint(program, false);
   assume_renondet_inputs_valid(program);
 
   if (cand.invariant.empty()) return;
   insert_jsa_solution(program, cand);
+  remove_returns(program.st, program.gf);
 
   // XXX: Debug
   program.gf.function_map.erase("main");

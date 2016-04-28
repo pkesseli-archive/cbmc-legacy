@@ -18,7 +18,7 @@
 // XXX: Debug
 
 #define JSA_PRED_RESULT JSA_PREFIX "pred_result"
-#define SYNC_IT "__CPROVER_jsa_synchronise_iterator"
+#define SYNC_IT "__CPROVER_jsa_verify_synchronise_iterator"
 #define MAKE_NULL "__CPROVER_jsa__internal_make_null"
 
 namespace
@@ -29,6 +29,7 @@ void add_predicates(jsa_programt &prog, const jsa_solutiont::predicatest &preds)
   symbol_tablet &st=prog.st;
   goto_functionst &gf=prog.gf;
   goto_programt &body=get_body(gf, JSA_PRED_EXEC);
+  body.clear();
   goto_programt::instructionst &instrs=body.instructions;
   std::string pred_id_name(JSA_PRED_EXEC);
   pred_id_name+="::pred_id";
@@ -37,9 +38,17 @@ void add_predicates(jsa_programt &prog, const jsa_solutiont::predicatest &preds)
   declare_jsa_meta_variable(st, pos, JSA_PRED_RESULT, jsa_word_type());
   const std::string result(get_cegis_meta_name(JSA_PRED_RESULT));
   const symbol_exprt ret_val(st.lookup(result).symbol_expr());
-  const goto_programt::targett end=std::next(pos);
-  to_code_return(end->code).return_value()=ret_val;
+  const goto_programt::targett first=pos;
+  pos=body.insert_after(pos);
+  pos->source_location=jsa_builtin_source_location();
+  pos->type=goto_program_instruction_typet::RETURN;
+  pos->code=code_returnt(ret_val);
+  const goto_programt::targett end=pos;
+  pos=body.insert_after(pos);
+  pos->source_location=jsa_builtin_source_location();
+  pos->type=goto_program_instruction_typet::END_FUNCTION;
   std::vector<goto_programt::targett> pred_begins;
+  pos=first;
   size_t idx=0;
   for (const jsa_solutiont::predicatest::value_type &pred : preds)
   {
@@ -69,6 +78,7 @@ void add_predicates(jsa_programt &prog, const jsa_solutiont::predicatest &preds)
     pos->targets.push_back(*std::next(it));
   }
   pred_begins.back()->targets.push_back(end);
+
   body.compute_incoming_edges();
   body.compute_target_numbers();
 }
@@ -113,7 +123,8 @@ void insert_sync_call(const symbol_tablet &st, const goto_functionst &gf,
 }
 
 void make_full_query_call(const symbol_tablet &st, const goto_functionst &gf,
-    goto_programt &body, goto_programt::targett pos, const goto_programt::instructionst &query)
+    goto_programt &body, goto_programt::targett pos,
+    const goto_programt::instructionst &query)
 {
   if (query.empty()) return;
   pos=insert_before_preserve_labels(body, pos);
@@ -149,12 +160,12 @@ void insert_jsa_solution(jsa_programt &prog, const jsa_solutiont &solution)
   goto_programt tmp;
   for (const auto &pred : solution.predicates)
   {
-  tmp.instructions=pred;
-  tmp.compute_incoming_edges();
-  tmp.compute_target_numbers();
-  std::cout << "<pred>" << std::endl;
-  tmp.output(ns, "", std::cout);
-  std::cout << "</pred>" << std::endl;
+    tmp.instructions=pred;
+    tmp.compute_incoming_edges();
+    tmp.compute_target_numbers();
+    std::cout << "<pred>" << std::endl;
+    tmp.output(ns, "", std::cout);
+    std::cout << "</pred>" << std::endl;
   }
   // XXX: Debug
 

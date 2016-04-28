@@ -2,6 +2,7 @@
 
 #include <ansi-c/c_types.h>
 #include <util/arith_tools.h>
+#include <util/bv_arithmetic.h>
 #include <util/expr_util.h>
 #include <util/type_eq.h>
 
@@ -45,6 +46,8 @@ goto_programt::targetst collect_pred_ops(jsa_programt &prog)
 
 #define PRED_OPS "__CPROVER_JSA_PRED_OPS"
 #define PRED_RES_OPS "__CPROVER_JSA_PRED_RESULT_OPS"
+#define JSA_PRED_OP_COUNT "__CPROVER_JSA_PRED_OPS_COUNT"
+#define JSA_PRED_RESULT_OP_COUNT "__CPROVER_JSA_PRED_RESULT_OPS_COUNT"
 
 namespace
 {
@@ -61,6 +64,30 @@ void mark_dead(goto_programt &body, goto_programt::targett pos,
   pos->type=goto_program_instruction_typet::ASSIGN;
   pos->source_location=jsa_builtin_source_location();
   pos->code=code_assignt(op_elem, gen_zero(op_elem.type()));
+}
+
+goto_programt::targett increment_var(const symbol_tablet &st,
+    goto_programt &body, goto_programt::targett pos, const char * const id)
+{
+  const symbol_exprt var(st.lookup(id).symbol_expr());
+  pos=body.insert_after(pos);
+  pos->source_location=jsa_builtin_source_location();
+  pos->type=goto_program_instruction_typet::ASSIGN;
+  const plus_exprt rhs(var, gen_one(var.type()));
+  pos->code=code_assignt(var, rhs);
+  return pos;
+}
+
+goto_programt::targett increment_pred_op_count(const symbol_tablet &st,
+    goto_programt &body, goto_programt::targett pos)
+{
+  return increment_var(st, body, pos, JSA_PRED_OP_COUNT);
+}
+
+goto_programt::targett increment_pred_result_op_count(const symbol_tablet &st,
+    goto_programt &body, goto_programt::targett pos)
+{
+  return increment_var(st, body, pos, JSA_PRED_RESULT_OP_COUNT);
 }
 }
 
@@ -94,6 +121,13 @@ void instrument_pred_ops(jsa_programt &prog, const goto_programt::targetst &ops,
     }
     if (op == prog.synthetic_variables) prog.synthetic_variables=pos;
   }
+  const symbol_exprt op_count(st.lookup(JSA_PRED_OP_COUNT).symbol_expr());
+  const constant_exprt op_value(from_integer(op_index, op_count.type()));
+  goto_programt::targett &pos=prog.synthetic_variables;
+  pos=jsa_assign(st, gf, pos, op_count, op_value);
+  const symbol_exprt res_cnt(st.lookup(JSA_PRED_RESULT_OP_COUNT).symbol_expr());
+  const constant_exprt res_value(from_integer(res_op_idx, res_cnt.type()));
+  pos=jsa_assign(st, gf, pos, res_cnt, res_value);
 }
 
 void instrument_pred_ops(jsa_programt &prog, const goto_programt::targetst &ops)

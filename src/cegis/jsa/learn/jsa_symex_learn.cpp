@@ -1,3 +1,5 @@
+#include <goto-programs/remove_returns.h>
+
 #include <cegis/jsa/preprocessing/add_synthesis_library.h>
 #include <cegis/jsa/learn/insert_counterexample.h>
 #include <cegis/jsa/learn/insert_predicates_and_queries.h>
@@ -25,13 +27,14 @@ void jsa_symex_learnt::process(const counterexamplest &counterexamples,
 {
   program=original_program;
   const goto_programt::targetst pred_ops(collect_pred_ops(program));
-  add_jsa_synthesis_library(program, max_solution_size, pred_ops);
+  //add_jsa_synthesis_library(program, max_solution_size, pred_ops);
   instrument_pred_ops(program, pred_ops, op_ids, const_op_ids);
   insert_counterexamples(program, counterexamples);
   declare_jsa_predicates(program, max_solution_size);
   declare_jsa_query(program, max_solution_size);
   declare_jsa_invariant(program, max_solution_size);
   execute_jsa_learn_programs(program);
+  remove_returns(program.st, program.gf);
   program.gf.update();
 
   // XXX: Debug
@@ -43,9 +46,9 @@ void jsa_symex_learnt::process(const counterexamplest &counterexamples,
   // XXX: Debug
   // XXX: Debug
   //const namespacet ns(program.st);
-  std::cout << "<jsa_symex_verify_program>" << std::endl;
+  std::cout << "<jsa_symex_learn_program>" << std::endl;
   program.gf.output(ns, std::cout);
-  std::cout << "</jsa_symex_verify_program>" << std::endl;
+  std::cout << "</jsa_symex_learn_program>" << std::endl;
   // XXX: Debug
 }
 
