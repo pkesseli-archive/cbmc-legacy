@@ -12,20 +12,48 @@ Author: Daniel Kroening, kroening@kroening.com
 
 #include <goto-programs/goto_program.h>
 #include <cegis/jsa/value/jsa_genetic_synthesis.h>
-#include <cegis/jsa/value/pred_ops.h>
 
 /**
  * @brief
  *
  * @details
  *
+ * @param result
  * @param prog
+ * @param solution
  * @return
  */
-goto_programt::instructionst convert(
+void convert(
+    goto_programt::instructionst &result,
     const class jsa_programt &prog,
-    const pred_op_idst &pred_ops,
-    const pred_op_idst &result_pred_ops,
     const std::vector<__CPROVER_jsa_pred_instructiont> &solution);
+
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @param result
+ * @param prog
+ * @param solution
+ */
+void convert(
+    goto_programt::instructionst &result,
+    const jsa_programt &prog,
+    const std::vector<__CPROVER_jsa_query_instructiont> &solution);
+
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @param result
+ * @param prog
+ * @param solution
+ */
+void convert(
+    goto_programt::instructionst &result,
+    const jsa_programt &prog,
+    const std::vector<__CPROVER_jsa_invariant_instructiont> &solution);
 
 #endif /* CEGIS_JSA_TRANSLATE_TO_GOTO_PROGRAM_H_ */

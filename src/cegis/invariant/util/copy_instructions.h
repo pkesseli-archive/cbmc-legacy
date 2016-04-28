@@ -49,6 +49,20 @@ public:
    * @brief
    *
    * @details
+   *
+   * @param new_instrs
+   * @param pos
+   * @param old_instrs
+   */
+  goto_programt::targett operator()(
+      goto_programt::instructionst &new_instrs,
+      goto_programt::targett pos,
+      const goto_programt::instructionst &old_instrs);
+
+  /**
+   * @brief
+   *
+   * @details
    */
   void finalize();
 
@@ -72,5 +86,31 @@ public:
  * @param instrs
  */
 void invariant_make_presentable(goto_programt::instructionst &instrs);
+
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @param target
+ * @param source
+ */
+void copy_instructions(
+    goto_programt::instructionst &target,
+    const goto_programt::instructionst &source);
+
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @param target
+ * @param pos
+ * @param source
+ */
+goto_programt::targett copy_instructions(
+    goto_programt::instructionst &target,
+    goto_programt::targett pos,
+    const goto_programt::instructionst &source);
 
 #endif /* SRC_CEGIS_DANGER_UTIL_COPY_INSTRUCTIONS_H_ */

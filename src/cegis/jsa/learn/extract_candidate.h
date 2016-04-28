@@ -21,7 +21,7 @@ Author: Daniel Kroening, kroening@kroening.com
  * @param prog
  * @param trace
  */
-void extract_jsa_candidate(
+void extract_jsa_genetic_candidate(
     class jsa_genetic_solutiont &solution,
     const class jsa_programt &prog,
     const class goto_tracet &trace);
@@ -35,12 +35,14 @@ void extract_jsa_candidate(
  * @param trace
  * @param const_pred_ops
  * @param pred_ops
+ * @param max_size
  */
 void extract_jsa_candidate(
     class jsa_solutiont &solution,
     const jsa_programt &prog,
     const goto_tracet &trace,
-    const pred_op_idst &const_pred_ops,
-    const pred_op_idst &pred_ops);
+    const pred_op_idst &pred_ops,
+    const pred_op_idst &result_pred_ops,
+    const size_t max_size);
 
 #endif /* CEGIS_JSA_EXTRACT_CANDIDATE_H_ */

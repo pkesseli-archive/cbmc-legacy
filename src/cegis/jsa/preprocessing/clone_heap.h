@@ -10,6 +10,8 @@ Author: Daniel Kroening, kroening@kroening.com
 #ifndef CEGIS_JSA_CLONE_HEAP_H_
 #define CEGIS_JSA_CLONE_HEAP_H_
 
+#include <goto-programs/goto_program.h>
+
 /**
  * @brief
  *

@@ -36,15 +36,16 @@ SRC = danger/meta/meta_variable_names.cpp danger/facade/danger_runner.cpp danger
       jsa/preprocessing/add_constraint_meta_variables.cpp jsa/preprocessing/inline_user_program.cpp \
       jsa/preprocessing/default_jsa_constant_strategy.cpp jsa/preprocessing/create_temp_variables.cpp \
       jsa/preprocessing/collect_variables.cpp jsa/preprocessing/clone_heap.cpp \
+      jsa/preprocessing/add_synthesis_library.cpp \
       jsa/learn/jsa_symex_learn.cpp jsa/learn/insert_counterexample.cpp jsa/learn/insert_predicates_and_queries.cpp \
-      jsa/learn/add_synthesis_library.cpp jsa/learn/instrument_pred_ops.cpp jsa/learn/execute_jsa_programs.cpp \
-      jsa/learn/extract_candidate.cpp \
+      jsa/learn/instrument_pred_ops.cpp jsa/learn/execute_jsa_programs.cpp jsa/learn/extract_candidate.cpp \
       jsa/verify/jsa_symex_verify.cpp jsa/verify/extract_counterexample.cpp jsa/verify/renondet_inputs.cpp \
+      jsa/verify/insert_solution.cpp \
       jsa/constraint/jsa_constraint_factory.cpp \
       jsa/converters/counterexample.cpp jsa/converters/solution.cpp jsa/converters/translate_to_goto_program.cpp \
       jsa/converters/replace_operators.cpp \
       jsa/instrument/jsa_meta_data.cpp \
-      jsa/value/jsa_types.cpp \
+      jsa/value/jsa_solution.cpp jsa/value/jsa_types.cpp \
       wordsize/restrict_bv_size.cpp value/program_individual_serialisation.cpp \
       seed/literals_seed.cpp genetic/tournament_select.cpp genetic/match_select.cpp \
       genetic/instruction_set_info_factory.cpp genetic/random_mutate.cpp genetic/random_cross.cpp \

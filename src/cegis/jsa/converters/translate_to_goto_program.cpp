@@ -1,17 +1,21 @@
+#include <algorithm>
+
+#include <cegis/cegis-util/program_helper.h>
 #include <cegis/invariant/util/copy_instructions.h>
 #include <cegis/instructions/instruction_set_factory.h>
 #include <cegis/jsa/options/jsa_program.h>
+#include <cegis/jsa/value/jsa_genetic_synthesis.h>
 #include <cegis/jsa/instrument/jsa_meta_data.h>
+#include <cegis/jsa/preprocessing/clone_heap.h>
 #include <cegis/jsa/converters/replace_operators.h>
 #include <cegis/jsa/converters/translate_to_goto_program.h>
-
-// XXX: Debug
-#include <iostream>
-// XXX: Debug
 
 #define PRED_SINGLE JSA_PREFIX "pred_opcode_"
 #define PRED_FIRST JSA_PREFIX "pred_opcode_first_"
 #define PRED_LAST JSA_PREFIX "pred_opcode_last_"
+#define QUERY_SINGLE JSA_PREFIX "query_opcode_"
+#define QUERY_FIRST JSA_PREFIX "query_opcode_first_"
+#define QUERY_LAST JSA_PREFIX "query_opcode_last_"
 
 namespace
 {
@@ -19,44 +23,72 @@ instruction_sett get_instruction_set(const goto_functionst &gf,
     const char * const func, const char * const first,
     const char * const last, const char * const single)
 {
-  const goto_functionst::function_mapt &fm=gf.function_map;
-  const goto_functionst::function_mapt::const_iterator it=fm.find(func);
-  assert(fm.end() != it);
-  const goto_functionst::goto_functiont &function=it->second;
-  assert(function.body_available());
-  return extract_instruction_set(function.body, first, last, single);
+  return extract_instruction_set(get_body(gf, func), first, last, single);
 }
 
 instruction_sett get_pred_instruction_set(const goto_functionst &gf)
 {
   return get_instruction_set(gf, JSA_PRED_EXEC, PRED_FIRST, PRED_LAST, PRED_SINGLE);
 }
+
+instruction_sett get_query_instruction_set(const goto_functionst &gf)
+{
+  return get_instruction_set(gf, JSA_QUERY_EXEC, QUERY_FIRST, QUERY_LAST, QUERY_SINGLE);
+}
 }
 
-goto_programt::instructionst convert(const jsa_programt &prog,
-    const pred_op_idst &pred_ops, const pred_op_idst &result_pred_ops,
+void convert(goto_programt::instructionst &result, const jsa_programt &prog,
     const std::vector<__CPROVER_jsa_pred_instructiont> &solution)
 {
   const instruction_sett instr_set(get_pred_instruction_set(prog.gf));
-  goto_programt::instructionst result;
+  assert(__CPROVER_JSA_NUM_PRED_INSTRUCTIONS == instr_set.size());
   copy_instructionst copy;
   for (const __CPROVER_jsa_pred_instructiont &instr : solution)
   {
     const instruction_sett::const_iterator it=instr_set.find(instr.opcode);
     assert(instr_set.end() != it);
+    const size_t previous_size=result.size();
     copy(result, it->second);
+    const goto_programt::targett new_instr(std::next(result.begin(), previous_size));
+    replace_pred_ops(new_instr, result.end(), instr);
   }
   copy.finalize();
-  replace_pred_ops(result, pred_ops, result_pred_ops);
+}
 
-  // XXX: Debug
-  const namespacet ns(prog.st);
-  goto_programt tmp;
-  tmp.instructions=result;
-  tmp.compute_incoming_edges();
-  tmp.compute_target_numbers();
-  tmp.output(ns, "", std::cout);
-  assert(false);
-  // XXX: Debug
-  return result;
+void convert(goto_programt::instructionst &result, const jsa_programt &prog,
+    const std::vector<__CPROVER_jsa_query_instructiont> &solution)
+{
+  const goto_functionst &gf=prog.gf;
+  const instruction_sett instr_set(get_query_instruction_set(gf));
+  assert(__CPROVER_JSA_NUM_QUERY_INSTRUCTIONS == instr_set.size());
+  assert(!solution.empty());
+  std::vector<__CPROVER_jsa_query_instructiont>::const_iterator instr=solution.begin();
+  const __CPROVER_jsa_query_instructiont &prefix=*instr++;
+  copy_instructionst copy;
+  for (; instr != solution.end(); ++instr)
+  {
+    const instruction_sett::const_iterator it=instr_set.find(instr->opcode);
+    assert(instr_set.end() != it);
+    const size_t previous_size=result.size();
+    copy(result, it->second);
+    const goto_programt::targett new_instr(std::next(result.begin(), previous_size));
+    replace_query_ops(gf, new_instr, result.end(), *instr, prefix);
+  }
+  copy.finalize();
+}
+
+void convert(goto_programt::instructionst &result, const jsa_programt &prog,
+    const std::vector<__CPROVER_jsa_invariant_instructiont> &solution)
+{
+  assert(!solution.empty());
+  const goto_functionst &gf=prog.gf;
+  const __CPROVER_jsa_invariant_instructiont instr=solution.front();
+  const goto_programt::instructionst &body=get_body(gf, JSA_INV_EXEC).instructions;
+  goto_programt::instructiont comparison=body.front();
+  comparison.type=goto_program_instruction_typet::RETURN;
+  comparison.source_location=jsa_builtin_source_location();
+  const equal_exprt cond(get_user_heap(gf), get_queried_heap(prog.st));
+  const code_returnt code_return(cond);
+  comparison.code=code_return;
+  result.push_back(comparison);
 }

@@ -42,13 +42,6 @@ public:
    * @brief
    *
    * @details
-   */
-  ~jsa_symex_verifyt();
-
-  /**
-   * @brief
-   *
-   * @details
    *
    * @param candidate
    */

@@ -79,13 +79,6 @@ void add_jsa_constraint_meta_variables(jsa_programt &p)
   p.inductive_step=insert_before_preserve_labels(body, p.body.second);
   declare_jsa_meta_variable(st, p.inductive_step, JSA_IND_STEP, type);
   p.property_entailment=insert_before_preserve_labels(body, p.body.second);
-  // XXX: Debug
-  /*goto_programt::targett pos=std::prev(p.inductive_step, 1);
-  pos=body.insert_before(pos);
-  pos->type=goto_program_instruction_typet::ASSERT;
-  pos->source_location=jsa_builtin_source_location();
-  pos->guard=false_exprt();*/
-  // XXX: Debug
   declare_jsa_meta_variable(st, p.property_entailment, JSA_PROP_ENTAIL, type);
   p.body.second=p.property_entailment;
 }

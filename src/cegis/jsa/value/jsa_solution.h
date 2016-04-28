@@ -20,7 +20,7 @@ Author: Daniel Kroening, kroening@kroening.com
 class jsa_solutiont
 {
 public:
-  typedef std::vector<goto_programt> predicatest;
+  typedef std::vector<goto_programt::instructionst> predicatest;
 
   /**
    * @brief
@@ -34,14 +34,53 @@ public:
    *
    * @details
    */
-  goto_programt query;
+  goto_programt::instructionst query;
 
   /**
    * @brief
    *
    * @details
    */
-  goto_programt invariant;
+  goto_programt::instructionst invariant;
+
+  /**
+   * @brief
+   *
+   * @details
+   */
+  size_t max_size;
+
+  /**
+   * @brief
+   *
+   * @details
+   */
+  size_t num_pred_ops;
+
+  /**
+   * @brief
+   *
+   * @details
+   */
+  jsa_solutiont();
+
+  /**
+   * @brief
+   *
+   * @details
+   *
+   * @param other
+   */
+  jsa_solutiont(const jsa_solutiont &other);
+
+  /**
+   * @brief
+   *
+   * @details
+   *
+   * @param other
+   */
+  jsa_solutiont &operator=(const jsa_solutiont &other);
 };
 
 #endif /* CEGIS_JSA_SOLUTION_H_ */

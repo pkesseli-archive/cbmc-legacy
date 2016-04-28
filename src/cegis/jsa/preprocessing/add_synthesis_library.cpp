@@ -6,13 +6,16 @@
 
 #include <cegis/jsa/options/jsa_program.h>
 #include <cegis/jsa/instrument/jsa_meta_data.h>
-#include <cegis/jsa/learn/add_synthesis_library.h>
+#include <cegis/jsa/preprocessing/add_synthesis_library.h>
 
 // XXX: Debug
 #include <util/ui_message.h>
+#include <iostream>
 // XXX: Debug
 
 #define CPROVER_INIT "__CPROVER_initialize"
+#define JSA_LIB "__CPROVER_jsa_assume_valid_heap"
+#define QUERY_LIB "__CPROVER_jsa_query_execute"
 
 namespace
 {
@@ -69,7 +72,9 @@ std::vector<irep_idt> get_functions(const symbol_tablet &st)
 bool is_jsa_constant(const symbolt &symbol)
 {
   if (!symbol.is_static_lifetime) return false;
-  return std::string::npos != id2string(symbol.name).find(JSA_CONSTANT_PREFIX);
+  const std::string &name=id2string(symbol.name);
+  return std::string::npos != name.find(JSA_CONSTANT_PREFIX)
+      || std::string::npos != name.find(JSA_STATIC_META_VAR_PREFIX);
 }
 
 void zero_new_global_vars(const symbol_tablet &st, goto_functionst &gf)
@@ -87,6 +92,10 @@ void zero_new_global_vars(const symbol_tablet &st, goto_functionst &gf)
   for (const symbol_tablet::symbolst::value_type &symbol : st.symbols)
     if (is_jsa_constant(symbol.second))
     {
+      // XXX: Debug
+      std::cout << "<constant_init>" << symbol.first << "</constant_init>"
+          << std::endl;
+      // XXX: Debug
       pos=body.insert_after(pos);
       pos->type=goto_program_instruction_typet::ASSIGN;
       pos->source_location=loc;
@@ -95,15 +104,11 @@ void zero_new_global_vars(const symbol_tablet &st, goto_functionst &gf)
       pos->code=code_assignt(lhs, rhs);
     }
 }
-}
 
-#define JSA_LIB "__CPROVER_jsa_assume_valid_heap"
-#define QUERY_LIB "__CPROVER_jsa_query_execute"
-
-void add_jsa_synthesis_library(jsa_programt &prog, const size_t max_sz,
-    const size_t num_pred_ops)
+void add_jsa_library(jsa_programt &prog, const size_t max_sz,
+    const size_t num_pred_ops, const std::string &prefix)
 {
-  std::string library_text("#define JSA_SYNTHESIS_H_");
+  std::string library_text(prefix);
   library_text+="\n#define __CPROVER_JSA_MAX_QUERY_SIZE ";
   library_text+=std::to_string(max_sz + 1);
   library_text+="\n#define __CPROVER_JSA_MAX_PRED_SIZE ";
@@ -132,4 +137,17 @@ void add_jsa_synthesis_library(jsa_programt &prog, const size_t max_sz,
   zero_new_global_vars(blank, gf);
   gf.compute_loop_numbers();
   gf.update();
+}
+}
+
+void add_jsa_synthesis_library(jsa_programt &prog, const size_t max_sz,
+    const size_t num_pred_ops)
+{
+  add_jsa_library(prog, max_sz, num_pred_ops, "#define JSA_SYNTHESIS_H_");
+}
+
+void add_jsa_verification_library(jsa_programt &prog, const size_t max_sz,
+    const size_t num_pred_ops)
+{
+  add_jsa_library(prog, max_sz, num_pred_ops, "#define JSA_VERIFICATION_H_");
 }

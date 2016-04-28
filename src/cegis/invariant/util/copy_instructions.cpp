@@ -20,6 +20,22 @@ void copy_instructionst::operator()(goto_programt::instructionst &new_instrs,
   }
 }
 
+goto_programt::targett copy_instructionst::operator()(
+    goto_programt::instructionst &new_instrs,
+    goto_programt::targett insert_after,
+    const goto_programt::instructionst &old_instrs)
+{
+  assert(!old_instrs.empty());
+  ++insert_after;
+  for (goto_programt::const_targett pos=old_instrs.begin();
+      pos != old_instrs.end(); ++pos)
+  {
+    insert_after=new_instrs.insert(insert_after, goto_programt::instructiont());
+    operator()(insert_after++, pos);
+  }
+  return std::prev(insert_after);
+}
+
 namespace
 {
 typedef std::map<goto_programt::const_targett, goto_programt::targett> target_mapt;
@@ -130,4 +146,21 @@ void invariant_make_presentable(goto_programt::instructionst &instrs)
   skip_removert op(instrs);
   op(begin, std::prev(last));
   op.remove();
+}
+
+void copy_instructions(goto_programt::instructionst &target,
+    const goto_programt::instructionst &source)
+{
+  copy_instructionst copy;
+  copy(target, source);
+  copy.finalize();
+}
+
+goto_programt::targett copy_instructions(goto_programt::instructionst &target,
+    goto_programt::targett pos, const goto_programt::instructionst &source)
+{
+  copy_instructionst copy;
+  goto_programt::targett result=copy(target, pos, source);
+  copy.finalize();
+  return result;
 }

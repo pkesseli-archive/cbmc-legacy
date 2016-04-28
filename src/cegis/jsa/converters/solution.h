@@ -7,7 +7,6 @@ Author: Daniel Kroening, kroening@kroening.com
 
 \*******************************************************************/
 
-#include <cegis/jsa/value/pred_ops.h>
 #include <cegis/jsa/value/jsa_solution.h>
 
 #ifndef CEGIS_JSA_CONVERT_SOLUTION_H_
@@ -22,13 +21,10 @@ Author: Daniel Kroening, kroening@kroening.com
  *
  * @param solution
  * @param prog
- * @param pred_ops
- * @param result_pred_ops
+ * @return
  */
 jsa_solutiont convert(
     const class jsa_genetic_solutiont &solution,
-    const class jsa_programt &prog,
-    const pred_op_idst &pred_ops,
-    const pred_op_idst &result_pred_ops);
+    const class jsa_programt &prog);
 
 #endif /* CEGIS_JSA_CONVERT_SOLUTION_H_ */

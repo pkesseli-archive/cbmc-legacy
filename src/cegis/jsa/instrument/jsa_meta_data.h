@@ -36,6 +36,7 @@ Author: Daniel Kroening, kroening@kroening.com
 #define JSA_INV_EXEC "__CPROVER_jsa_invariant_execute"
 #define JSA_QUERY_EXEC "__CPROVER_jsa_query_execute"
 #define JSA_PRED_EXEC "__CPROVER_jsa_execute_pred"
+#define JSA_STATIC_META_VAR_PREFIX CPROVER_PREFIX "JSA_"
 
 /**
  * @brief
@@ -46,7 +47,7 @@ Author: Daniel Kroening, kroening@kroening.com
  *
  * @return
  */
-bool is_jsa_heap(const typet &type);
+bool is_jsa_heap(const class typet &type);
 
 /**
  * @brief

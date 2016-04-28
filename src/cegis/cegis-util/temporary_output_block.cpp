@@ -4,7 +4,7 @@
 
 temporary_output_blockt::temporary_output_blockt()
 {
-  std::cout.setstate(std::ios_base::failbit);
+  //std::cout.setstate(std::ios_base::failbit);
 }
 
 temporary_output_blockt::~temporary_output_blockt()

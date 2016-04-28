@@ -104,7 +104,7 @@ std::vector<__CPROVER_jsa_invariant_instructiont> to_genetic_inv(const encoded_p
 }
 }
 
-void extract_jsa_candidate(jsa_genetic_solutiont &solution,
+void extract_jsa_genetic_candidate(jsa_genetic_solutiont &solution,
     const jsa_programt &prog, const goto_tracet &trace)
 {
   goto_tracet::stepst::const_iterator first(trace.steps.begin());
@@ -123,12 +123,32 @@ void extract_jsa_candidate(jsa_genetic_solutiont &solution,
   solution.invariant=to_genetic_inv(tmp);
 }
 
+namespace
+{
+void post_process(jsa_genetic_solutiont &solution, const pred_op_idst &pred_ops,
+    const pred_op_idst &result_pred_ops, const size_t max_size)
+{
+  // Unused predicates need to be zeroed.
+  const __CPROVER_jsa_pred_instructiont zero = { 0, 0, 0, 0 };
+  const size_t num_ops=pred_ops.size();
+  for (jsa_genetic_solutiont::predicatest::value_type &pred : solution.predicates)
+    for (const __CPROVER_jsa_pred_instructiont &instr : pred)
+      if (instr.opcode >= __CPROVER_JSA_NUM_PRED_INSTRUCTIONS ||
+          instr.result_op >= result_pred_ops.size() ||
+          instr.op0 >= num_ops || instr.op1 >= num_ops)
+      {
+        std::fill(pred.begin(), pred.end(), zero);
+        break;
+      }
+}
+}
+
 void extract_jsa_candidate(jsa_solutiont &solution, const jsa_programt &prog,
-    const goto_tracet &trace, const pred_op_idst &const_pred_ops,
-    const pred_op_idst &pred_ops)
+    const goto_tracet &trace, const pred_op_idst &pred_ops,
+    const pred_op_idst &result_pred_ops, const size_t max_size)
 {
   jsa_genetic_solutiont tmp;
-  extract_jsa_candidate(tmp, prog, trace);
-  // TODO: Call convert
-  solution=convert(tmp, prog, const_pred_ops, pred_ops);
+  extract_jsa_genetic_candidate(tmp, prog, trace);
+  post_process(tmp, pred_ops, result_pred_ops, max_size);
+  solution=convert(tmp, prog);
 }

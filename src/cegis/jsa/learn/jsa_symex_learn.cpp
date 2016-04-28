@@ -1,13 +1,9 @@
-#include <cegis/jsa/learn/add_synthesis_library.h>
+#include <cegis/jsa/preprocessing/add_synthesis_library.h>
 #include <cegis/jsa/learn/insert_counterexample.h>
 #include <cegis/jsa/learn/insert_predicates_and_queries.h>
 #include <cegis/jsa/learn/execute_jsa_programs.h>
 #include <cegis/jsa/learn/extract_candidate.h>
 #include <cegis/jsa/learn/jsa_symex_learn.h>
-
-// XXX: Debug
-#include <iostream>
-// XXX: Debug
 
 jsa_symex_learnt::jsa_symex_learnt(const jsa_programt &program) :
     original_program(program)
@@ -41,15 +37,9 @@ void jsa_symex_learnt::set_word_width(const size_t word_width_in_bits)
 void jsa_symex_learnt::convert(candidatet &result, const goto_tracet &trace,
     const size_t max_sz)
 {
-  extract_jsa_candidate(result, program, trace, op_ids, const_op_ids);
-
-  // XXX: Debug
-  std::cout << "<jsa_symex_verifyt>" << std::endl;
-  const namespacet ns(program.st);
-  program.gf.output(ns, std::cout);
-  std::cout << "</jsa_symex_verifyt>" << std::endl;
-  assert(false);
-  // XXX: Debug
+  extract_jsa_candidate(result, program, trace, const_op_ids, op_ids, max_sz);
+  result.max_size=max_sz;
+  result.num_pred_ops=const_op_ids.size();
 }
 
 const symbol_tablet &jsa_symex_learnt::get_symbol_table() const

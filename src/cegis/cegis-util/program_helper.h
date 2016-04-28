@@ -39,6 +39,34 @@ const goto_programt &get_entry_body(const goto_functionst &gf);
  *
  * @details
  *
+ * @param gf
+ * @param func_name
+ *
+ * @return
+ */
+class goto_programt &get_body(
+    class goto_functionst &gf,
+    const std::string &func_name);
+
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @param gf
+ * @param func_name
+ *
+ * @return
+ */
+const goto_programt &get_body(
+    const goto_functionst &gf,
+    const std::string &func_name);
+
+/**
+ * @brief
+ *
+ * @details
+ *
  * @param target
  * @param end
  *
