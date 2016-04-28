@@ -642,10 +642,10 @@ __CPROVER_jsa_inline void __CPROVER_jsa_remove(
 #define __CPROVER_JSA_MAX_QUERY_SIZE 10
 #endif
 #ifndef __CPROVER_JSA_MAX_PRED_SIZE
-#define __CPROVER_JSA_MAX_PRED_SIZE __CPROVER_JSA_MAX_QUERY_SIZE
+#define __CPROVER_JSA_MAX_PRED_SIZE (__CPROVER_JSA_MAX_QUERY_SIZE - 1)
 #endif
 #ifndef __CPROVER_JSA_NUM_PREDS
-#define __CPROVER_JSA_NUM_PREDS __CPROVER_JSA_MAX_QUERY_SIZE
+#define __CPROVER_JSA_NUM_PREDS (__CPROVER_JSA_MAX_QUERY_SIZE - 1)
 #endif
 
 __CPROVER_jsa_extern __CPROVER_jsa_word_t *__CPROVER_JSA_PRED_OPS[__CPROVER_JSA_NUM_PRED_OPS];
@@ -672,6 +672,7 @@ typedef __CPROVER_jsa_word_t __CPROVER_jsa_pred_id_t;
 
 __CPROVER_jsa_inline __CPROVER_jsa_word_t __CPROVER_jsa_execute_pred(
     const __CPROVER_jsa_pred_id_t pred_id)
+#ifndef JSA_VERIFICATION_DEBUG_H_
 {
   __CPROVER_jsa_assume(pred_id < __CPROVER_JSA_NUM_PREDS);
 #ifdef JSA_SYNTHESIS_H_
@@ -709,6 +710,9 @@ __CPROVER_jsa_inline __CPROVER_jsa_word_t __CPROVER_jsa_execute_pred(
   return 0; // When in CEGIS verification stage, this body is generated.
 #endif
 }
+#else
+;
+#endif
 
 // Instrumentation adds a lambda variable at program entry. It'll have id 0.
 #define __CPROVER_jsa__internal_lambda_op_id 0

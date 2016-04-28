@@ -1,3 +1,5 @@
+#include <util/expr_util.h>
+
 #include <cegis/cegis-util/program_helper.h>
 
 #include <cegis/jsa/value/jsa_types.h>
@@ -17,7 +19,9 @@ void create_jsa_temp_variables(jsa_programt &prog, const size_t max_size)
   for (size_t i=0; i < max_size; ++i)
   {
     pos=body.insert_after(pos);
-    declare_jsa_meta_variable(st, pos, tmp_prefix + std::to_string(i), type);
+    const std::string base_name(tmp_prefix + std::to_string(i));
+    declare_jsa_meta_variable(st, pos, base_name, type);
+    pos=assign_jsa_meta_variable(st, gf, pos, base_name, gen_zero(type));
   }
   prog.synthetic_variables=pos;
 }

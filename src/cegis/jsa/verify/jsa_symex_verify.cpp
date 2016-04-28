@@ -37,9 +37,9 @@ void jsa_symex_verifyt::process(const candidatet &cand)
   // XXX: Debug
   // XXX: Debug
   //const namespacet ns(program.st);
-  //std::cout << "<jsa_symex_verify_program>" << std::endl;
-  //program.gf.output(ns, std::cout);
-  //std::cout << "</jsa_symex_verify_program>" << std::endl;
+  std::cout << "<jsa_symex_verify_program>" << std::endl;
+  program.gf.output(ns, std::cout);
+  std::cout << "</jsa_symex_verify_program>" << std::endl;
   // XXX: Debug
 }
 

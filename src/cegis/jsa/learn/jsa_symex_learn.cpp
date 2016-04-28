@@ -76,7 +76,5 @@ void jsa_symex_learnt::show_candidate(messaget::mstreamt &os,
     const candidatet &candidate)
 {
   // TODO: Implement (Java 8 Stream query formatter?)
-  std::cout << "<show_candidate? />" << std::endl;
-  os << "TODO: print candidate" << messaget::endl;
-  os << messaget::eom;
+  os << "TODO: print candidate" << messaget::eom;
 }
