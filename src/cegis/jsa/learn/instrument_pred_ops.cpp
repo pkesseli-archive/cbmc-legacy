@@ -48,13 +48,6 @@ goto_programt::targetst collect_pred_ops(jsa_programt &prog)
 
 namespace
 {
-bool is_const(const symbol_exprt &symbol)
-{
-  const std::string &id=id2string(symbol.get_identifier());
-  if (std::string::npos != id.find(JSA_CONSTANT_PREFIX)) return true;
-  return symbol.type().get_bool(ID_C_constant);
-}
-
 void mark_dead(goto_programt &body, goto_programt::targett pos,
     const index_exprt &op_elem)
 {
@@ -91,7 +84,7 @@ void instrument_pred_ops(jsa_programt &prog, const goto_programt::targetst &ops,
     const index_exprt op_elem(pred_ops, op_index_expr);
     mark_dead(body, op, op_elem);
     goto_programt::targett pos=jsa_assign(st, gf, op, op_elem, var_ptr);
-    if (!is_const(var))
+    if (!is_jsa_const(var))
     {
       op_ids.insert(std::make_pair(res_op_idx, var));
       const constant_exprt res_op_idx_expr(from_integer(res_op_idx++, sz_type));
@@ -99,7 +92,7 @@ void instrument_pred_ops(jsa_programt &prog, const goto_programt::targetst &ops,
       mark_dead(body, op, res_op_elem);
       pos=jsa_assign(st, gf, pos, res_op_elem, address_of_exprt(var));
     }
-    if (op == prog.synthetic_variables) prog.synthetic_variables=op;
+    if (op == prog.synthetic_variables) prog.synthetic_variables=pos;
   }
 }
 

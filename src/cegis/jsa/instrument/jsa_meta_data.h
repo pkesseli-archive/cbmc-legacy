@@ -80,4 +80,15 @@ bool is_jsa_list(const irep_idt &id);
  */
 source_locationt jsa_builtin_source_location();
 
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @param symbol
+ *
+ * @return
+ */
+bool is_jsa_const(const class symbol_exprt &symbol);
+
 #endif /* CEGIS_JSA_META_DATA_H_ */

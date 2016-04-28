@@ -25,10 +25,7 @@ void jsa_symex_learnt::process(const counterexamplest &counterexamples,
 {
   program=original_program;
   const goto_programt::targetst pred_ops(collect_pred_ops(program));
-  // XXX: Debug
-  std::cout << "<pred_ops>" << pred_ops.size() << "</pred_ops>" << std::endl;
-  // XXX: Debug
-  add_jsa_synthesis_library(program, max_solution_size, pred_ops.size());
+  add_jsa_synthesis_library(program, max_solution_size, pred_ops);
   instrument_pred_ops(program, pred_ops, op_ids, const_op_ids);
   insert_counterexamples(program, counterexamples);
   declare_jsa_predicates(program, max_solution_size);

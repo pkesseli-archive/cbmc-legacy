@@ -10,7 +10,7 @@ Author: Daniel Kroening, kroening@kroening.com
 #ifndef CEGIS_JSA_ADD_SYNTHESIS_LIBRARY_H_
 #define CEGIS_JSA_ADD_SYNTHESIS_LIBRARY_H_
 
-#include <cstddef>
+#include <goto-programs/goto_program.h>
 
 /**
  * @brief
@@ -19,12 +19,12 @@ Author: Daniel Kroening, kroening@kroening.com
  *
  * @param prog
  * @param max_sz
- * @param num_pred_ops
+ * @param pred_op_locations
  */
 void add_jsa_synthesis_library(
     class jsa_programt &prog,
     size_t max_sz,
-    size_t num_pred_ops);
+    const goto_programt::targetst &pred_op_locations);
 
 /**
  * @brief
@@ -33,11 +33,11 @@ void add_jsa_synthesis_library(
  *
  * @param prog
  * @param max_sz
- * @param num_pred_ops
+ * @param pred_op_locations
  */
 void add_jsa_verification_library(
     jsa_programt &prog,
     size_t max_sz,
-    size_t num_pred_ops);
+    const goto_programt::targetst &pred_op_locations);
 
 #endif /* CEGIS_JSA_ADD_SYNTHESIS_LIBRARY_H_ */

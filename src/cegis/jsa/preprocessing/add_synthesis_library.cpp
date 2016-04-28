@@ -1,9 +1,12 @@
+#include <algorithm>
+
 #include <ansi-c/cprover_library.h>
 #include <ansi-c/c_types.h>
 #include <util/bv_arithmetic.h>
 #include <goto-programs/goto_convert_functions.h>
 #include <linking/zero_initializer.h>
 
+#include <cegis/cegis-util/program_helper.h>
 #include <cegis/jsa/options/jsa_program.h>
 #include <cegis/jsa/instrument/jsa_meta_data.h>
 #include <cegis/jsa/preprocessing/add_synthesis_library.h>
@@ -11,6 +14,7 @@
 // XXX: Debug
 #include <util/ui_message.h>
 #include <iostream>
+#include <linking/linking.h>
 // XXX: Debug
 
 #define CPROVER_INIT "__CPROVER_initialize"
@@ -105,19 +109,31 @@ void zero_new_global_vars(const symbol_tablet &st, goto_functionst &gf)
     }
 }
 
-void add_jsa_library(jsa_programt &prog, const size_t max_sz,
-    const size_t num_pred_ops, const std::string &prefix)
+bool is_const(const symbol_tablet &st, const goto_programt::instructiont &instr)
 {
+  return is_jsa_const(st.lookup(get_affected_variable(instr)).symbol_expr());
+}
+
+void add_jsa_library(jsa_programt &prog, const size_t max_sz,
+    const goto_programt::targetst &pred_op_locations, const std::string &prefix)
+{
+  symbol_tablet &st=prog.st;
   std::string library_text(prefix);
   library_text+="\n#define __CPROVER_JSA_MAX_QUERY_SIZE ";
   library_text+=std::to_string(max_sz + 1);
   library_text+="\n#define __CPROVER_JSA_MAX_PRED_SIZE ";
   library_text+=std::to_string(max_sz);
   library_text+="\n#define __CPROVER_JSA_NUM_PRED_OPS ";
+  const size_t num_pred_ops=pred_op_locations.size();
   library_text+=std::to_string(num_pred_ops);
+  const size_t num_result_pred_ops=std::count_if(pred_op_locations.begin(),
+      pred_op_locations.end(), [&st](const goto_programt::targett &target)
+      { return !is_const(st, *target);});
+  library_text+="\n#define __CPROVER_JSA_NUM_PRED_RESULT_OPS ";
+  library_text+=std::to_string(num_result_pred_ops);
   library_text+='\n';
   library_text+=get_sizes(prog.st);
-  const std::set<irep_idt> functions= { JSA_LIB, QUERY_LIB };
+  const std::set<irep_idt> functions={ JSA_LIB, QUERY_LIB };
   symbol_tablet blank;
   add_placenholder(blank, JSA_LIB);
   add_placenholder(blank, QUERY_LIB);
@@ -129,9 +145,11 @@ void add_jsa_library(jsa_programt &prog, const size_t max_sz,
   // XXX: Debug
   add_library(library_text, blank, msg);
 
-  symbol_tablet &st=prog.st;
-  for (const symbol_tablet::symbolst::value_type &symbol : blank.symbols)
-    if (!st.has_symbol(symbol.first)) st.add(symbol.second);
+  // XXX: Debug
+  linking(st, blank, msg);
+  // XXX: Debug
+  /*for (const symbol_tablet::symbolst::value_type &symbol : blank.symbols)
+    if (!st.has_symbol(symbol.first)) st.add(symbol.second);*/
   goto_functionst &gf=prog.gf;
   const std::vector<irep_idt> new_funcs(get_functions(blank));
   for (const irep_idt &func_name : new_funcs)
@@ -143,13 +161,14 @@ void add_jsa_library(jsa_programt &prog, const size_t max_sz,
 }
 
 void add_jsa_synthesis_library(jsa_programt &prog, const size_t max_sz,
-    const size_t num_pred_ops)
+    const goto_programt::targetst &pred_op_locations)
 {
-  add_jsa_library(prog, max_sz, num_pred_ops, "#define JSA_SYNTHESIS_H_");
+  add_jsa_library(prog, max_sz, pred_op_locations, "#define JSA_SYNTHESIS_H_");
 }
 
 void add_jsa_verification_library(jsa_programt &prog, const size_t max_sz,
-    const size_t num_pred_ops)
+    const goto_programt::targetst &pred_op_locations)
 {
-  add_jsa_library(prog, max_sz, num_pred_ops, "#define JSA_VERIFICATION_H_");
+  add_jsa_library(prog, max_sz, pred_op_locations,
+      "#define JSA_VERIFICATION_H_");
 }

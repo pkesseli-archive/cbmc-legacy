@@ -65,6 +65,54 @@ void clone_heap(jsa_programt &prog)
   move_labels(body, prog.inductive_step, pos);
 }
 
+#define VALID_LIST JSA_PREFIX "assume_valid_list"
+#define VALID_IT JSA_PREFIX "assume_valid_iterator"
+
+namespace
+{
+std::vector<symbol_exprt> collect(goto_programt::targett first,
+    const goto_programt::targett &last,
+    const std::function<bool(const irep_idt &)> pred)
+{
+  std::vector<symbol_exprt> symbols;
+  for (; first != last; ++first)
+  {
+    if (goto_program_instruction_typet::DECL != first->type) continue;
+    const symbol_exprt symb(to_symbol_expr(to_code_decl(first->code).symbol()));
+    if (pred(symb.get_identifier())) symbols.push_back(symb);
+  }
+  return symbols;
+}
+
+goto_programt::targett call_assume(const symbol_tablet &st,
+    const char * const type, const exprt &heap, const exprt &arg,
+    goto_programt &body, const goto_programt::targett &pos)
+{
+  const goto_programt::targett assume=body.insert_after(pos);
+  assume->source_location=jsa_builtin_source_location();
+  assume->type=goto_program_instruction_typet::FUNCTION_CALL;
+  code_function_callt call;
+  call.function()=st.lookup(type).symbol_expr();
+  call.arguments().push_back(heap);
+  call.arguments().push_back(arg);
+  assume->code=call;
+  return assume;
+}
+
+goto_programt::targett assume_lists_and_its_valid(const symbol_tablet &st,
+    goto_programt &body, goto_programt::targett pos, const exprt &heap_ptr)
+{
+  const goto_programt::targett first=body.instructions.begin();
+  const std::vector<symbol_exprt> its(collect(first, pos, is_jsa_iterator));
+  for (const symbol_exprt &it : its)
+    pos=call_assume(st, VALID_IT, heap_ptr, it, body, pos);
+  const std::vector<symbol_exprt> lists(collect(first, pos, is_jsa_list));
+  for (const symbol_exprt &list : lists)
+    pos=call_assume(st, VALID_LIST, heap_ptr, list, body, pos);
+  return pos;
+}
+}
+
 #define VALID_HEAP JSA_PREFIX "assume_valid_heap"
 
 goto_programt::targett assume_valid_heap(const symbol_tablet &st,
@@ -77,6 +125,5 @@ goto_programt::targett assume_valid_heap(const symbol_tablet &st,
   call.function()=st.lookup(VALID_HEAP).symbol_expr();
   call.arguments().push_back(heap_ptr);
   pos->code=call;
-
-  return pos;
+  return assume_lists_and_its_valid(st, body, pos, heap_ptr);
 }

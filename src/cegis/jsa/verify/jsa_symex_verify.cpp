@@ -20,10 +20,7 @@ void jsa_symex_verifyt::process(const candidatet &cand)
 {
   program=original_program;
   const goto_programt::targetst pred_ops(collect_pred_ops(program));
-  add_jsa_verification_library(program, cand.max_size, pred_ops.size());
-  // XXX: Debug
-  std::cout << "<num_pred_ops>" << pred_ops.size() << "</num_pred_ops>" << std::endl;
-  // XXX: Debug
+  add_jsa_verification_library(program, cand.max_size, pred_ops);
   instrument_pred_ops(program, pred_ops);
   insert_jsa_constraint(program, false);
   assume_renondet_inputs_valid(program);

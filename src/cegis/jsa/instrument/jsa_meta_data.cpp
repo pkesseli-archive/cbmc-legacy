@@ -40,3 +40,10 @@ source_locationt jsa_builtin_source_location()
   loc.set_function(goto_functionst::entry_point());
   return loc;
 }
+
+bool is_jsa_const(const symbol_exprt &symbol)
+{
+  const std::string &id=id2string(symbol.get_identifier());
+  if (std::string::npos != id.find(JSA_CONSTANT_PREFIX)) return true;
+  return symbol.type().get_bool(ID_C_constant);
+}
