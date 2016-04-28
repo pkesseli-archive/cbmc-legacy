@@ -71,22 +71,22 @@ namespace
 {
 class replace_query_ops_visitort: public expr_visitort
 {
-  const goto_functionst &gf;
+  const symbol_tablet &st;
   const __CPROVER_jsa_query_instructiont &instr;
   const __CPROVER_jsa_query_instructiont &prefix;
   std::vector<exprt *> heap_occurrences;
 public:
-  replace_query_ops_visitort(const goto_functionst &gf,
+  replace_query_ops_visitort(const symbol_tablet &st,
       const __CPROVER_jsa_query_instructiont &instr,
       const __CPROVER_jsa_query_instructiont &prefix) :
-      gf(gf), instr(instr), prefix(prefix)
+      st(st), instr(instr), prefix(prefix)
   {
   }
 
   ~replace_query_ops_visitort()
   {
     for (exprt * const expr : heap_occurrences)
-      *expr=address_of_exprt(get_user_heap(gf));
+      *expr=address_of_exprt(get_queried_heap(st));
   }
 
   void handle_member(member_exprt &expr)
@@ -106,22 +106,22 @@ public:
     if (ID_member == expr_id) return handle_member(to_member_expr(expr));
     if (ID_symbol != expr_id) return;
     const std::string &id=id2string(to_symbol_expr(expr).get_identifier());
-    if (std::string::npos != id.find(LOCAL_HEAP))
-      heap_occurrences.push_back(&expr);
-    else if (std::string::npos != id.find(LOCAL_LIST))
-      expr=from_integer(prefix.opcode, expr.type());
+    if (std::string::npos != id.find(LOCAL_HEAP)) heap_occurrences.push_back(
+        &expr);
+    else if (std::string::npos != id.find(LOCAL_LIST)) expr=from_integer(
+        prefix.opcode, expr.type());
     else if (std::string::npos != id.find(LOCAL_IT))
       expr=from_integer(prefix.op, expr.type());
   }
 };
 }
 
-void replace_query_ops(const goto_functionst &gf, goto_programt::targett first,
+void replace_query_ops(const symbol_tablet &st, goto_programt::targett first,
     const goto_programt::const_targett &last,
     const __CPROVER_jsa_query_instructiont &instr,
     const __CPROVER_jsa_query_instructiont &prefix)
 {
-  replace_query_ops_visitort visitor(gf, instr, prefix);
+  replace_query_ops_visitort visitor(st, instr, prefix);
   for (; first != last; ++first)
   {
     first->guard.visit(visitor);

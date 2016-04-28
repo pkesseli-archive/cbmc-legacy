@@ -1,6 +1,7 @@
 #include <cegis/jsa/preprocessing/add_synthesis_library.h>
 #include <cegis/jsa/learn/insert_counterexample.h>
 #include <cegis/jsa/learn/insert_predicates_and_queries.h>
+#include <cegis/jsa/learn/instrument_pred_ops.h>
 #include <cegis/jsa/learn/execute_jsa_programs.h>
 #include <cegis/jsa/learn/extract_candidate.h>
 #include <cegis/jsa/learn/jsa_symex_learn.h>
@@ -24,6 +25,9 @@ void jsa_symex_learnt::process(const counterexamplest &counterexamples,
 {
   program=original_program;
   const goto_programt::targetst pred_ops(collect_pred_ops(program));
+  // XXX: Debug
+  std::cout << "<pred_ops>" << pred_ops.size() << "</pred_ops>" << std::endl;
+  // XXX: Debug
   add_jsa_synthesis_library(program, max_solution_size, pred_ops.size());
   instrument_pred_ops(program, pred_ops, op_ids, const_op_ids);
   insert_counterexamples(program, counterexamples);
@@ -59,7 +63,6 @@ void jsa_symex_learnt::convert(candidatet &result, const goto_tracet &trace,
   result.clear();
   extract_jsa_candidate(result, program, trace, const_op_ids, op_ids, max_sz);
   result.max_size=max_sz;
-  result.num_pred_ops=const_op_ids.size();
 }
 
 const symbol_tablet &jsa_symex_learnt::get_symbol_table() const

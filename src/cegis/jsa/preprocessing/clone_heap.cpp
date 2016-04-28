@@ -77,5 +77,6 @@ goto_programt::targett assume_valid_heap(const symbol_tablet &st,
   call.function()=st.lookup(VALID_HEAP).symbol_expr();
   call.arguments().push_back(heap_ptr);
   pos->code=call;
+
   return pos;
 }

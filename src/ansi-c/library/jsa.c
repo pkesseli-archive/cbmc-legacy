@@ -592,7 +592,7 @@ __CPROVER_jsa_inline void __CPROVER_jsa_remove(
 #endif
 
 __CPROVER_jsa_extern __CPROVER_jsa_word_t *__CPROVER_JSA_PRED_OPS[__CPROVER_JSA_NUM_PRED_OPS];
-__CPROVER_jsa_extern __CPROVER_jsa_word_t *__CPROVER_JSA_PRED_RESULT_OPS[__CPROVER_JSA_MAX_PRED_SIZE];
+__CPROVER_jsa_extern __CPROVER_jsa_word_t *__CPROVER_JSA_PRED_RESULT_OPS[__CPROVER_JSA_NUM_PRED_RESULT_OPS];
 
 #ifdef JSA_SYNTHESIS_H_
 typedef __CPROVER_jsa_word_t __CPROVER_jsa_opcodet;

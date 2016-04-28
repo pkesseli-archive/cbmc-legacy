@@ -102,3 +102,10 @@ void instrument_pred_ops(jsa_programt &prog, const goto_programt::targetst &ops,
     if (op == prog.synthetic_variables) prog.synthetic_variables=op;
   }
 }
+
+void instrument_pred_ops(jsa_programt &prog, const goto_programt::targetst &ops)
+{
+  pred_op_idst op_ids;
+  pred_op_idst const_op_ids;
+  instrument_pred_ops(prog, ops, op_ids, const_op_ids);
+}

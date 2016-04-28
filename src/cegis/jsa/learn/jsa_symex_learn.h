@@ -15,7 +15,7 @@ Author: Daniel Kroening, kroening@kroening.com
 #include <cegis/jsa/options/jsa_program.h>
 #include <cegis/jsa/value/jsa_counterexample.h>
 #include <cegis/jsa/value/jsa_solution.h>
-#include <cegis/jsa/learn/instrument_pred_ops.h>
+#include <cegis/jsa/value/pred_ops.h>
 
 /**
  * @brief

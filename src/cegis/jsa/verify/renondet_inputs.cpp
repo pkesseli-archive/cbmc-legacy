@@ -24,13 +24,6 @@ void call_assume(const symbol_tablet &st, const char * const type,
 }
 
 void call_assume(const symbol_tablet &st, const char * const type,
-    const exprt &arg, goto_programt &body, const goto_programt::targett &pos)
-{
-  const code_function_callt::argumentst args(1, arg);
-  call_assume(st, type, args, body, pos);
-}
-
-void call_assume(const symbol_tablet &st, const char * const type,
     const address_of_exprt &heap, const exprt &arg, goto_programt &body,
     const goto_programt::targett &pos)
 {

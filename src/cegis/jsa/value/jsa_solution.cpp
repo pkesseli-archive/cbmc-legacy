@@ -2,7 +2,7 @@
 #include <cegis/jsa/value/jsa_solution.h>
 
 jsa_solutiont::jsa_solutiont() :
-    max_size(0), num_pred_ops(0)
+    max_size(0)
 {
 }
 
@@ -19,7 +19,7 @@ jsa_solutiont &copy_instrs(jsa_solutiont &lhs, const jsa_solutiont &rhs)
 }
 
 jsa_solutiont::jsa_solutiont(const jsa_solutiont &other) :
-    max_size(other.max_size), num_pred_ops(other.num_pred_ops)
+    max_size(other.max_size)
 {
   copy_instrs(*this, other);
 }
@@ -27,13 +27,11 @@ jsa_solutiont::jsa_solutiont(const jsa_solutiont &other) :
 jsa_solutiont &jsa_solutiont::operator =(const jsa_solutiont &other)
 {
   max_size=other.max_size;
-  num_pred_ops=other.num_pred_ops;
   return copy_instrs(*this, other);
 }
 
 void jsa_solutiont::clear() {
   max_size=0;
-  num_pred_ops=0;
   predicates.clear();
   query.clear();
   invariant.clear();

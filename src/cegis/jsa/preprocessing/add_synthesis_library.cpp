@@ -113,6 +113,8 @@ void add_jsa_library(jsa_programt &prog, const size_t max_sz,
   library_text+=std::to_string(max_sz + 1);
   library_text+="\n#define __CPROVER_JSA_MAX_PRED_SIZE ";
   library_text+=std::to_string(max_sz);
+  library_text+="\n#define __CPROVER_JSA_NUM_PRED_OPS ";
+  library_text+=std::to_string(num_pred_ops);
   library_text+='\n';
   library_text+=get_sizes(prog.st);
   const std::set<irep_idt> functions= { JSA_LIB, QUERY_LIB };

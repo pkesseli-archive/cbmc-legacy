@@ -112,25 +112,28 @@ void insert_sync_call(const symbol_tablet &st, const goto_functionst &gf,
   pos->code=sync;
 }
 
-void make_full_query_call(const goto_functionst &gf, goto_programt &body,
-    goto_programt::targett pos, const goto_programt::instructionst &query)
+void make_full_query_call(const symbol_tablet &st, const goto_functionst &gf,
+    goto_programt &body, goto_programt::targett pos, const goto_programt::instructionst &query)
 {
   if (query.empty()) return;
-  pos=body.insert_after(pos);
+  pos=insert_before_preserve_labels(body, pos);
   pos->type=goto_program_instruction_typet::FUNCTION_CALL;
   pos->source_location=jsa_builtin_source_location();
   code_function_callt call;
+  call.function()=st.lookup(MAKE_NULL).symbol_expr();
   code_function_callt::argumentst &args=call.arguments();
   args.push_back(address_of_exprt(get_user_heap(gf)));
   args.push_back(get_iterator_arg(query.front().code));
   pos->code=call;
 }
 
-void insert_before(goto_programt::instructionst &body,
-    const goto_programt::targett &pos, const goto_programt::instructionst &prog)
+void insert_before(goto_programt &body, const goto_programt::targett &pos,
+    const goto_programt::instructionst &prog)
 {
   if (prog.empty()) return;
-  copy_instructions(body, std::prev(pos), prog);
+  const goto_programt::targett insert_after=std::prev(pos);
+  copy_instructions(body.instructions, insert_after, prog);
+  move_labels(body, pos, std::next(insert_after));
 }
 }
 
@@ -144,24 +147,26 @@ void insert_jsa_solution(jsa_programt &prog, const jsa_solutiont &solution)
   // XXX: Debug
   const namespacet ns(st);
   goto_programt tmp;
-  tmp.instructions=solution.invariant;
+  for (const auto &pred : solution.predicates)
+  {
+  tmp.instructions=pred;
   tmp.compute_incoming_edges();
   tmp.compute_target_numbers();
-  std::cout << "<invariant>" << std::endl;
+  std::cout << "<pred>" << std::endl;
   tmp.output(ns, "", std::cout);
-  std::cout << "</invariant>" << std::endl;
+  std::cout << "</pred>" << std::endl;
+  }
   // XXX: Debug
 
-  goto_programt::instructionst &instrs=body.instructions;
-  insert_before(instrs, prog.base_case, solution.query);
+  insert_before(body, prog.base_case, solution.query);
   insert_invariant(st, body, prog.base_case, solution.invariant);
-  insert_before(instrs, prog.inductive_assumption, solution.query);
+  insert_before(body, prog.inductive_assumption, solution.query);
   insert_invariant(st, body, prog.inductive_assumption, solution.invariant);
-  insert_before(instrs, prog.inductive_step, solution.query);
+  insert_before(body, prog.inductive_step, solution.query);
   insert_sync_call(st, gf, body, prog.inductive_step, solution.query);
   insert_invariant(st, body, prog.inductive_step, solution.invariant);
-  make_full_query_call(gf, body, prog.property_entailment, solution.query);
-  insert_before(instrs, prog.property_entailment, solution.query);
+  make_full_query_call(st, gf, body, prog.property_entailment, solution.query);
+  insert_before(body, prog.property_entailment, solution.query);
   insert_invariant(st, body, prog.property_entailment, solution.invariant);
 
   body.compute_incoming_edges();

@@ -58,8 +58,7 @@ void convert(goto_programt::instructionst &result, const jsa_programt &prog,
 void convert(goto_programt::instructionst &result, const jsa_programt &prog,
     const std::vector<__CPROVER_jsa_query_instructiont> &solution)
 {
-  const goto_functionst &gf=prog.gf;
-  const instruction_sett instr_set(get_query_instruction_set(gf));
+  const instruction_sett instr_set(get_query_instruction_set(prog.gf));
   assert(__CPROVER_JSA_NUM_QUERY_INSTRUCTIONS == instr_set.size());
   assert(!solution.empty());
   std::vector<__CPROVER_jsa_query_instructiont>::const_iterator instr=solution.begin();
@@ -72,7 +71,7 @@ void convert(goto_programt::instructionst &result, const jsa_programt &prog,
     const size_t previous_size=result.size();
     copy(result, it->second);
     const goto_programt::targett new_instr(std::next(result.begin(), previous_size));
-    replace_query_ops(gf, new_instr, result.end(), *instr, prefix);
+    replace_query_ops(prog.st, new_instr, result.end(), *instr, prefix);
   }
   copy.finalize();
 }

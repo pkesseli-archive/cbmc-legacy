@@ -1,5 +1,6 @@
 #include <cegis/jsa/constraint/jsa_constraint_factory.h>
 #include <cegis/jsa/preprocessing/add_synthesis_library.h>
+#include <cegis/jsa/learn/instrument_pred_ops.h>
 #include <cegis/jsa/verify/extract_counterexample.h>
 #include <cegis/jsa/verify/insert_solution.h>
 #include <cegis/jsa/verify/renondet_inputs.h>
@@ -18,7 +19,12 @@ jsa_symex_verifyt::jsa_symex_verifyt(const jsa_programt &program) :
 void jsa_symex_verifyt::process(const candidatet &cand)
 {
   program=original_program;
-  add_jsa_verification_library(program, cand.max_size, cand.num_pred_ops);
+  const goto_programt::targetst pred_ops(collect_pred_ops(program));
+  add_jsa_verification_library(program, cand.max_size, pred_ops.size());
+  // XXX: Debug
+  std::cout << "<num_pred_ops>" << pred_ops.size() << "</num_pred_ops>" << std::endl;
+  // XXX: Debug
+  instrument_pred_ops(program, pred_ops);
   insert_jsa_constraint(program, false);
   assume_renondet_inputs_valid(program);
 

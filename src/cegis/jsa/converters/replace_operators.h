@@ -33,14 +33,14 @@ void replace_pred_ops(
  *
  * @details
  *
- * @param gf
+ * @param st
  * @param first
  * @param last
  * @param instr
  * @param prefix
  */
 void replace_query_ops(
-    const class goto_functionst &gf,
+    const class symbol_tablet &st,
     goto_programt::targett first,
     const goto_programt::const_targett &last,
     const __CPROVER_jsa_query_instructiont &instr,

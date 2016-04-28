@@ -55,13 +55,6 @@ public:
    *
    * @details
    */
-  size_t num_pred_ops;
-
-  /**
-   * @brief
-   *
-   * @details
-   */
   jsa_solutiont();
 
   /**

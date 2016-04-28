@@ -39,4 +39,16 @@ void instrument_pred_ops(
     pred_op_idst &op_ids,
     pred_op_idst &const_op_ids);
 
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @param prog
+ * @param ops
+ */
+void instrument_pred_ops(
+    class jsa_programt &prog,
+    const goto_programt::targetst &ops);
+
 #endif /* CEGIS_JSA_INSTRUMENT_PRED_OPS_H_ */
