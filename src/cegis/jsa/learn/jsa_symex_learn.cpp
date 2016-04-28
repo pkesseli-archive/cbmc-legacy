@@ -43,9 +43,9 @@ void jsa_symex_learnt::process(const counterexamplest &counterexamples,
   // XXX: Debug
   // XXX: Debug
   //const namespacet ns(program.st);
-  //std::cout << "<jsa_symex_verify_program>" << std::endl;
-  //program.gf.output(ns, std::cout);
-  //std::cout << "</jsa_symex_verify_program>" << std::endl;
+  std::cout << "<jsa_symex_verify_program>" << std::endl;
+  program.gf.output(ns, std::cout);
+  std::cout << "</jsa_symex_verify_program>" << std::endl;
   // XXX: Debug
 }
 
@@ -76,5 +76,7 @@ void jsa_symex_learnt::show_candidate(messaget::mstreamt &os,
     const candidatet &candidate)
 {
   // TODO: Implement (Java 8 Stream query formatter?)
-  os << "TODO: print candidate" << messaget::mstreamt::end;
+  std::cout << "<show_candidate? />" << std::endl;
+  os << "TODO: print candidate" << messaget::endl;
+  os << messaget::eom;
 }

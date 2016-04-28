@@ -32,9 +32,9 @@ symbolt &create_jsa_symbol(symbol_tablet &st, const std::string &full_name,
 
 void declare_lambda(jsa_programt &p, goto_programt &body)
 {
-  p.synthetic_variables=body.insert_after(p.synthetic_variables);
+  const goto_programt::targett pos=body.insert_after(body.instructions.begin());
   const typet type(jsa_word_type());
-  declare_jsa_meta_variable(p.st, p.synthetic_variables, JSA_LAMBDA_OP, type);
+  declare_jsa_meta_variable(p.st, pos, JSA_LAMBDA_OP, type);
 }
 }
 

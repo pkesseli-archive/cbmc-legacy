@@ -146,7 +146,7 @@ void add_jsa_library(jsa_programt &prog, const size_t max_sz,
   add_library(library_text, blank, msg);
 
   // XXX: Debug
-  linking(st, blank, msg);
+  assert(!linking(st, blank, msg));
   // XXX: Debug
   /*for (const symbol_tablet::symbolst::value_type &symbol : blank.symbols)
     if (!st.has_symbol(symbol.first)) st.add(symbol.second);*/
