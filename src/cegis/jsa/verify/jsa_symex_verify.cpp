@@ -30,6 +30,7 @@ void jsa_symex_verifyt::process(const candidatet &cand)
   if (cand.invariant.empty()) return;
   insert_jsa_solution(program, cand);
   remove_returns(program.st, program.gf);
+  program.gf.update();
 
   // XXX: Debug
   program.gf.function_map.erase("main");

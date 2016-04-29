@@ -16,6 +16,10 @@
 #define CE_ARRAY_INDEX JSA_PREFIX "ce_array_index"
 #define TAG_PREFIX "tag-"
 
+// XXX: Debug
+#include <iostream>
+// XXX: Debug
+
 namespace
 {
 const typet &clean_up_type(const symbol_tablet &st, const typet &type)
@@ -61,6 +65,25 @@ std::string get_array_name(const unsigned loc_id)
 void add_array_declarations(jsa_programt &program,
     const jsa_counterexamplest &ces)
 {
+  // XXX: Debug
+  int i=0;
+  for (const jsa_counterexamplet &ce : ces)
+  {
+    std::cout << "<ce>" << std::endl;
+    std::cout << "  <id>" << i++ << "</id>" << std::endl;
+    std::cout << "  <vals>" << std::endl;
+    for (const jsa_counterexamplet::value_type &val : ce)
+    {
+      std::cout << "    <val>" << std::endl;
+      std::cout << "      <loc>" << val.first << "</loc>" << std::endl;
+      std::cout << "      <expr>" << val.second.to_string() << "</expr>" << std::endl;
+      std::cout << "    </val>" << std::endl;
+    }
+    std::cout << "  </vals>" << std::endl;
+    std::cout << "</ce>" << std::endl;
+  }
+  // XXX: Debug
+
   symbol_tablet &st=program.st;
   goto_functionst &gf=program.gf;
   goto_programt &body=get_entry_body(gf);
@@ -78,6 +101,12 @@ void add_array_declarations(jsa_programt &program,
     declare_jsa_meta_variable(st, pos, base_name, array_type);
     const array_valuest::const_iterator array_val=array_values.find(loc_id);
     assert(array_values.end() != array_val);
+    const array_exprt &array_expr=array_val->second;
+    // XXX: Debug
+    std::cout << "<array_expr.operands().size()>" << array_expr.operands().size() << "</array_expr.operands().size()>" << std::endl;
+    std::cout << "<ces.size()>" << ces.size() << "</ces.size()>" << std::endl;
+    // XXX: Debug
+    assert(array_expr.operands().size() == ces.size());
     pos=assign_jsa_meta_variable(st, gf, pos, base_name, array_val->second);
   }
 }
