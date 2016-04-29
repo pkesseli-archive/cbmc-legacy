@@ -53,6 +53,7 @@
 #endif
 
 typedef unsigned char __CPROVER_jsa_word_t;
+typedef char __CPROVER_jsa_signed_word_t;
 typedef __CPROVER_jsa_word_t  __CPROVER_jsa_data_t;
 typedef __CPROVER_jsa_word_t  __CPROVER_jsa_index_t;
 typedef __CPROVER_jsa_word_t  __CPROVER_jsa__internal_index_t;
