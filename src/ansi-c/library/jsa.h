@@ -61,6 +61,7 @@ typedef __CPROVER_jsa_id_t  __CPROVER_jsa_node_id_t;
 typedef __CPROVER_jsa_id_t  __CPROVER_jsa_list_id_t;
 typedef __CPROVER_jsa_id_t  __CPROVER_jsa_iterator_id_t;
 #define __CPROVER_jsa_null 0xFF
+#define __CPROVER_jsa_word_max 0xFF
 
 /**
  * Concrete node with explicit value.
@@ -622,6 +623,9 @@ __CPROVER_jsa_inline void __CPROVER_jsa_remove(
 ;
 #endif
 
+#define __CPROVER_jsa_minus(lhs, rhs) \
+  (lhs >= rhs ? lhs - rhs : __CPROVER_jsa_word_max - rhs + lhs)
+
 // SYNTHESIS
 
 #ifdef JSA_SYNTHESIS_H_
@@ -663,7 +667,7 @@ __CPROVER_jsa_extern __CPROVER_jsa__internal_index_t __CPROVER_JSA_PRED_RESULT_O
 __CPROVER_jsa_extern const __CPROVER_jsa_pred_instructiont *__CPROVER_JSA_PREDICATES[__CPROVER_JSA_NUM_PREDS];
 __CPROVER_jsa_extern __CPROVER_jsa__internal_index_t __CPROVER_JSA_PREDICATE_SIZES[__CPROVER_JSA_NUM_PREDS];
 
-#define __CPROVER_JSA_NUM_PRED_INSTRUCTIONS 3u
+#define __CPROVER_JSA_NUM_PRED_INSTRUCTIONS 5u
 
 typedef __CPROVER_jsa_word_t __CPROVER_jsa_pred_id_t;
 
@@ -699,12 +703,18 @@ __CPROVER_jsa_inline __CPROVER_jsa_word_t __CPROVER_jsa_execute_pred(
       __CPROVER_jsa_pred_opcode_0: __CPROVER_jsa_execute_pred_result=__CPROVER_jsa_execute_pred_op0 < __CPROVER_jsa_execute_pred_op1;
       break;
     case 1:
-      __CPROVER_jsa_assume(__CPROVER_jsa_execute_pred_op1 != 0);
-      __CPROVER_jsa_pred_opcode_1: __CPROVER_jsa_execute_pred_result=__CPROVER_jsa_execute_pred_op0 % __CPROVER_jsa_execute_pred_op1;
+      __CPROVER_jsa_pred_opcode_1: __CPROVER_jsa_execute_pred_result=__CPROVER_jsa_execute_pred_op0 <= __CPROVER_jsa_execute_pred_op1;
       break;
     case 2:
+      __CPROVER_jsa_assume(__CPROVER_jsa_execute_pred_op1 != 0);
+      __CPROVER_jsa_pred_opcode_2: __CPROVER_jsa_execute_pred_result=__CPROVER_jsa_execute_pred_op0 % __CPROVER_jsa_execute_pred_op1;
+      break;
+    case 3:
       __CPROVER_jsa_assume(instr.op0 < instr.op1);
-      __CPROVER_jsa_pred_opcode_2: __CPROVER_jsa_execute_pred_result=__CPROVER_jsa_execute_pred_op0 != __CPROVER_jsa_execute_pred_op1;
+      __CPROVER_jsa_pred_opcode_3: __CPROVER_jsa_execute_pred_result=__CPROVER_jsa_execute_pred_op0 != __CPROVER_jsa_execute_pred_op1;
+      break;
+    case 4:
+      __CPROVER_jsa_pred_opcode_4: __CPROVER_jsa_execute_pred_result=__CPROVER_jsa_minus(__CPROVER_jsa_execute_pred_op0, __CPROVER_jsa_execute_pred_op1);
       break;
     default:
       __CPROVER_jsa_assume(false); // TODO: Speed-up, slow-down?
@@ -817,7 +827,7 @@ __CPROVER_jsa_inline _Bool __CPROVER_jsa_verify_invariant_execute(
 #ifdef __CPROVER
   const _Bool vars_equal=__CPROVER_array_equal(__CPROVER_JSA_HEAP_VARS, __CPROVER_JSA_QUERIED_HEAP_VARS);
 #else
-  const _Bool vars_equal=memcmp(&__CPROVER_JSA_HEAP_VARS, &__CPROVER_JSA_QUERIED_HEAP_VARS, sizeof(__CPROVER_JSA_HEAP_VARS));
+  const _Bool vars_equal=memcmp(&__CPROVER_JSA_HEAP_VARS, &__CPROVER_JSA_QUERIED_HEAP_VARS, sizeof(__CPROVER_JSA_HEAP_VARS)) == 0;
 #endif
   const _Bool heaps_equal=__CPROVER_jsa__internal_are_heaps_equal(heap, queried_heap);
   return vars_equal && heaps_equal;

@@ -49,7 +49,8 @@ void make_query_call(const symbol_tablet &st, goto_functionst &gf,
   pos->type=goto_program_instruction_typet::FUNCTION_CALL;
   pos->source_location=jsa_builtin_source_location();
   code_function_callt call;
-  call.function()=st.lookup(full_query ? EXEC_FULL : JSA_QUERY_EXEC).symbol_expr();
+  call.function()=
+      st.lookup(full_query ? EXEC_FULL : JSA_QUERY_EXEC).symbol_expr();
   code_function_callt::argumentst &args=call.arguments();
   args.push_back(address_of_exprt(get_queried_heap(st)));
   const symbol_exprt p(st.lookup(get_cegis_meta_name(JSA_QUERY)).symbol_expr());

@@ -139,7 +139,7 @@ const irep_idt &get_affected_variable(const goto_programt::instructiont &instr)
   case goto_program_instruction_typet::DEAD:
     return to_code_dead(instr.code).get_identifier();
   default:
-    assert(!"Only DECL and ASSIGN allowed.");
+    assert(!"Only DECL, ASSIGN, DEAD allowed.");
   }
 }
 
