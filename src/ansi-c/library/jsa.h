@@ -144,7 +144,7 @@ typedef struct __CPROVER_jsa_abstract_heap
 #define __CPROVER_jsa_assert(c, str) __CPROVER_assert(c, str)
 #else
 #define __CPROVER_jsa_assume(c) assert(c)
-#define __CPROVER_jsa_assert(c, str) assert(c && !str)
+#define __CPROVER_jsa_assert(c, str) assert(c && str)
 #endif
 
 // Heap comparison
@@ -592,6 +592,7 @@ __CPROVER_jsa_inline __CPROVER_jsa_word_t __CPROVER_jsa_execute_pred(
   __CPROVER_jsa_assume(pred_id < __CPROVER_JSA_NUM_PREDS);
   const __CPROVER_jsa_pred_instructiont * const pred=__CPROVER_JSA_PREDICATES[pred_id];
   const __CPROVER_jsa__internal_index_t pred_sz=__CPROVER_JSA_PREDICATE_SIZES[pred_id];
+  __CPROVER_jsa_assert(pred_sz <= __CPROVER_JSA_MAX_PRED_SIZE, "pred_sz <= __CPROVER_JSA_MAX_PRED_SIZE");
   __CPROVER_jsa_word_t result=0;
   for (__CPROVER_jsa__internal_index_t i=0; i < __CPROVER_JSA_MAX_PRED_SIZE; ++i)
   {
@@ -666,6 +667,7 @@ __CPROVER_jsa_inline void __CPROVER_jsa_query_execute(
     const __CPROVER_jsa_query_instructiont * const query,
     const __CPROVER_jsa__internal_index_t query_size)
 {
+  __CPROVER_jsa_assert(query_size <= __CPROVER_JSA_MAX_QUERY_SIZE, "query_size <= __CPROVER_JSA_MAX_QUERY_SIZE");
   const __CPROVER_jsa_list_id_t list=query[0].opcode;
   __CPROVER_jsa_assume_valid_list(heap, list);
   const __CPROVER_jsa_iterator_id_t it=query[0].op;

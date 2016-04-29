@@ -53,11 +53,19 @@ void add_inductive_step_renondets(jsa_programt &prog)
   }
 }
 
+#define CE_MARKER_PREFIX JSA_PRED_PREFIX "ce_marker_"
+
 void collect_counterexample_vars(jsa_programt &prog)
 {
   goto_programt::instructionst &body=get_entry_body(prog.gf).instructions;
   const goto_programt::targett end(body.end());
+  const std::string marker_prefix(CE_MARKER_PREFIX);
+  size_t marker_index=0;
   for (goto_programt::targett instr=body.begin(); instr != body.end(); ++instr)
     if (is_nondet(instr, end) && !is_meta(instr))
+    {
+      assert(instr->labels.empty());
+      instr->labels.push_back(marker_prefix + std::to_string(marker_index++));
       prog.counterexample_locations.push_back(instr);
+    }
 }

@@ -56,10 +56,10 @@ array_valuest get_array_values(const symbol_tablet &st,
   return array_values;
 }
 
-std::string get_array_name(const unsigned loc_id)
+std::string get_array_name(const irep_idt &loc_id)
 {
   std::string base_name(CE_ARRAY_PREFIX);
-  return base_name+=std::to_string(loc_id);
+  return base_name+=id2string(loc_id);
 }
 
 void add_array_declarations(jsa_programt &program,
@@ -76,7 +76,8 @@ void add_array_declarations(jsa_programt &program,
     {
       std::cout << "    <val>" << std::endl;
       std::cout << "      <loc>" << val.first << "</loc>" << std::endl;
-      std::cout << "      <expr>" << val.second.to_string() << "</expr>" << std::endl;
+      std::cout << "      <expr>" << val.second.to_string() << "</expr>"
+          << std::endl;
       std::cout << "    </val>" << std::endl;
     }
     std::cout << "  </vals>" << std::endl;
@@ -93,7 +94,7 @@ void add_array_declarations(jsa_programt &program,
   goto_programt::targett &pos=program.synthetic_variables;
   for (const jsa_counterexamplet::value_type &value : prototype)
   {
-    const unsigned loc_id=value.first;
+    const jsa_counterexamplet::value_type::first_type loc_id=value.first;
     const typet &element_type=clean_up_type(st, value.second.type());
     const array_typet array_type(element_type, size_expr);
     const std::string base_name(get_array_name(loc_id));
@@ -103,7 +104,9 @@ void add_array_declarations(jsa_programt &program,
     assert(array_values.end() != array_val);
     const array_exprt &array_expr=array_val->second;
     // XXX: Debug
-    std::cout << "<array_expr.operands().size()>" << array_expr.operands().size() << "</array_expr.operands().size()>" << std::endl;
+    std::cout << "<array_expr.operands().size()>"
+        << array_expr.operands().size() << "</array_expr.operands().size()>"
+        << std::endl;
     std::cout << "<ces.size()>" << ces.size() << "</ces.size()>" << std::endl;
     // XXX: Debug
     assert(array_expr.operands().size() == ces.size());
@@ -153,7 +156,7 @@ void add_ce_goto(jsa_programt &prog, const size_t ces_size)
 }
 
 const index_exprt get_array_val_expr(const symbol_tablet &st,
-    const unsigned loc)
+    const irep_idt &loc)
 {
   const std::string index_name(get_cegis_meta_name(CE_ARRAY_INDEX));
   const symbol_exprt index(st.lookup(index_name).symbol_expr());
@@ -168,7 +171,8 @@ void assign_ce_values(jsa_programt &prog)
   goto_functionst &gf=prog.gf;
   for (const goto_programt::targett &pos : prog.counterexample_locations)
   {
-    const index_exprt value(get_array_val_expr(st, pos->location_number));
+    assert(pos->labels.size() == 1u);
+    const index_exprt value(get_array_val_expr(st, pos->labels.front()));
     switch (pos->type)
     {
     case ASSIGN:

@@ -60,9 +60,7 @@ void clone_heap(jsa_programt &prog)
   pos=jsa_assign(st, gf, pos, get_user_heap(gf), nondet_heap);
   pos=assume_valid_heap(st, body, pos, address_of_exprt(get_user_heap(gf)));
   jsa_assign(st, gf, pos, get_queried_heap(st), get_org_heap(st));
-  pos=std::prev(prog.inductive_step);
-  pos=jsa_assign(st, gf, pos, get_queried_heap(st), get_org_heap(st));
-  move_labels(body, prog.inductive_step, pos);
+  pos=jsa_assign(st, gf, prog.inductive_assumption, get_queried_heap(st), get_org_heap(st));
 }
 
 #define VALID_LIST JSA_PREFIX "assume_valid_list"

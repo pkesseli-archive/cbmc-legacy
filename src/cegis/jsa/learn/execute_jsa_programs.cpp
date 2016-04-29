@@ -90,4 +90,5 @@ void execute_jsa_learn_programs(jsa_programt &prog)
   make_query_call(st, gf, prog.inductive_step);
   make_constraint_call(st, gf, prog.property_entailment);
   make_query_call(st, gf, prog.property_entailment, true);
+  make_sync_call(st, gf, prog.property_entailment);
 }

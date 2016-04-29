@@ -18,9 +18,9 @@ Author: Daniel Kroening, kroening@kroening.com
 /**
  * @brief
  *
- * @details List of values per program location.
+ * @details List of values per CE location.
  */
-typedef std::map<unsigned, exprt> jsa_counterexamplet;
+typedef std::map<const irep_idt, exprt> jsa_counterexamplet;
 
 typedef std::deque<jsa_counterexamplet> jsa_counterexamplest;
 
