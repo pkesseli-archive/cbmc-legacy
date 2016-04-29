@@ -623,8 +623,29 @@ __CPROVER_jsa_inline void __CPROVER_jsa_remove(
 ;
 #endif
 
-#define __CPROVER_jsa_minus(lhs, rhs) \
-  (lhs >= rhs ? lhs - rhs : __CPROVER_jsa_word_max - rhs + lhs)
+__CPROVER_jsa_inline void __CPROVER_jsa_add(
+    __CPROVER_jsa_abstract_heapt * const heap,
+    const __CPROVER_jsa_list_id_t list,
+    const __CPROVER_jsa_word_t value)
+#ifdef __CPROVER_JSA_DEFINE_TRANSFORMERS
+{
+
+}
+#else
+;
+#endif
+
+__CPROVER_jsa_inline __CPROVER_jsa_word_t  __CPROVER_jsa_minus(
+    const __CPROVER_jsa_word_t lhs,
+    const __CPROVER_jsa_word_t rhs)
+#ifdef __CPROVER_JSA_DEFINE_TRANSFORMERS
+{
+  if (lhs >= rhs) return lhs - rhs;
+  return __CPROVER_jsa_word_max - rhs + lhs;
+}
+#else
+;
+#endif
 
 // SYNTHESIS
 
@@ -714,7 +735,8 @@ __CPROVER_jsa_inline __CPROVER_jsa_word_t __CPROVER_jsa_execute_pred(
       __CPROVER_jsa_pred_opcode_3: __CPROVER_jsa_execute_pred_result=__CPROVER_jsa_execute_pred_op0 != __CPROVER_jsa_execute_pred_op1;
       break;
     case 4:
-      __CPROVER_jsa_pred_opcode_4: __CPROVER_jsa_execute_pred_result=__CPROVER_jsa_minus(__CPROVER_jsa_execute_pred_op0, __CPROVER_jsa_execute_pred_op1);
+      __CPROVER_jsa_pred_opcode_first_4: __CPROVER_jsa_execute_pred_result=__CPROVER_jsa_minus(__CPROVER_jsa_execute_pred_op0, __CPROVER_jsa_execute_pred_op1);
+      __CPROVER_jsa_pred_opcode_last_4: __CPROVER_jsa_execute_pred_result=__CPROVER_jsa_execute_pred_result;
       break;
     default:
       __CPROVER_jsa_assume(false); // TODO: Speed-up, slow-down?
