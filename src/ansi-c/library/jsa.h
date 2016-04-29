@@ -913,8 +913,8 @@ __CPROVER_jsa_inline void __CPROVER_jsa_verify_synchronise_iterator(
     __CPROVER_jsa_abstract_heapt * const queried_heap,
     const __CPROVER_jsa_iterator_id_t it)
 {
-  __CPROVER_jsa_assume_valid_iterator(queried_heap, it);
-  __CPROVER_jsa_next(queried_heap, it);
+  for (__CPROVER_jsa__internal_index_t i=0; i < __CPROVER_JSA_MAX_ITERATORS; ++i)
+    queried_heap->iterators[i]=heap->iterators[i];
 }
 
 __CPROVER_jsa_inline void __CPROVER_jsa_synchronise_iterator(
@@ -924,6 +924,7 @@ __CPROVER_jsa_inline void __CPROVER_jsa_synchronise_iterator(
     const __CPROVER_jsa__internal_index_t query_size)
 {
   const __CPROVER_jsa_iterator_id_t it=query[0].op0;
+  __CPROVER_jsa_assume_valid_iterator(heap, it);
   __CPROVER_jsa_verify_synchronise_iterator(heap, queried_heap, it);
 }
 
@@ -936,10 +937,7 @@ __CPROVER_jsa_inline _Bool __CPROVER_jsa_verify_invariant_execute(
 #else
   const _Bool vars_equal=memcmp(&__CPROVER_JSA_HEAP_VARS, &__CPROVER_JSA_QUERIED_HEAP_VARS, sizeof(__CPROVER_JSA_HEAP_VARS)) == 0;
 #endif
-  __CPROVER_jsa_abstract_heapt tmp_queried_heap=*queried_heap;
-  for (__CPROVER_jsa__internal_index_t i=0; i < __CPROVER_JSA_MAX_ITERATORS; ++i)
-    tmp_queried_heap.iterators[i]=heap->iterators[i];
-  const _Bool heaps_equal=__CPROVER_jsa__internal_are_heaps_equal(heap, &tmp_queried_heap);
+  const _Bool heaps_equal=__CPROVER_jsa__internal_are_heaps_equal(heap, queried_heap);
   return vars_equal && heaps_equal;
 }
 
@@ -959,6 +957,14 @@ __CPROVER_jsa_inline _Bool __CPROVER_jsa_invariant_execute(
   __CPROVER_jsa_assume(inv_size == 1u);
   __CPROVER_jsa_assume(inv[0].opcode == 0); // Single instruction
   return __CPROVER_jsa_verify_invariant_execute(heap, queried_heap);
+}
+
+__CPROVER_jsa_inline void __CPROVER_jsa_assume_valid_invariant_iterator(
+    const __CPROVER_jsa_abstract_heapt * const h,
+    const __CPROVER_jsa_iterator_id_t it)
+{
+  __CPROVER_jsa_assume(it < h->iterator_count);
+  __CPROVER_jsa_assume(h->iterators[it].list == 0); // XXX: Debug: Only one iterator, always first list!
 }
 
 #endif

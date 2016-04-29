@@ -64,7 +64,8 @@ void clone_heap(jsa_programt &prog)
 }
 
 #define VALID_LIST JSA_PREFIX "assume_valid_list"
-#define VALID_IT JSA_PREFIX "assume_valid_iterator"
+//#define VALID_IT JSA_PREFIX "assume_valid_iterator"
+#define VALID_IT JSA_PREFIX "assume_valid_invariant_iterator" // XXX: TODO: Find a cleaner way.
 
 namespace
 {
