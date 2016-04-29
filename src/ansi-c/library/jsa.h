@@ -658,16 +658,20 @@ typedef struct __CPROVER_jsa_pred_instruction
   __CPROVER_jsa_opt op1;
 } __CPROVER_jsa_pred_instructiont;
 
+__CPROVER_jsa_extern __CPROVER_jsa__internal_index_t __CPROVER_JSA_PRED_OPS_COUNT;
+__CPROVER_jsa_extern __CPROVER_jsa__internal_index_t __CPROVER_JSA_PRED_RESULT_OPS_COUNT;
 __CPROVER_jsa_extern const __CPROVER_jsa_pred_instructiont *__CPROVER_JSA_PREDICATES[__CPROVER_JSA_NUM_PREDS];
 __CPROVER_jsa_extern __CPROVER_jsa__internal_index_t __CPROVER_JSA_PREDICATE_SIZES[__CPROVER_JSA_NUM_PREDS];
 
-#define __CPROVER_JSA_NUM_PRED_INSTRUCTIONS 2u
+#define __CPROVER_JSA_NUM_PRED_INSTRUCTIONS 3u
 
 typedef __CPROVER_jsa_word_t __CPROVER_jsa_pred_id_t;
 
 __CPROVER_jsa_inline __CPROVER_jsa_word_t __CPROVER_jsa_execute_pred(
     const __CPROVER_jsa_pred_id_t pred_id)
 {
+  __CPROVER_jsa_assert(__CPROVER_JSA_PRED_OPS_COUNT <= __CPROVER_JSA_NUM_PRED_OPS, "__CPROVER_JSA_PRED_OPS_COUNT <= __CPROVER_JSA_NUM_PRED_OPS");
+  __CPROVER_jsa_assert(__CPROVER_JSA_PRED_RESULT_OPS_COUNT <= __CPROVER_JSA_NUM_PRED_RESULT_OPS, "__CPROVER_JSA_PRED_RESULT_OPS_COUNT <= __CPROVER_JSA_NUM_PRED_RESULT_OPS");
   __CPROVER_jsa_assume(pred_id < __CPROVER_JSA_NUM_PREDS);
   const __CPROVER_jsa_pred_instructiont * const pred=__CPROVER_JSA_PREDICATES[pred_id];
   const __CPROVER_jsa__internal_index_t pred_sz=__CPROVER_JSA_PREDICATE_SIZES[pred_id];
@@ -695,7 +699,12 @@ __CPROVER_jsa_inline __CPROVER_jsa_word_t __CPROVER_jsa_execute_pred(
       __CPROVER_jsa_pred_opcode_0: __CPROVER_jsa_execute_pred_result=__CPROVER_jsa_execute_pred_op0 < __CPROVER_jsa_execute_pred_op1;
       break;
     case 1:
+      __CPROVER_jsa_assume(__CPROVER_jsa_execute_pred_op1 != 0);
       __CPROVER_jsa_pred_opcode_1: __CPROVER_jsa_execute_pred_result=__CPROVER_jsa_execute_pred_op0 % __CPROVER_jsa_execute_pred_op1;
+      break;
+    case 2:
+      __CPROVER_jsa_assume(instr.op0 < instr.op1);
+      __CPROVER_jsa_pred_opcode_2: __CPROVER_jsa_execute_pred_result=__CPROVER_jsa_execute_pred_op0 != __CPROVER_jsa_execute_pred_op1;
       break;
     default:
       __CPROVER_jsa_assume(false); // TODO: Speed-up, slow-down?

@@ -46,6 +46,8 @@ goto_programt::targetst collect_pred_ops(jsa_programt &prog)
 
 #define PRED_OPS "__CPROVER_JSA_PRED_OPS"
 #define PRED_RES_OPS "__CPROVER_JSA_PRED_RESULT_OPS"
+#define JSA_PRED_OP_COUNT "__CPROVER_JSA_PRED_OPS_COUNT"
+#define JSA_PRED_RESULT_OP_COUNT "__CPROVER_JSA_PRED_RESULT_OPS_COUNT"
 
 namespace
 {
@@ -95,6 +97,13 @@ void instrument_pred_ops(jsa_programt &prog, const goto_programt::targetst &ops,
     }
     if (op == prog.synthetic_variables) prog.synthetic_variables=pos;
   }
+  const symbol_exprt op_count(st.lookup(JSA_PRED_OP_COUNT).symbol_expr());
+  const constant_exprt op_value(from_integer(op_index, op_count.type()));
+  goto_programt::targett &pos=prog.synthetic_variables;
+  pos=jsa_assign(st, gf, pos, op_count, op_value);
+  const symbol_exprt res_cnt(st.lookup(JSA_PRED_RESULT_OP_COUNT).symbol_expr());
+  const constant_exprt res_value(from_integer(res_op_idx, res_cnt.type()));
+  pos=jsa_assign(st, gf, pos, res_cnt, res_value);
 }
 
 void instrument_pred_ops(jsa_programt &prog, const goto_programt::targetst &ops)
