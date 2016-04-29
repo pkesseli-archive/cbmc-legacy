@@ -21,22 +21,8 @@ Author: Daniel Kroening, kroening@kroening.com
  * @param max_sz
  * @param pred_op_locations
  */
-void add_jsa_synthesis_library(
+void add_jsa_library(
     class jsa_programt &prog,
-    size_t max_sz,
-    const goto_programt::targetst &pred_op_locations);
-
-/**
- * @brief
- *
- * @details
- *
- * @param prog
- * @param max_sz
- * @param pred_op_locations
- */
-void add_jsa_verification_library(
-    jsa_programt &prog,
     size_t max_sz,
     const goto_programt::targetst &pred_op_locations);
 
