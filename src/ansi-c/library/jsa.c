@@ -644,6 +644,9 @@ __CPROVER_jsa_inline void __CPROVER_jsa_remove(
 
 __CPROVER_jsa_extern __CPROVER_jsa_word_t *__CPROVER_JSA_PRED_OPS[__CPROVER_JSA_NUM_PRED_OPS];
 __CPROVER_jsa_extern __CPROVER_jsa_word_t *__CPROVER_JSA_PRED_RESULT_OPS[__CPROVER_JSA_NUM_PRED_RESULT_OPS];
+__CPROVER_jsa_extern __CPROVER_jsa_word_t __CPROVER_JSA_HEAP_VARS[__CPROVER_JSA_NUM_PRED_RESULT_OPS];
+__CPROVER_jsa_extern __CPROVER_jsa_word_t __CPROVER_JSA_ORG_HEAP_VARS[__CPROVER_JSA_NUM_PRED_RESULT_OPS];
+__CPROVER_jsa_extern __CPROVER_jsa_word_t __CPROVER_JSA_QUERIED_HEAP_VARS[__CPROVER_JSA_NUM_PRED_RESULT_OPS];
 
 typedef __CPROVER_jsa_word_t __CPROVER_jsa_opcodet;
 typedef __CPROVER_jsa_word_t __CPROVER_jsa_opt;
@@ -658,7 +661,7 @@ typedef struct __CPROVER_jsa_pred_instruction
 __CPROVER_jsa_extern const __CPROVER_jsa_pred_instructiont *__CPROVER_JSA_PREDICATES[__CPROVER_JSA_NUM_PREDS];
 __CPROVER_jsa_extern __CPROVER_jsa__internal_index_t __CPROVER_JSA_PREDICATE_SIZES[__CPROVER_JSA_NUM_PREDS];
 
-#define __CPROVER_JSA_NUM_PRED_INSTRUCTIONS 1u
+#define __CPROVER_JSA_NUM_PRED_INSTRUCTIONS 2u
 
 typedef __CPROVER_jsa_word_t __CPROVER_jsa_pred_id_t;
 
@@ -690,6 +693,9 @@ __CPROVER_jsa_inline __CPROVER_jsa_word_t __CPROVER_jsa_execute_pred(
     {
     case 0:
       __CPROVER_jsa_pred_opcode_0: __CPROVER_jsa_execute_pred_result=__CPROVER_jsa_execute_pred_op0 < __CPROVER_jsa_execute_pred_op1;
+      break;
+    case 1:
+      __CPROVER_jsa_pred_opcode_1: __CPROVER_jsa_execute_pred_result=__CPROVER_jsa_execute_pred_op0 % __CPROVER_jsa_execute_pred_op1;
       break;
     default:
       __CPROVER_jsa_assume(false); // TODO: Speed-up, slow-down?
@@ -795,6 +801,12 @@ __CPROVER_jsa_inline void __CPROVER_jsa_verify_synchronise_iterator(
   queried_heap->iterators[it]=heap->iterators[it];
 }
 
+__CPROVER_jsa_inline _Bool __CPROVER_jsa_verify_invariant_execute(
+    const __CPROVER_jsa_abstract_heapt * const heap,
+    const __CPROVER_jsa_abstract_heapt * const queried_heap)
+{
+  return __CPROVER_jsa__internal_are_heaps_equal(heap, queried_heap);
+}
 
 typedef struct __CPROVER_jsa_invariant_instruction
 {
@@ -811,8 +823,7 @@ __CPROVER_jsa_inline _Bool __CPROVER_jsa_invariant_execute(
 {
   __CPROVER_jsa_assume(inv_size == 1u);
   __CPROVER_jsa_assume(inv[0].opcode == 0); // Single instruction
-  const _Bool __CPROVER_jsa_invariant_execute_result=__CPROVER_jsa__internal_are_heaps_equal(heap, queried_heap);
-  return __CPROVER_jsa_invariant_execute_result;
+  return __CPROVER_jsa_verify_invariant_execute(heap, queried_heap);
 }
 
 #endif

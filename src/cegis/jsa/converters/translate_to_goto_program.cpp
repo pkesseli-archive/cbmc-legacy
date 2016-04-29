@@ -80,14 +80,15 @@ void convert(goto_programt::instructionst &result, const jsa_programt &prog,
     const std::vector<__CPROVER_jsa_invariant_instructiont> &solution)
 {
   assert(!solution.empty());
-  const goto_functionst &gf=prog.gf;
-  const __CPROVER_jsa_invariant_instructiont instr=solution.front();
-  const goto_programt::instructionst &body=get_body(gf, JSA_INV_EXEC).instructions;
-  goto_programt::instructiont comparison=body.front();
-  comparison.type=goto_program_instruction_typet::RETURN;
-  comparison.source_location=jsa_builtin_source_location();
-  const equal_exprt cond(get_user_heap(gf), get_queried_heap(prog.st));
-  const code_returnt code_return(cond);
-  comparison.code=code_return;
-  result.push_back(comparison);
+  assert(solution.front().opcode == 0);
+  result.push_back(goto_programt::instructiont());
+  goto_programt::instructiont &instr=result.back();
+  instr.source_location=jsa_builtin_source_location();
+  instr.type=goto_program_instruction_typet::FUNCTION_CALL;
+  code_function_callt call;
+  call.function()=prog.st.lookup(JSA_INV_VERIFY_EXEC).symbol_expr();
+  code_function_callt::argumentst &args=call.arguments();
+  args.push_back(address_of_exprt(get_user_heap(prog.gf)));
+  args.push_back(address_of_exprt(get_queried_heap(prog.st)));
+  instr.code=call;
 }

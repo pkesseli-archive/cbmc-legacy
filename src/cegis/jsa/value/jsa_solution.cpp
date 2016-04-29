@@ -2,7 +2,7 @@
 #include <cegis/jsa/value/jsa_solution.h>
 
 jsa_solutiont::jsa_solutiont() :
-    max_size(0)
+    max_size(1)
 {
 }
 

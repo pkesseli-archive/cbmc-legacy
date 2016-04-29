@@ -83,17 +83,21 @@ void add_predicates(jsa_programt &prog, const jsa_solutiont::predicatest &preds)
   body.compute_target_numbers();
 }
 
-void insert_invariant(const symbol_tablet &st, goto_programt &body,
+void insert_invariant(const symbol_tablet &st, const goto_functionst &gf, goto_programt &body,
     goto_programt::targett pos, const goto_programt::instructionst &prog)
 {
   assert(prog.size() == 1);
-  const exprt &comparison=to_code_return(prog.front().code).return_value();
-  const typecast_exprt cast(comparison, c_bool_type());
   const symbol_exprt v(st.lookup(get_affected_variable(*pos)).symbol_expr());
   pos=body.insert_after(pos);
-  pos->type=goto_program_instruction_typet::ASSIGN;
   pos->source_location=jsa_builtin_source_location();
-  pos->code=code_assignt(v, cast);
+  pos->type=goto_program_instruction_typet::FUNCTION_CALL;
+  code_function_callt call;
+  call.lhs()=v;
+  call.function()=st.lookup(JSA_INV_VERIFY_EXEC).symbol_expr();
+  code_function_callt::argumentst &args=call.arguments();
+  args.push_back(address_of_exprt(get_user_heap(gf)));
+  args.push_back(address_of_exprt(get_queried_heap(st)));
+  pos->code=call;
 }
 
 const exprt &get_iterator_arg(const codet &code)
@@ -170,16 +174,16 @@ void insert_jsa_solution(jsa_programt &prog, const jsa_solutiont &solution)
   // XXX: Debug
 
   insert_before(body, prog.base_case, solution.query);
-  insert_invariant(st, body, prog.base_case, solution.invariant);
+  insert_invariant(st, gf, body, prog.base_case, solution.invariant);
   insert_before(body, prog.inductive_assumption, solution.query);
-  insert_invariant(st, body, prog.inductive_assumption, solution.invariant);
+  insert_invariant(st, gf, body, prog.inductive_assumption, solution.invariant);
   insert_sync_call(st, gf, body, prog.inductive_step, solution.query);
   insert_before(body, prog.inductive_step, solution.query);
-  insert_invariant(st, body, prog.inductive_step, solution.invariant);
+  insert_invariant(st, gf, body, prog.inductive_step, solution.invariant);
   make_full_query_call(st, gf, body, prog.property_entailment, solution.query);
   insert_before(body, prog.property_entailment, solution.query);
   insert_sync_call(st, gf, body, prog.property_entailment, solution.query);
-  insert_invariant(st, body, prog.property_entailment, solution.invariant);
+  insert_invariant(st, gf, body, prog.property_entailment, solution.invariant);
 
   body.compute_incoming_edges();
   body.compute_target_numbers();
