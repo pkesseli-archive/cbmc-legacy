@@ -861,6 +861,15 @@ __CPROVER_jsa_inline void __CPROVER_jsa_full_query_execute(
   __CPROVER_jsa_query_execute(heap, query, query_size);
 }
 
+__CPROVER_jsa_inline void __CPROVER_jsa_verify_synchronise_iterator(
+    const __CPROVER_jsa_abstract_heapt * const heap,
+    __CPROVER_jsa_abstract_heapt * const queried_heap,
+    const __CPROVER_jsa_iterator_id_t it)
+{
+  for (__CPROVER_jsa__internal_index_t i=0; i < __CPROVER_JSA_MAX_ITERATORS; ++i)
+    queried_heap->iterators[i]=heap->iterators[i];
+}
+
 __CPROVER_jsa_inline void __CPROVER_jsa_synchronise_iterator(
     const __CPROVER_jsa_abstract_heapt * const heap,
     __CPROVER_jsa_abstract_heapt * const queried_heap,
@@ -869,16 +878,7 @@ __CPROVER_jsa_inline void __CPROVER_jsa_synchronise_iterator(
 {
   const __CPROVER_jsa_iterator_id_t it=query[0].op;
   __CPROVER_jsa_assume_valid_iterator(heap, it);
-  queried_heap->iterators[it]=heap->iterators[it];
-}
-
-__CPROVER_jsa_inline void __CPROVER_jsa_verify_synchronise_iterator(
-    const __CPROVER_jsa_abstract_heapt * const heap,
-    __CPROVER_jsa_abstract_heapt * const queried_heap,
-    const __CPROVER_jsa_iterator_id_t it)
-{
-  __CPROVER_jsa_assume_valid_iterator(heap, it);
-  queried_heap->iterators[it]=heap->iterators[it];
+  __CPROVER_jsa_verify_synchronise_iterator(heap, queried_heap, it);
 }
 
 __CPROVER_jsa_inline _Bool __CPROVER_jsa_verify_invariant_execute(
