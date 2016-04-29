@@ -629,7 +629,46 @@ __CPROVER_jsa_inline void __CPROVER_jsa_add(
     const __CPROVER_jsa_word_t value)
 #ifdef __CPROVER_JSA_DEFINE_TRANSFORMERS
 {
-
+#ifdef __CPROVER
+  const __CPROVER_jsa_node_id_t new_node;
+  __CPROVER_jsa_assume(new_node < __CPROVER_JSA_MAX_CONCRETE_NODES);
+  __CPROVER_jsa_assume(__CPROVER_jsa_null == heap->concrete_nodes[new_node].list);
+#else
+  __CPROVER_jsa_node_id_t new_node;
+  for (__CPROVER_jsa__internal_index_t i=0; i < __CPROVER_JSA_MAX_CONCRETE_NODES; ++i)
+    if (__CPROVER_jsa_null == heap->concrete_nodes[new_node].list) break;
+  __CPROVER_jsa_assume(new_node < __CPROVER_JSA_MAX_CONCRETE_NODES);
+#endif
+  heap->concrete_nodes[new_node].list=list;
+  heap->concrete_nodes[new_node].next=__CPROVER_jsa_null;
+  heap->concrete_nodes[new_node].value=value;
+  heap->list_head_nodes[list]=new_node;
+  const __CPROVER_jsa_node_id_t head_node=__CPROVER_jsa__internal_get_head_node(heap, list);
+  if (__CPROVER_jsa_null == head_node)
+  {
+    heap->list_head_nodes[list]=new_node;
+    heap->concrete_nodes[new_node].previous=__CPROVER_jsa_null;
+  }
+  else
+  {
+#ifdef __CPROVER
+    const __CPROVER_jsa_node_id_t last_node;
+    __CPROVER_jsa_assume(__CPROVER_jsa__internal_is_valid_node_id(last_node));
+    __CPROVER_jsa_assume(list == __CPROVER_jsa__internal_get_list(heap, last_node));
+    __CPROVER_jsa_assume(__CPROVER_jsa_null == __CPROVER_jsa__internal_get_next(heap, last_node));
+#else
+    __CPROVER_jsa_node_id_t last_node=head_node;
+    for (__CPROVER_jsa__internal_index_t i=0; i < __CPROVER_JSA_MAX_NODES_PER_LIST; ++i)
+    {
+      const __CPROVER_jsa_node_id_t next_node=__CPROVER_jsa__internal_get_next(heap, last_node);
+      if (__CPROVER_jsa_null == next_node) break;
+      last_node=next_node;
+    }
+    __CPROVER_jsa_assume(__CPROVER_jsa_null == __CPROVER_jsa__internal_get_next(heap, last_node));
+#endif
+    __CPROVER_jsa__internal_set_next(heap, last_node, new_node);
+    heap->concrete_nodes[new_node].previous=last_node;
+  }
 }
 #else
 ;
