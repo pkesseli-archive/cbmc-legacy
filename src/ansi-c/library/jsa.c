@@ -20,6 +20,7 @@
 
 #ifndef __CPROVER
 #include <assert.h>
+#include <string.h>
 #endif
 #include <stdbool.h>
 
@@ -316,8 +317,7 @@ __CPROVER_jsa_inline void __CPROVER_jsa__internal_make_null(
 __CPROVER_jsa_inline _Bool __CPROVER_jsa__internal_is_valid_node_id(const __CPROVER_jsa_node_id_t node_id)
 #ifdef __CPROVER_JSA_DEFINE_TRANSFORMERS
 {
-  const _Bool __CPROVER_jsa__internal_is_valid_node_id_result=__CPROVER_jsa_null == node_id || node_id < __CPROVER_JSA_MAX_NODES;
-  return __CPROVER_jsa__internal_is_valid_node_id_result;
+  return __CPROVER_jsa_null == node_id || node_id < __CPROVER_JSA_MAX_NODES;
 }
 #else
 ;
@@ -805,7 +805,13 @@ __CPROVER_jsa_inline _Bool __CPROVER_jsa_verify_invariant_execute(
     const __CPROVER_jsa_abstract_heapt * const heap,
     const __CPROVER_jsa_abstract_heapt * const queried_heap)
 {
-  return __CPROVER_jsa__internal_are_heaps_equal(heap, queried_heap);
+#ifdef __CPROVER
+  const _Bool vars_equal=__CPROVER_array_equal(__CPROVER_JSA_HEAP_VARS, __CPROVER_JSA_QUERIED_HEAP_VARS);
+#else
+  const _Bool vars_equal=memcmp(&__CPROVER_JSA_HEAP_VARS, &__CPROVER_JSA_QUERIED_HEAP_VARS, sizeof(__CPROVER_JSA_HEAP_VARS));
+#endif
+  const _Bool heaps_equal=__CPROVER_jsa__internal_are_heaps_equal(heap, queried_heap);
+  return vars_equal && heaps_equal;
 }
 
 typedef struct __CPROVER_jsa_invariant_instruction
