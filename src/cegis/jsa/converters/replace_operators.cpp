@@ -9,7 +9,6 @@
 // XXX: Debug
 
 #define INSTR "instr"
-#define OP "op"
 #define ROP "result_op"
 #define OP0 "op0"
 #define OP1 "op1"
@@ -89,15 +88,17 @@ public:
       *expr=address_of_exprt(get_queried_heap(st));
   }
 
-  void handle_member(member_exprt &expr)
+  void handle_member(member_exprt &member_expr)
   {
-    const exprt &compound=expr.compound();
+    const exprt &compound=member_expr.compound();
     if (ID_symbol != compound.id()) return;
     const std::string &id=id2string(to_symbol_expr(compound).get_identifier());
     if (std::string::npos == id.find(INSTR)) return;
-    const std::string &member=id2string(expr.get_component_name());
-    if (OP != member) return;
-    static_cast<exprt &>(expr)=from_integer(instr.op, expr.type());
+    const std::string &member=id2string(member_expr.get_component_name());
+    exprt &expr=static_cast<exprt &>(member_expr);
+    if (OP0 == member) expr=from_integer(instr.op0, expr.type());
+    else if (OP1 == member) expr=from_integer(instr.op1, expr.type());
+    else assert(!"Illegal compound member");
   }
 
   virtual void operator()(exprt &expr)
@@ -111,7 +112,7 @@ public:
     else if (std::string::npos != id.find(LOCAL_LIST)) expr=from_integer(
         prefix.opcode, expr.type());
     else if (std::string::npos != id.find(LOCAL_IT))
-      expr=from_integer(prefix.op, expr.type());
+      expr=from_integer(prefix.op0, expr.type());
   }
 };
 }

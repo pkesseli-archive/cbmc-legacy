@@ -182,7 +182,7 @@ void insert_jsa_solution(jsa_programt &prog, const jsa_solutiont &solution)
   insert_invariant(st, gf, body, prog.inductive_step, solution.invariant);
   make_full_query_call(st, gf, body, prog.property_entailment, solution.query);
   insert_before(body, prog.property_entailment, solution.query);
-  insert_sync_call(st, gf, body, prog.property_entailment, solution.query);
+  //insert_sync_call(st, gf, body, prog.property_entailment, solution.query);
   insert_invariant(st, gf, body, prog.property_entailment, solution.invariant);
 
   body.compute_incoming_edges();

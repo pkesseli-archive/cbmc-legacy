@@ -80,11 +80,12 @@ std::vector<__CPROVER_jsa_query_instructiont> to_genetic_query(const encoded_pro
   for (size_t i=0; i < result.size(); ++i)
   {
     const struct_exprt::operandst &members=to_struct_expr(ops[i]).operands();
-    assert(members.size() == 2u);
+    assert(members.size() == 3u);
     __CPROVER_jsa_query_instructiont &instr=result[i];
     struct_exprt::operandst::const_iterator member=members.begin();
     instr.opcode=bv_arithmetict(*member++).to_integer().to_ulong();
-    instr.op=bv_arithmetict(*member).to_integer().to_ulong();
+    instr.op0=bv_arithmetict(*member++).to_integer().to_ulong();
+    instr.op1=bv_arithmetict(*member).to_integer().to_ulong();
   }
   return result;
 }

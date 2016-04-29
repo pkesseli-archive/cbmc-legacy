@@ -6,11 +6,12 @@
 #define __CPROVER_JSA_MAX_LISTS 1u
 
 #define JSA_SYNTHESIS_H_
-#define __CPROVER_JSA_MAX_QUERY_SIZE 2
-#define __CPROVER_JSA_MAX_PRED_SIZE 1
+#define __CPROVER_JSA_DEFINE_TRANSFORMERS
+#define __CPROVER_JSA_MAX_QUERY_SIZE 2u
+#define __CPROVER_JSA_MAX_PRED_SIZE 1u
 #endif
 
-#include "../../../src/ansi-c/library/jsa.c.off"
+#include "../../../src/ansi-c/library/jsa.h"
 
 __CPROVER_jsa_abstract_heapt nondet_heap(void);
 
@@ -48,7 +49,7 @@ int main(void)
   __CPROVER_JSA_PRED_RESULT_OPS[2]=&tmp2;
   unsigned char query_size=2;
   __CPROVER_assume(query_size >= 1 && query_size <= __CPROVER_JSA_MAX_QUERY_SIZE);
-  __CPROVER_jsa_query_instructiont __CPROVER_jsa_query[] = { { .opcode=0, .op=0 }, { .opcode=0, .op=0 } };
+  __CPROVER_jsa_query_instructiont __CPROVER_jsa_query[] = { { .opcode=0, .op0=0, .op1=0 }, { .opcode=0, .op0=0, .op1=0 } };
   unsigned char invariant_size;
   __CPROVER_assume(invariant_size >= 1 && invariant_size <= 1);
   __CPROVER_jsa_invariant_instructiont invariant[] = { { .opcode=0 } };
