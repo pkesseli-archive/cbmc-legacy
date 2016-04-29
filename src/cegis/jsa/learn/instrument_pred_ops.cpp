@@ -59,7 +59,7 @@ void mark_dead(goto_programt &body, goto_programt::targett pos,
   const goto_programt::targett end(instrs.end());
   pos=std::find_if(pos, end, [&id](const goto_programt::instructiont &instr)
   { return DEAD == instr.type && id == get_affected_variable(instr);});
-  if (end != pos) return;
+  if (end == pos) return;
   pos=body.insert_after(pos);
   pos->type=goto_program_instruction_typet::ASSIGN;
   pos->source_location=jsa_builtin_source_location();
