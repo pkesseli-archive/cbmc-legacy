@@ -37,6 +37,15 @@ typet jsa_internal_index_type();
  *
  * @return
  */
+typet jsa_iterator_id_type();
+
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @return
+ */
 symbol_typet jsa_predicate_instruction_type();
 
 /**

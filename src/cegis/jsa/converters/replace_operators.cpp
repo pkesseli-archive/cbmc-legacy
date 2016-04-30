@@ -5,6 +5,7 @@
 #include <cegis/jsa/converters/replace_operators.h>
 
 #define INSTR "instr"
+#define OPCODE "opcode"
 #define ROP "result_op"
 #define OP0 "op0"
 #define OP1 "op1"
@@ -94,6 +95,7 @@ public:
     exprt &expr=static_cast<exprt &>(member_expr);
     if (OP0 == member) expr=from_integer(instr.op0, expr.type());
     else if (OP1 == member) expr=from_integer(instr.op1, expr.type());
+    else if (OPCODE == member) expr=from_integer(instr.opcode, expr.type());
     else assert(!"Illegal compound member");
   }
 

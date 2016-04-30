@@ -145,10 +145,16 @@ Function: symbol_tablet::lookup
 
 \*******************************************************************/
 
+// XXX: Debug
+#include <iostream>
+// XXX: Debug
+
 const symbolt &symbol_tablet::lookup(const irep_idt &identifier) const
 {
   symbolst::const_iterator it=symbols.find(identifier);
       
+  if(it==symbols.end())
+    std::cout << ("symbol "+id2string(identifier)+" not found") << std::endl;;
   if(it==symbols.end())
     throw "symbol "+id2string(identifier)+" not found";
                     
@@ -171,6 +177,8 @@ symbolt &symbol_tablet::lookup(const irep_idt &identifier)
 {
   symbolst::iterator it=symbols.find(identifier);
       
+  if(it==symbols.end())
+    std::cout << ("symbol "+id2string(identifier)+" not found") << std::endl;;
   if(it==symbols.end())
     throw "symbol "+id2string(identifier)+" not found";
                     

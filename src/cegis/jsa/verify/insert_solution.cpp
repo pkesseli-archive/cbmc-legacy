@@ -112,8 +112,10 @@ void insert_sync_call(const symbol_tablet &st, const goto_functionst &gf,
     goto_programt &body, goto_programt::targett pos,
     const goto_programt::instructionst &query)
 {
+  assert(!query.empty());
   if (query.empty()) return;
   const exprt &it_arg=get_iterator_arg(query.front().code);
+  //const constant_exprt it_arg=from_integer(0, jsa_word_type());
   code_function_callt sync;
   code_function_callt::argumentst &sync_args=sync.arguments();
   sync_args.push_back(address_of_exprt(get_user_heap(gf)));

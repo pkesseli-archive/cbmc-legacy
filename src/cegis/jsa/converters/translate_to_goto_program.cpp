@@ -66,7 +66,8 @@ void convert(goto_programt::instructionst &result, const jsa_programt &prog,
   copy_instructionst copy;
   for (; instr != solution.end(); ++instr)
   {
-    const instruction_sett::const_iterator it=instr_set.find(instr->opcode);
+    //const instruction_sett::const_iterator it=instr_set.find(instr->opcode);
+    const instruction_sett::const_iterator it=instr_set.find(0);
     assert(instr_set.end() != it);
     const size_t previous_size=result.size();
     copy(result, it->second);

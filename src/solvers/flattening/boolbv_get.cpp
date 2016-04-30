@@ -30,12 +30,22 @@ Function: boolbvt::get
 
 \*******************************************************************/
 
+// XXX: Debug
+#include <iostream>
+// XXX: Debug
+
 exprt boolbvt::get(const exprt &expr) const
 {
   if(expr.id()==ID_symbol ||
      expr.id()==ID_nondet_symbol)
   {
     const irep_idt &identifier=expr.get(ID_identifier);
+    // XXX: Debug
+    if (identifier == "_start::__CPROVER_jsa_query")
+    {
+      std::cout << "<id>" << identifier << "</id>" << std::endl;
+    }
+    // XXX: Debug
     
     boolbv_mapt::mappingt::const_iterator it=
       map.mapping.find(identifier);
