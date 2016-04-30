@@ -4,18 +4,13 @@
 #include <ansi-c/c_types.h>
 #include <util/bv_arithmetic.h>
 #include <goto-programs/goto_convert_functions.h>
+#include <linking/linking.h>
 #include <linking/zero_initializer.h>
 
 #include <cegis/cegis-util/program_helper.h>
 #include <cegis/jsa/options/jsa_program.h>
 #include <cegis/jsa/instrument/jsa_meta_data.h>
 #include <cegis/jsa/preprocessing/add_synthesis_library.h>
-
-// XXX: Debug
-#include <util/ui_message.h>
-#include <iostream>
-#include <linking/linking.h>
-// XXX: Debug
 
 #define CPROVER_INIT "__CPROVER_initialize"
 #define JSA_LIB "__CPROVER_jsa_synthesise"
@@ -95,10 +90,6 @@ void zero_new_global_vars(const symbol_tablet &st, goto_functionst &gf)
   for (const symbol_tablet::symbolst::value_type &symbol : st.symbols)
     if (is_jsa_constant(symbol.second))
     {
-      // XXX: Debug
-      std::cout << "<constant_init>" << symbol.first << "</constant_init>"
-          << std::endl;
-      // XXX: Debug
       pos=body.insert_after(pos);
       pos->type=goto_program_instruction_typet::ASSIGN;
       pos->source_location=loc;
@@ -138,10 +129,7 @@ void add_jsa_library(jsa_programt &prog, const size_t max_sz,
   add_placenholder(blank, JSA_LIB);
   library_text+=get_cprover_library_text(functions, blank);
   blank.clear();
-  //null_message_handlert msg;
-  // XXX: Debug
-  ui_message_handlert msg(ui_message_handlert::PLAIN, "");
-  // XXX: Debug
+  null_message_handlert msg;
   add_library(library_text, blank, msg);
 
   assert(!linking(st, blank, msg));

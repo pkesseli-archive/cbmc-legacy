@@ -38,6 +38,8 @@ void jsa_symex_learnt::process(const counterexamplest &counterexamples,
   program.gf.update();
 
   // XXX: Debug
+  std::cout << "<num_ces>" << counterexamples.size() << "</num_ces>" << std::endl;
+  // XXX: Debug
   program.gf.function_map.erase("main");
   const namespacet ns(program.st);
   std::cout << "<jsa_symex_learnt>" << std::endl;

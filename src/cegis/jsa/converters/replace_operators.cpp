@@ -4,10 +4,6 @@
 #include <cegis/jsa/preprocessing/clone_heap.h>
 #include <cegis/jsa/converters/replace_operators.h>
 
-// XXX: Debug
-#include <iostream>
-// XXX: Debug
-
 #define INSTR "instr"
 #define ROP "result_op"
 #define OP0 "op0"
