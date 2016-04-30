@@ -869,32 +869,61 @@ __CPROVER_jsa_inline __CPROVER_jsa_word_t __CPROVER_jsa_execute_pred(
 // Instrumentation adds a lambda variable at program entry. It'll have id 0.
 #define __CPROVER_jsa__internal_lambda_op_id 0
 
-__CPROVER_jsa_inline void __CPROVER_jsa_filter(
+__CPROVER_jsa_inline void __CPROVER_jsa_stream_op(
     __CPROVER_jsa_abstract_heapt * const heap,
     const __CPROVER_jsa_list_id_t list,
     const __CPROVER_jsa_iterator_id_t it,
-    const __CPROVER_jsa_pred_id_t pred_id)
+    const __CPROVER_jsa_list_id_t copy,
+    const __CPROVER_jsa_pred_id_t pred_id,
+    const __CPROVER_jsa__internal_index_t id)
 {
-  __CPROVER_jsa_node_id_t filter_node=__CPROVER_jsa__internal_get_head_node(heap, list);
+  __CPROVER_jsa_node_id_t node=__CPROVER_jsa__internal_get_head_node(heap, list);
   const __CPROVER_jsa_node_id_t end=heap->iterators[it].node_id;
   for (__CPROVER_jsa__internal_index_t i=0; i < __CPROVER_JSA_MAX_NODES_PER_LIST; ++i)
   {
-    if (end == filter_node || __CPROVER_jsa_null == filter_node) break;
-    const _Bool is_concrete=__CPROVER_jsa__internal_is_concrete_node(filter_node);
+    if (end == node || __CPROVER_jsa_null == node) break;
+    const _Bool is_concrete=__CPROVER_jsa__internal_is_concrete_node(node);
     if (is_concrete)
     {
-      *__CPROVER_JSA_PRED_OPS[__CPROVER_jsa__internal_lambda_op_id]=heap->concrete_nodes[filter_node].value;
+      const __CPROVER_jsa_word_t value=heap->concrete_nodes[node].value;
+      *__CPROVER_JSA_PRED_OPS[__CPROVER_jsa__internal_lambda_op_id]=value;
       const __CPROVER_jsa_word_t pred_result=__CPROVER_jsa_execute_pred(pred_id);
-      if (pred_result == 0)
-        __CPROVER_jsa__internal_remove(heap, filter_node);
-      else
-        filter_node=__CPROVER_jsa__internal_get_next(heap, filter_node);
+      switch(id)
+      {
+      case 0:
+        if (pred_result == 0)
+          __CPROVER_jsa__internal_remove(heap, node);
+        else
+          node=__CPROVER_jsa__internal_get_next(heap, node);
+        break;
+      case 1:
+        if (pred_result != 0)
+          __CPROVER_jsa_add(heap, copy, value);
+        break;
+      case 2:
+        __CPROVER_jsa_add(heap, copy, pred_result);
+        break;
+      case 3:
+        heap->concrete_nodes[node].value=pred_result;
+        break;
+      default:
+        __CPROVER_jsa_assume(false);
+      }
     }
     else
     {
       // TODO: Implement filtering abstract nodes. (Maybe ignore and handle on whole query level?)
     }
   }
+}
+
+__CPROVER_jsa_inline void __CPROVER_jsa_filter(
+    __CPROVER_jsa_abstract_heapt * const heap,
+    const __CPROVER_jsa_list_id_t list,
+    const __CPROVER_jsa_iterator_id_t it,
+    const __CPROVER_jsa_pred_id_t pred_id)
+{
+  __CPROVER_jsa_stream_op(heap, list, 0, it, pred_id, 0);
 }
 
 __CPROVER_jsa_inline void __CPROVER_jsa_copy_if(
@@ -904,25 +933,7 @@ __CPROVER_jsa_inline void __CPROVER_jsa_copy_if(
     const __CPROVER_jsa_list_id_t copy,
     const __CPROVER_jsa_pred_id_t pred_id)
 {
-  __CPROVER_jsa_node_id_t node=__CPROVER_jsa__internal_get_head_node(heap, list);
-  const __CPROVER_jsa_node_id_t end=heap->iterators[it].node_id;
-  for (__CPROVER_jsa__internal_index_t i=0; i < __CPROVER_JSA_MAX_NODES_PER_LIST; ++i)
-  {
-    if (end == node || __CPROVER_jsa_null == node) break;
-    const _Bool is_concrete=__CPROVER_jsa__internal_is_concrete_node(node);
-    if (is_concrete)
-    {
-      const __CPROVER_jsa_word_t value=heap->concrete_nodes[node].value;
-      *__CPROVER_JSA_PRED_OPS[__CPROVER_jsa__internal_lambda_op_id]=value;
-      const __CPROVER_jsa_word_t pred_result=__CPROVER_jsa_execute_pred(pred_id);
-      if (pred_result != 0)
-        __CPROVER_jsa_add(heap, copy, value);
-    }
-    else
-    {
-      // TODO: Implement filtering abstract nodes. (Maybe ignore and handle on whole query level?)
-    }
-  }
+  __CPROVER_jsa_stream_op(heap, list, copy, it, pred_id, 1);
 }
 
 __CPROVER_jsa_inline void __CPROVER_jsa_map(
@@ -932,24 +943,7 @@ __CPROVER_jsa_inline void __CPROVER_jsa_map(
     const __CPROVER_jsa_list_id_t copy,
     const __CPROVER_jsa_pred_id_t pred_id)
 {
-  __CPROVER_jsa_node_id_t node=__CPROVER_jsa__internal_get_head_node(heap, list);
-  const __CPROVER_jsa_node_id_t end=heap->iterators[it].node_id;
-  for (__CPROVER_jsa__internal_index_t i=0; i < __CPROVER_JSA_MAX_NODES_PER_LIST; ++i)
-  {
-    if (end == node || __CPROVER_jsa_null == node) break;
-    const _Bool is_concrete=__CPROVER_jsa__internal_is_concrete_node(node);
-    if (is_concrete)
-    {
-      const __CPROVER_jsa_word_t value=heap->concrete_nodes[node].value;
-      *__CPROVER_JSA_PRED_OPS[__CPROVER_jsa__internal_lambda_op_id]=value;
-      const __CPROVER_jsa_word_t pred_result=__CPROVER_jsa_execute_pred(pred_id);
-      __CPROVER_jsa_add(heap, copy, pred_result);
-    }
-    else
-    {
-      // TODO: Implement filtering abstract nodes. (Maybe ignore and handle on whole query level?)
-    }
-  }
+  __CPROVER_jsa_stream_op(heap, list, copy, it, pred_id, 2);
 }
 
 __CPROVER_jsa_inline void __CPROVER_jsa_map_in_place(
@@ -958,24 +952,7 @@ __CPROVER_jsa_inline void __CPROVER_jsa_map_in_place(
     const __CPROVER_jsa_iterator_id_t it,
     const __CPROVER_jsa_pred_id_t pred_id)
 {
-  __CPROVER_jsa_node_id_t node=__CPROVER_jsa__internal_get_head_node(heap, list);
-  const __CPROVER_jsa_node_id_t end=heap->iterators[it].node_id;
-  for (__CPROVER_jsa__internal_index_t i=0; i < __CPROVER_JSA_MAX_NODES_PER_LIST; ++i)
-  {
-    if (end == node || __CPROVER_jsa_null == node) break;
-    const _Bool is_concrete=__CPROVER_jsa__internal_is_concrete_node(node);
-    if (is_concrete)
-    {
-      const __CPROVER_jsa_word_t value=heap->concrete_nodes[node].value;
-      *__CPROVER_JSA_PRED_OPS[__CPROVER_jsa__internal_lambda_op_id]=value;
-      const __CPROVER_jsa_word_t pred_result=__CPROVER_jsa_execute_pred(pred_id);
-      heap->concrete_nodes[node].value=pred_result;
-    }
-    else
-    {
-      // TODO: Implement filtering abstract nodes. (Maybe ignore and handle on whole query level?)
-    }
-  }
+  __CPROVER_jsa_stream_op(heap, list, 0, it, pred_id, 3);
 }
 
 typedef struct __CPROVER_jsa_query_instruction
