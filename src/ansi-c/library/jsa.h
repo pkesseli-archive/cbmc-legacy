@@ -791,9 +791,10 @@ __CPROVER_jsa_inline __CPROVER_jsa_word_t  __CPROVER_jsa_ite(
 
 __CPROVER_jsa_extern __CPROVER_jsa_word_t *__CPROVER_JSA_PRED_OPS[__CPROVER_JSA_NUM_PRED_OPS];
 __CPROVER_jsa_extern __CPROVER_jsa_word_t *__CPROVER_JSA_PRED_RESULT_OPS[__CPROVER_JSA_NUM_PRED_RESULT_OPS];
-__CPROVER_jsa_extern __CPROVER_jsa_word_t __CPROVER_JSA_HEAP_VARS[__CPROVER_JSA_NUM_PRED_RESULT_OPS];
-__CPROVER_jsa_extern __CPROVER_jsa_word_t __CPROVER_JSA_ORG_HEAP_VARS[__CPROVER_JSA_NUM_PRED_RESULT_OPS];
-__CPROVER_jsa_extern __CPROVER_jsa_word_t __CPROVER_JSA_QUERIED_HEAP_VARS[__CPROVER_JSA_NUM_PRED_RESULT_OPS];
+__CPROVER_jsa_extern __CPROVER_jsa_word_t __CPROVER_JSA_MAX_PRED_SIZE_RELAY[__CPROVER_JSA_MAX_PRED_SIZE];
+//__CPROVER_jsa_extern __CPROVER_jsa_word_t __CPROVER_JSA_HEAP_VARS[__CPROVER_JSA_NUM_PRED_RESULT_OPS];
+//__CPROVER_jsa_extern __CPROVER_jsa_word_t __CPROVER_JSA_ORG_HEAP_VARS[__CPROVER_JSA_NUM_PRED_RESULT_OPS];
+//__CPROVER_jsa_extern __CPROVER_jsa_word_t __CPROVER_JSA_QUERIED_HEAP_VARS[__CPROVER_JSA_NUM_PRED_RESULT_OPS];
 
 typedef __CPROVER_jsa_word_t __CPROVER_jsa_opcodet;
 typedef __CPROVER_jsa_word_t __CPROVER_jsa_opt;
@@ -1055,13 +1056,14 @@ __CPROVER_jsa_inline _Bool __CPROVER_jsa_verify_invariant_execute(
     const __CPROVER_jsa_abstract_heapt * const heap,
     const __CPROVER_jsa_abstract_heapt * const queried_heap)
 {
-#ifdef __CPROVER
+/*#ifdef __CPROVER
   const _Bool vars_equal=__CPROVER_array_equal(__CPROVER_JSA_HEAP_VARS, __CPROVER_JSA_QUERIED_HEAP_VARS);
 #else
   const _Bool vars_equal=memcmp(&__CPROVER_JSA_HEAP_VARS, &__CPROVER_JSA_QUERIED_HEAP_VARS, sizeof(__CPROVER_JSA_HEAP_VARS)) == 0;
-#endif
+#endif*/
   const _Bool heaps_equal=__CPROVER_jsa__internal_are_heaps_equal(heap, queried_heap);
-  return vars_equal && heaps_equal;
+  //return vars_equal && heaps_equal;
+  return heaps_equal;
 }
 
 typedef struct __CPROVER_jsa_invariant_instruction

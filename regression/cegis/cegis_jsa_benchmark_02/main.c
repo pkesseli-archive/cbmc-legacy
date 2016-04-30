@@ -14,18 +14,21 @@
 
 #include "../../../src/ansi-c/library/jsa.h"
 
+#define contains_key(v) \
+  v < 10;
+
 int main(void)
 {
   __CPROVER_jsa_abstract_heapt heap;
   __CPROVER_jsa_assume_valid_heap(&heap);
   const __CPROVER_jsa_list_id_t __CPROVER_jsa_list_list;
   __CPROVER_jsa_assume_valid_list(&heap, __CPROVER_jsa_list_list);
-  const int toRemove=5;
   const __CPROVER_jsa_iterator_id_t __CPROVER_jsa_iterator_it=__CPROVER_jsa_iterator(&heap, __CPROVER_jsa_list_list);
-  for (;__CPROVER_jsa_hasNext(&heap, __CPROVER_jsa_iterator_it);)
+  while (__CPROVER_jsa_hasNext(&heap, __CPROVER_jsa_iterator_it))
   {
     const __CPROVER_jsa_data_t i=__CPROVER_jsa_next(&heap, __CPROVER_jsa_iterator_it);
-    if (i == toRemove)
+    const _Bool occurences_containsKey=contains_key(i);
+    if (occurences_containsKey)
     {
       __CPROVER_jsa_remove(&heap, __CPROVER_jsa_iterator_it);
     }

@@ -16,6 +16,7 @@
 
 #define PREDS "__CPROVER_JSA_PREDICATES"
 #define PRED_SIZES "__CPROVER_JSA_PREDICATE_SIZES"
+#define PRED_RELAY "__CPROVER_JSA_MAX_PRED_SIZE_RELAY"
 
 namespace
 {
@@ -51,6 +52,12 @@ void declare_size_and_prog(jsa_programt &prog, const std::string &prog_name,
   const constant_exprt array_sz_expr(from_integer(max_size, sz_expr.type()));
   declare_jsa_meta_variable(st, pos, prog_name, type_factory(array_sz_expr));
 }
+
+size_t get_size(const symbol_tablet &st, const char * const id)
+{
+  const bv_arithmetict bv(to_array_type(st.lookup(id).type).size());
+  return bv.to_integer().to_long();
+}
 }
 
 void declare_jsa_predicates(jsa_programt &prog, const size_t max_sz)
@@ -64,13 +71,14 @@ void declare_jsa_predicates(jsa_programt &prog, const size_t max_sz)
   const mp_integer::ullong_t num_preds=bv.to_integer().to_ulong();
   const typet sz_type(signed_int_type());
   const exprt zero(gen_zero(sz_type));
+  const size_t max_pred_size=get_size(st, PRED_RELAY);
   for (mp_integer::ullong_t i=0; i < num_preds; ++i)
   {
     goto_programt::targett &pos=prog.synthetic_variables;
     std::string base_name(JSA_PRED_PREFIX);
     base_name+=std::to_string(i);
     const std::string sz_name(base_name + JSA_SIZE_SUFFIX);
-    declare_size_and_prog(prog, base_name, sz_name, jsa_predicate_type, max_sz);
+    declare_size_and_prog(prog, base_name, sz_name, jsa_predicate_type, max_pred_size);
     const constant_exprt index(from_integer(i, sz_type));
     const index_exprt preds_elem(preds, index);
     const std::string local_pred_name(get_cegis_meta_name(base_name));
