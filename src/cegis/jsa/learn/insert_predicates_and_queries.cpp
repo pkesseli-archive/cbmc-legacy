@@ -17,6 +17,7 @@
 #define PREDS "__CPROVER_JSA_PREDICATES"
 #define PRED_SIZES "__CPROVER_JSA_PREDICATE_SIZES"
 #define PRED_RELAY "__CPROVER_JSA_MAX_PRED_SIZE_RELAY"
+#define QUERY_RELAY "__CPROVER_JSA_MAX_QUERY_SIZE_RELAY"
 
 namespace
 {
@@ -101,7 +102,7 @@ void declare_jsa_predicates(jsa_programt &prog, const size_t max_sz)
 void declare_jsa_query(jsa_programt &prog, const size_t max_size)
 {
   declare_size_and_prog(prog, JSA_QUERY, JSA_QUERY_SZ, jsa_query_type,
-      max_size + 1);
+      get_size(prog.st, QUERY_RELAY));
 }
 
 void declare_jsa_invariant(jsa_programt &prog, const size_t max_size)
