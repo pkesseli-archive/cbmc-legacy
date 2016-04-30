@@ -38,6 +38,7 @@ Author: Daniel Kroening, kroening@kroening.com
 #define JSA_QUERY_EXEC "__CPROVER_jsa_query_execute"
 #define JSA_PRED_EXEC "__CPROVER_jsa_execute_pred"
 #define JSA_STATIC_META_VAR_PREFIX CPROVER_PREFIX "JSA_"
+#define JSA_ASSUME_VALID_PRED JSA_PREFIX "assume_valid_pred"
 
 /**
  * @brief

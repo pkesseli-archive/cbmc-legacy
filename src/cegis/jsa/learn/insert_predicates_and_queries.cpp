@@ -57,6 +57,7 @@ void declare_jsa_predicates(jsa_programt &prog, const size_t max_sz)
 {
   symbol_tablet &st=prog.st;
   goto_functionst &gf=prog.gf;
+  goto_programt &body=get_entry_body(gf);
   const symbol_exprt preds(st.lookup(PREDS).symbol_expr());
   const symbol_exprt pred_sizes(st.lookup(PRED_SIZES).symbol_expr());
   const bv_arithmetict bv(to_array_type(preds.type()).size());
@@ -79,6 +80,13 @@ void declare_jsa_predicates(jsa_programt &prog, const size_t max_sz)
     const index_exprt pred_sizes_elem(pred_sizes, index);
     const symbolt &sz_symb(st.lookup(get_cegis_meta_name(sz_name)));
     pos=jsa_assign(st, gf, pos, pred_sizes_elem, sz_symb.symbol_expr());
+    pos=body.insert_after(pos);
+    pos->type=goto_program_instruction_typet::FUNCTION_CALL;
+    pos->source_location=jsa_builtin_source_location();
+    code_function_callt call;
+    call.function()=st.lookup(JSA_ASSUME_VALID_PRED).symbol_expr();
+    call.arguments().push_back(index);
+    pos->code=call;
   }
 }
 

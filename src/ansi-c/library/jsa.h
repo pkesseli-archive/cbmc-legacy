@@ -716,6 +716,18 @@ __CPROVER_jsa_inline __CPROVER_jsa_word_t  __CPROVER_jsa_minus(
 ;
 #endif
 
+__CPROVER_jsa_inline __CPROVER_jsa_word_t  __CPROVER_jsa_mod(
+    const __CPROVER_jsa_word_t lhs,
+    const __CPROVER_jsa_word_t rhs)
+#ifdef __CPROVER_JSA_DEFINE_TRANSFORMERS
+{
+  if (rhs == 0) return 0;
+  return lhs % rhs;
+}
+#else
+;
+#endif
+
 __CPROVER_jsa_inline __CPROVER_jsa_word_t  __CPROVER_jsa_plus(
     const __CPROVER_jsa_word_t lhs,
     const __CPROVER_jsa_word_t rhs)
@@ -802,33 +814,68 @@ __CPROVER_jsa_extern __CPROVER_jsa__internal_index_t __CPROVER_JSA_PREDICATE_SIZ
 
 typedef __CPROVER_jsa_word_t __CPROVER_jsa_pred_id_t;
 
-__CPROVER_jsa_inline __CPROVER_jsa_word_t __CPROVER_jsa_execute_pred(
+__CPROVER_jsa_inline void __CPROVER_jsa_assume_valid_pred(
     const __CPROVER_jsa_pred_id_t pred_id)
 {
   __CPROVER_jsa_assert(__CPROVER_JSA_PRED_OPS_COUNT <= __CPROVER_JSA_NUM_PRED_OPS, "__CPROVER_JSA_PRED_OPS_COUNT <= __CPROVER_JSA_NUM_PRED_OPS");
   __CPROVER_jsa_assert(__CPROVER_JSA_PRED_RESULT_OPS_COUNT <= __CPROVER_JSA_NUM_PRED_RESULT_OPS, "__CPROVER_JSA_PRED_RESULT_OPS_COUNT <= __CPROVER_JSA_NUM_PRED_RESULT_OPS");
+
   __CPROVER_jsa_assume(pred_id < __CPROVER_JSA_NUM_PREDS);
   const __CPROVER_jsa_pred_instructiont * const pred=__CPROVER_JSA_PREDICATES[pred_id];
+  const __CPROVER_jsa__internal_index_t sz=__CPROVER_JSA_PREDICATE_SIZES[pred_id];
+  __CPROVER_jsa_assume(sz <= __CPROVER_JSA_MAX_PRED_SIZE);
+  for (__CPROVER_jsa__internal_index_t i=0; i < __CPROVER_JSA_MAX_PRED_SIZE; ++i)
+  {
+    if (i >= sz) break;
+    const __CPROVER_jsa_pred_instructiont instr=pred[i];
+    __CPROVER_jsa_assume(instr.op0 < __CPROVER_JSA_NUM_PRED_OPS);
+    __CPROVER_jsa_assume(instr.op1 < __CPROVER_JSA_NUM_PRED_OPS);
+    __CPROVER_jsa_assume(instr.result_op < __CPROVER_JSA_NUM_PRED_RESULT_OPS);
+    __CPROVER_jsa_assume(__CPROVER_JSA_PRED_OPS[instr.op0]);
+    __CPROVER_jsa_assume(__CPROVER_JSA_PRED_OPS[instr.op1]);
+    __CPROVER_jsa_assume(__CPROVER_JSA_PRED_RESULT_OPS[instr.result_op]);
+    switch (instr.opcode)
+    {
+    case 0:
+      break;
+    case 1:
+      break;
+    case 2:
+      break;
+    case 3:
+      __CPROVER_jsa_assume(instr.op0 < instr.op1);
+      break;
+    case 4:
+      break;
+    case 5:
+      __CPROVER_jsa_assume(instr.op0 <= instr.op1);
+      break;
+    case 6:
+      __CPROVER_jsa_assume(instr.op0 <= instr.op1);
+      break;
+    default:
+      __CPROVER_jsa_assume(false);
+      break;
+    }
+  }
+}
+
+__CPROVER_jsa_inline __CPROVER_jsa_word_t __CPROVER_jsa_execute_pred(
+    const __CPROVER_jsa_pred_id_t pred_id)
+{
+  const __CPROVER_jsa_pred_instructiont * const pred=__CPROVER_JSA_PREDICATES[pred_id];
   const __CPROVER_jsa__internal_index_t pred_sz=__CPROVER_JSA_PREDICATE_SIZES[pred_id];
-  __CPROVER_jsa_assert(pred_sz <= __CPROVER_JSA_MAX_PRED_SIZE, "pred_sz <= __CPROVER_JSA_MAX_PRED_SIZE");
   __CPROVER_jsa_word_t result=0;
   for (__CPROVER_jsa__internal_index_t i=0; i < __CPROVER_JSA_MAX_PRED_SIZE; ++i)
   {
     if (i >= pred_sz) break;
     const __CPROVER_jsa_pred_instructiont instr=pred[i];
-    __CPROVER_jsa_assume(instr.op0 < __CPROVER_JSA_NUM_PRED_OPS);
-    __CPROVER_jsa_assume(instr.op1 < __CPROVER_JSA_NUM_PRED_OPS);
-    __CPROVER_jsa_assume(instr.result_op < __CPROVER_JSA_NUM_PRED_RESULT_OPS);
 #define __CPROVER_jsa_execute_pred_op0_ptr __CPROVER_JSA_PRED_OPS[instr.op0]
-    __CPROVER_jsa_assume(__CPROVER_jsa_execute_pred_op0_ptr);
 #define __CPROVER_jsa_execute_pred_op1_ptr __CPROVER_JSA_PRED_OPS[instr.op1]
-    __CPROVER_jsa_assume(__CPROVER_jsa_execute_pred_op1_ptr);
 #define __CPROVER_jsa_execute_pred_result_op_ptr __CPROVER_JSA_PRED_RESULT_OPS[instr.result_op]
-    __CPROVER_jsa_assume(__CPROVER_jsa_execute_pred_result_op_ptr);
 #define __CPROVER_jsa_execute_pred_op0 *__CPROVER_jsa_execute_pred_op0_ptr
 #define __CPROVER_jsa_execute_pred_op1 *__CPROVER_jsa_execute_pred_op1_ptr
 #define __CPROVER_jsa_execute_pred_result *__CPROVER_jsa_execute_pred_result_op_ptr
-    __CPROVER_jsa_assume(instr.opcode < __CPROVER_JSA_NUM_PRED_INSTRUCTIONS); // TODO: Speed-up, slow-down?
     switch (instr.opcode)
     {
     case 0:
@@ -838,11 +885,10 @@ __CPROVER_jsa_inline __CPROVER_jsa_word_t __CPROVER_jsa_execute_pred(
       __CPROVER_jsa_pred_opcode_1: __CPROVER_jsa_execute_pred_result=__CPROVER_jsa_execute_pred_op0 <= __CPROVER_jsa_execute_pred_op1;
       break;
     case 2:
-      __CPROVER_jsa_assume(__CPROVER_jsa_execute_pred_op1 != 0);
-      __CPROVER_jsa_pred_opcode_2: __CPROVER_jsa_execute_pred_result=__CPROVER_jsa_execute_pred_op0 % __CPROVER_jsa_execute_pred_op1;
+      __CPROVER_jsa_pred_opcode_first_2: __CPROVER_jsa_execute_pred_result=__CPROVER_jsa_mod(__CPROVER_jsa_execute_pred_op0, __CPROVER_jsa_execute_pred_op1);
+      __CPROVER_jsa_pred_opcode_last_2: __CPROVER_jsa_execute_pred_result=__CPROVER_jsa_execute_pred_result;
       break;
     case 3:
-      __CPROVER_jsa_assume(instr.op0 < instr.op1);
       __CPROVER_jsa_pred_opcode_3: __CPROVER_jsa_execute_pred_result=__CPROVER_jsa_execute_pred_op0 != __CPROVER_jsa_execute_pred_op1;
       break;
     case 4:
@@ -850,12 +896,10 @@ __CPROVER_jsa_inline __CPROVER_jsa_word_t __CPROVER_jsa_execute_pred(
       __CPROVER_jsa_pred_opcode_last_4: __CPROVER_jsa_execute_pred_result=__CPROVER_jsa_execute_pred_result;
       break;
     case 5:
-      __CPROVER_jsa_assume(instr.op0 <= instr.op1);
       __CPROVER_jsa_pred_opcode_first_5: __CPROVER_jsa_execute_pred_result=__CPROVER_jsa_plus(__CPROVER_jsa_execute_pred_op0, __CPROVER_jsa_execute_pred_op1);
       __CPROVER_jsa_pred_opcode_last_5: __CPROVER_jsa_execute_pred_result=__CPROVER_jsa_execute_pred_result;
       break;
     case 6:
-      __CPROVER_jsa_assume(instr.op0 <= instr.op1);
       __CPROVER_jsa_pred_opcode_first_6: __CPROVER_jsa_execute_pred_result=__CPROVER_jsa_mult(__CPROVER_jsa_execute_pred_op0, __CPROVER_jsa_execute_pred_op1);
       __CPROVER_jsa_pred_opcode_last_6: __CPROVER_jsa_execute_pred_result=__CPROVER_jsa_execute_pred_result;
       break;
@@ -876,25 +920,6 @@ __CPROVER_jsa_inline void __CPROVER_jsa_stream_op(
     const __CPROVER_jsa_pred_id_t pred_id,
     const __CPROVER_jsa__internal_index_t id)
 {
-  switch(id)
-  {
-  case 0: // filter
-    __CPROVER_jsa_assume(__CPROVER_jsa_null == copy);
-    break;
-  case 1: // copy_if
-    __CPROVER_jsa_assume_valid_list(heap, copy);
-    break;
-  case 2: // map
-    __CPROVER_jsa_assume_valid_list(heap, copy);
-    break;
-  case 3: // map_in_place
-    __CPROVER_jsa_assume(__CPROVER_jsa_null == copy);
-    break;
-  default:
-    __CPROVER_jsa_assume(false);
-    break;
-  }
-
   __CPROVER_jsa_node_id_t node=__CPROVER_jsa__internal_get_head_node(heap, list);
   const __CPROVER_jsa_node_id_t end=heap->iterators[it].node_id;
   for (__CPROVER_jsa__internal_index_t i=0; i < __CPROVER_JSA_MAX_NODES_PER_LIST; ++i)
@@ -924,9 +949,6 @@ __CPROVER_jsa_inline void __CPROVER_jsa_stream_op(
       case 3: // map_in_place
         heap->concrete_nodes[node].value=pred_result;
         break;
-      default:
-        __CPROVER_jsa_assume(false);
-        break;
       }
     }
     else
@@ -945,23 +967,55 @@ typedef struct __CPROVER_jsa_query_instruction
 
 #define __CPROVER_JSA_NUM_QUERY_INSTRUCTIONS 1u
 
-__CPROVER_jsa_inline void __CPROVER_jsa_query_execute(
-    __CPROVER_jsa_abstract_heapt * const heap,
+__CPROVER_jsa_inline void __CPROVER_jsa_assume_valid_query(
+    const __CPROVER_jsa_abstract_heapt * const heap,
     const __CPROVER_jsa_query_instructiont * const query,
     const __CPROVER_jsa__internal_index_t query_size)
 {
   __CPROVER_jsa_assume(query_size >= 2);
-  __CPROVER_jsa_assert(query_size <= __CPROVER_JSA_MAX_QUERY_SIZE, "query_size <= __CPROVER_JSA_MAX_QUERY_SIZE");
+  __CPROVER_jsa_assume(query_size <= __CPROVER_JSA_MAX_QUERY_SIZE);
   __CPROVER_jsa_assume(query[0].op1 == 0);
-  const __CPROVER_jsa_list_id_t list=query[0].opcode;
-  __CPROVER_jsa_assume_valid_list(heap, list);
-  const __CPROVER_jsa_iterator_id_t it=query[0].op0;
-  __CPROVER_jsa_assume_valid_iterator(heap, it);
+  __CPROVER_jsa_assume_valid_list(heap, query[0].opcode);
+  __CPROVER_jsa_assume_valid_iterator(heap, query[0].op0);
+
   for (__CPROVER_jsa__internal_index_t i=1; i < __CPROVER_JSA_MAX_QUERY_SIZE; ++i)
   {
     if (i >= query_size) break;
     const __CPROVER_jsa_query_instructiont instr=query[i];
     __CPROVER_jsa_assume(instr.op0 < __CPROVER_JSA_NUM_PREDS);
+    switch(instr.opcode)
+    {
+      case 0: // filter
+        __CPROVER_jsa_assume(__CPROVER_jsa_null == instr.op1);
+        break;
+      case 1:// copy_if
+        __CPROVER_jsa_assume_valid_list(heap, instr.op1);
+        break;
+      case 2:// map
+        __CPROVER_jsa_assume_valid_list(heap, instr.op1);
+        break;
+      case 3:// map_in_place
+        __CPROVER_jsa_assume(__CPROVER_jsa_null == instr.op1);
+        break;
+      default:
+        __CPROVER_jsa_assume(false);
+        break;
+    }
+  }
+}
+
+__CPROVER_jsa_inline void __CPROVER_jsa_query_execute(
+    __CPROVER_jsa_abstract_heapt * const heap,
+    const __CPROVER_jsa_query_instructiont * const query,
+    const __CPROVER_jsa__internal_index_t query_size)
+{
+  __CPROVER_jsa_assume_valid_query(heap, query, query_size);
+  const __CPROVER_jsa_list_id_t list=query[0].opcode;
+  const __CPROVER_jsa_iterator_id_t it=query[0].op0;
+  for (__CPROVER_jsa__internal_index_t i=1; i < __CPROVER_JSA_MAX_QUERY_SIZE; ++i)
+  {
+    if (i >= query_size) break;
+    const __CPROVER_jsa_query_instructiont instr=query[i];
     __CPROVER_jsa_query_opcode_0: __CPROVER_jsa_stream_op(heap, list, it, instr.op1, instr.op0, instr.opcode);
   }
 }
