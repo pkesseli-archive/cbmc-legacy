@@ -24,7 +24,7 @@ constant_exprt get_min_value()
   return from_integer(spec.min_value(), type);
 }
 
-exprt create_danger_constraint(const size_t number_of_loops)
+exprt create_danger_constraint(const size_t number_of_loops, const bool use_ranking)
 {
   assert(number_of_loops >= 1 && "At least one loop required.");
   const constant_exprt min(get_min_value());
@@ -39,10 +39,13 @@ exprt create_danger_constraint(const size_t number_of_loops)
     const symbol_exprt R0_x_prime(as_var(get_Rx_prime(i, 0u))); // XXX: Lexicographical ranking?
     const and_exprt D0_x_and_G0_x(D0_x, G0_x);
     const not_exprt not_D0_x_and_G0_x(D0_x_and_G0_x);
-    const binary_predicate_exprt R0_x_gt_min(R0_x, ID_gt, min);
-    const binary_predicate_exprt R0_x_prime_lt_R0_x(R0_x_prime, ID_lt, R0_x);
-    const and_exprt first_conseq(R0_x_gt_min, D0_x_prime, R0_x_prime_lt_R0_x);
-    //const exprt first_conseq(D0_x_prime); // XXX: Ranking disabled due to overflow problem.
+    exprt first_conseq;
+    if (use_ranking)
+    {
+      const binary_predicate_exprt R0_x_gt_min(R0_x, ID_gt, min);
+      const binary_predicate_exprt R0_x_prime_lt_R0_x(R0_x_prime, ID_lt, R0_x);
+      first_conseq=and_exprt(R0_x_gt_min, D0_x_prime, R0_x_prime_lt_R0_x);
+    } else first_conseq=D0_x_prime;
     const or_exprt first_implication(not_D0_x_and_G0_x, first_conseq);
     root.copy_to_operands(first_implication);
     const and_exprt D0_x_and_not_G0_x(D0_x, not_exprt(G0_x));
@@ -73,5 +76,5 @@ danger_constraint::danger_constraint(const bool use_ranking) :
 
 exprt danger_constraint::operator ()(const size_t number_of_loops) const
 {
-  return create_danger_constraint(number_of_loops);
+  return create_danger_constraint(number_of_loops, use_ranking);
 }

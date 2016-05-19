@@ -80,9 +80,12 @@ class read_instrt
     {
     case INV:
     {
-      const size_t idx=create_temps(rnames, prog_size - 1);
-      const std::string result(get_cegis_meta_name(get_Rx(loop_index, 0))); // XXX: Lexicographical ranking?
-      rnames.insert(std::make_pair(idx, result));
+      if (prog_size)
+      {
+        const size_t idx=create_temps(rnames, prog_size - 1);
+        const std::string result(get_cegis_meta_name(get_Rx(loop_index, 0))); // XXX: Lexicographical ranking?
+        rnames.insert(std::make_pair(idx, result));
+      }
       prog_type=RNK;
       break;
     }

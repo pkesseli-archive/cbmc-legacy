@@ -44,9 +44,10 @@ class create_danger_meta_variables_for_loopt
   symbol_tablet &st;
   goto_functionst &gf;
   size_t loop_id;
+  const bool use_ranking;
 public:
   create_danger_meta_variables_for_loopt(danger_programt &prog) :
-      st(prog.st), gf(prog.gf), loop_id(0u)
+      st(prog.st), gf(prog.gf), loop_id(0u), use_ranking(prog.use_ranking)
   {
   }
 
@@ -58,7 +59,7 @@ public:
     goto_programt::targett pos=im.Gx;
     ++pos;
     const size_t ranking_count=1; // XXX: Lexicographical ranking?
-    for (size_t i=0; i < ranking_count; ++i)
+    if (use_ranking) for (size_t i=0; i < ranking_count; ++i)
     {
       pos=declare_cegis_meta_variable(st, gf, pos, get_Rx(loop_id, i), type);
       dm.Rx.push_back(pos);
@@ -67,7 +68,7 @@ public:
     const create_skolem_meta_variablest create_sklm(st, gf, loop_id, dm, pos);
     std::for_each(sklm.begin(), sklm.end(), create_sklm);
     pos=im.Ix_prime;
-    for (size_t i=0; i < ranking_count; ++i)
+    if (use_ranking) for (size_t i=0; i < ranking_count; ++i)
     {
       const std::string rx_prime(get_Rx_prime(loop_id, i));
       pos=declare_cegis_meta_variable(st, gf, pos, rx_prime, type);
