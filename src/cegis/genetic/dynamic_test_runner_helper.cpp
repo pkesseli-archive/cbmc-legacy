@@ -1,5 +1,5 @@
-#ifndef _WIN32
-#include <dlfcn.h> // TODO: Windows MinGW/VS equivalent?
+#if !defined(_WIN32) || defined(_HAVE_DLFCN)
+#include <dlfcn.h>
 #endif
 
 #include <cassert>
@@ -71,8 +71,7 @@ void write_file(const char * const path, const std::string &content)
 #define SOURCE_FILE_PREFIX "concrete_test"
 #define SOURCE_FILE_SUFFIX ".c"
 #ifndef _WIN32
-//#define COMPILE_COMMAND "gcc -std=c99 -g0 -O2 -shared -rdynamic -fPIC "
-#define COMPILE_COMMAND "gcc -std=c99 -g3 -O0 -shared -rdynamic -fPIC "
+#define COMPILE_COMMAND "gcc -std=c99 -g0 -O2 -shared -rdynamic -fPIC "
 #else
 #define COMPILE_COMMAND "gcc -std=c99 -g0 -O2 -shared "
 #endif
@@ -89,9 +88,8 @@ void prepare_fitness_tester_library(fitness_lib_handlet &handle,
     const std::string &library_file_path, const bool danger)
 {
   if (fitness_tester) return;
-  //const temporary_filet source_file(SOURCE_FILE_PREFIX, SOURCE_FILE_SUFFIX);
-  //const std::string source_file_name(source_file());
-  const std::string source_file_name("/tmp/tmp_source_file.c");
+  const temporary_filet source_file(SOURCE_FILE_PREFIX, SOURCE_FILE_SUFFIX);
+  const std::string source_file_name(source_file());
   std::string source;
   implement_deserialise(source, danger);
   source+=source_code_provider();
@@ -109,7 +107,7 @@ void prepare_fitness_tester_library(fitness_lib_handlet &handle,
   const int result=system(compile_command.c_str());
   if (result) throw std::runtime_error(COMPLING_FAILED);
   
-  #ifndef _WIN32
+  #if !defined(_WIN32) || defined(_HAVE_DLFCN)
   handle=dlopen(library_file_path.c_str(), RTLD_NOW);
   if (!handle)
   {

@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <functional>
 
 #include <cegis/cegis-util/program_helper.h>
 #include <cegis/instrument/meta_variables.h>

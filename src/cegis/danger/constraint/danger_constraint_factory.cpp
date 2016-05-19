@@ -1,9 +1,13 @@
 #include <util/arith_tools.h>
 #include <util/bv_arithmetic.h>
+#include <util/options.h>
 
 #include <cegis/danger/meta/meta_variable_names.h>
 #include <cegis/invariant/meta/meta_variable_names.h>
 #include <cegis/instrument/meta_variables.h>
+#include <cegis/danger/constraint/danger_constraint_factory.h>
+
+#define as_bool danger_component_as_bool
 
 namespace
 {
@@ -19,15 +23,6 @@ constant_exprt get_min_value()
   const bv_spect spec(type);
   return from_integer(spec.min_value(), type);
 }
-}
-
-notequal_exprt danger_component_as_bool(const std::string &base_name)
-{
-  const constant_exprt rhs(from_integer(0u, cegis_default_integer_type()));
-  return notequal_exprt(as_var(base_name), rhs);
-}
-
-#define as_bool danger_component_as_bool
 
 exprt create_danger_constraint(const size_t number_of_loops)
 {
@@ -62,4 +57,21 @@ exprt create_danger_constraint(const size_t number_of_loops)
     root.copy_to_operands(second_implication);
   }
   return root;
+}
+}
+
+notequal_exprt danger_component_as_bool(const std::string &base_name)
+{
+  const constant_exprt rhs(from_integer(0u, cegis_default_integer_type()));
+  return notequal_exprt(as_var(base_name), rhs);
+}
+
+danger_constraint::danger_constraint(const bool use_ranking) :
+    use_ranking(use_ranking)
+{
+}
+
+exprt danger_constraint::operator ()(const size_t number_of_loops) const
+{
+  return create_danger_constraint(number_of_loops);
 }

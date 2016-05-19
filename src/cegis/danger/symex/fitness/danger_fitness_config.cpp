@@ -58,8 +58,9 @@ void danger_fitness_configt::set_candidate(const candidatet &candidate)
   if (!constraint_inserted)
   {
     program_with_constraint=original_program;
+    const danger_constraint constraint(program_with_constraint.use_ranking);
     invariant_insert_constraint(original_quantifiers, program_with_constraint,
-        create_danger_constraint);
+        std::cref(constraint));
     constraint_inserted=true;
   }
   program=program_with_constraint;
