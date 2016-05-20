@@ -95,6 +95,17 @@ goto_programt::targetst find_nondet_instructions(goto_programt &body);
  *
  * @return
  */
+const typet &get_affected_type(const goto_programt::instructiont &instr);
+
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @param instr
+ *
+ * @return
+ */
 const irep_idt &get_affected_variable(const goto_programt::instructiont &instr);
 
 /**

@@ -34,7 +34,7 @@ private:
   candidatet current_candidate;
   counterexamplest counterexamples;
 
-  safety_checkert::resultt run_bmc(message_handlert &msg, const optionst &opt);
+  safety_checkert::resultt run_bmc();
   bool learn_at_current_size();
 public:
   /**

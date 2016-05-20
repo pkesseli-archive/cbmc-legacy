@@ -12,6 +12,8 @@
 
 #include <string>
 
+#define DANGER_CE_QUANTIFIER_LABEL_PREFIX "__CPROVER_danger_ceq_"
+
 /**
  * @brief
  *

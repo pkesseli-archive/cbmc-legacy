@@ -128,6 +128,21 @@ bool is_nondet(const goto_programt::targett &target,
   }
 }
 
+const typet &get_affected_type(const goto_programt::instructiont &instr)
+{
+  switch (instr.type)
+  {
+  case goto_program_instruction_typet::DECL:
+    return to_code_decl(instr.code).symbol().type();
+  case goto_program_instruction_typet::ASSIGN:
+    return to_code_assign(instr.code).lhs().type();
+  case goto_program_instruction_typet::DEAD:
+    return to_code_dead(instr.code).symbol().type();
+  default:
+    assert(!"Only DECL, ASSIGN, DEAD allowed.");
+  }
+}
+
 const irep_idt &get_affected_variable(const goto_programt::instructiont &instr)
 {
   switch (instr.type)

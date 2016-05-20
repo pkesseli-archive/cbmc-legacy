@@ -66,6 +66,19 @@ program_individualt to_program_individual(const danger_programt &prog,
 {
   const invariant_programt &inv_prog=prog;
   program_individualt individual(to_program_individual(inv_prog, trace));
+  const program_individualt::programt empty;
+  if (!prog.loops.empty() && prog.loops.front().skolem_choices.empty())
+  {
+    const size_t num_progs=individual.programs.size();
+    assert(num_progs == prog.use_ranking ? 2 : 1);
+    individual.programs.push_back(empty);
+  }
+  if (!prog.use_ranking)
+  {
+    assert(individual.programs.size() == 2);
+    individual.programs.insert(std::next(individual.programs.begin()), empty);
+    assert(individual.programs.at(1).empty());
+  }
   danger_read_x0(individual, prog, trace);
   return individual;
 }

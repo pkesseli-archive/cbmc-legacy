@@ -71,7 +71,8 @@ void write_file(const char * const path, const std::string &content)
 #define SOURCE_FILE_PREFIX "concrete_test"
 #define SOURCE_FILE_SUFFIX ".c"
 #ifndef _WIN32
-#define COMPILE_COMMAND "gcc -std=c99 -g0 -O2 -shared -rdynamic -fPIC "
+//#define COMPILE_COMMAND "gcc -std=c99 -g0 -O2 -shared -rdynamic -fPIC "
+#define COMPILE_COMMAND "gcc -std=c99 -g3 -O0 -shared -rdynamic -fPIC "
 #else
 #define COMPILE_COMMAND "gcc -std=c99 -g0 -O2 -shared "
 #endif
@@ -88,8 +89,9 @@ void prepare_fitness_tester_library(fitness_lib_handlet &handle,
     const std::string &library_file_path, const bool danger)
 {
   if (fitness_tester) return;
-  const temporary_filet source_file(SOURCE_FILE_PREFIX, SOURCE_FILE_SUFFIX);
-  const std::string source_file_name(source_file());
+  //const temporary_filet source_file(SOURCE_FILE_PREFIX, SOURCE_FILE_SUFFIX);
+  //const std::string source_file_name(source_file());
+  const std::string source_file_name("/tmp/src.c");
   std::string source;
   implement_deserialise(source, danger);
   source+=source_code_provider();

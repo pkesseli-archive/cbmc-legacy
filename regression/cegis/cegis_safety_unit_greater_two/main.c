@@ -1,10 +1,10 @@
 int main(void)
 {
-  int x, y;
+  int x;
   if (x > 2)
     x = 2;
+  0 == 0;
 
-  y=0;
   while (x < 2)
     ++x;
   __CPROVER_assert(x == 2, "A");
