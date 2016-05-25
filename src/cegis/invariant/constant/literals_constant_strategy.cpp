@@ -47,7 +47,7 @@ public:
     if (ID_unsignedbv != type_id && ID_signedbv != type_id) return;
     const constant_exprt constant(to_constant_expr(expr));
     const bv_arithmetict bv(constant);
-    const mp_integer::ullong_t value=bv.to_integer().to_ulong();
+    const mp_integer value=bv.to_integer();
     constants.insert(from_integer(value, type));
     // XXX: Add constant +/- 1?
     //constants.insert(from_integer(value + 1, type));

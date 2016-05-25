@@ -171,13 +171,12 @@ goto_programt::targetst find_nondet_instructions(goto_programt &body)
 namespace
 {
 const char NS_SEP[]="::";
-const char NONDET_CONSTANT_PREFIX[]="INVARIANT_CONSTANT_NONDET_";
 }
 bool is_global_const(const irep_idt &name, const typet &type)
 {
   if (!type.get_bool(ID_C_constant)) return false;
   const std::string &n=id2string(name);
-  if (std::string::npos != n.find(NONDET_CONSTANT_PREFIX)) return true;
+  if (std::string::npos != n.find(CEGIS_CONSTANT_PREFIX)) return true;
   return std::string::npos == n.find(NS_SEP);
 }
 

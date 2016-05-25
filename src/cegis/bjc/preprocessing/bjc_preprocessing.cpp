@@ -9,10 +9,6 @@
 #include <cegis/bjc/preprocessing/bjc_query_factory.h>
 #include <cegis/bjc/preprocessing/bjc_preprocessing.h>
 
-// XXX: Debug
-#include <iostream>
-// XXX: Debug
-
 bjc_preprocessingt::bjc_preprocessingt(optionst &options,
     const symbol_tablet &st, const goto_functionst &gf) :
     options(options), original_program(st, gf), num_consts(0)
@@ -86,10 +82,7 @@ void bjc_preprocessingt::operator ()(const size_t max_length)
   unwind_set+=",__CPROVER_danger_execute.0";
   unwind_set+=':';
   unwind_set+=std::to_string(max_length);
-  // XXX: Debug
-  std::cout << "<unwindset>" << unwind_set << "</unwindset>" << std::endl;
   options.set_option("unwinding-assertions", true);
-  // XXX: Debug
   options.set_option("unwindset", unwind_set);
 }
 

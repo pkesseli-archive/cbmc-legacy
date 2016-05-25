@@ -44,8 +44,8 @@ public:
     if (ID_unsignedbv != type_id && ID_signedbv != type_id) return;
     const constant_exprt constant(to_constant_expr(expr));
     const bv_arithmetict bv(constant);
-    const mp_integer::ullong_t value=bv.to_integer().to_ulong();
-    constants.insert(from_integer(value, type));
+    const mp_integer::llong_t value=bv.to_integer().to_long();
+    constants.insert(from_integer(static_cast<unsigned int>(value), type));
   }
 
   void operator()(const goto_programt::instructiont &instr)

@@ -7,7 +7,7 @@
 // XXX: Symex headstart for PLDI benchmarks
 namespace
 {
-size_t symex_count=3u;
+size_t symex_count=2u;
 }
 // XXX: Symex headstart for PLDI benchmarks
 

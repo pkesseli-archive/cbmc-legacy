@@ -3,6 +3,7 @@
 #include <ansi-c/expr2c.h>
 
 #include <cegis/cegis-util/program_helper.h>
+#include <cegis/instrument/literals.h>
 #include <cegis/instrument/meta_variables.h>
 #include <cegis/invariant/constant/add_constant.h>
 #include <cegis/danger/options/danger_program.h>
@@ -36,8 +37,6 @@ bool contains_constant(const symbol_tablet &st, const exprt &value)
   return false;
 }
 
-const char CONSTANT_PREFIX[]="INVARIANT_CONSTANT_";
-
 bool is_empty(const exprt &expr)
 {
   return exprt() == expr;
@@ -49,7 +48,7 @@ void add_danger_constant(invariant_programt &program, const exprt &value)
   symbol_tablet &st=program.st;
   if (contains_constant(st, value)) return;
   const namespacet ns(st);
-  std::string name(CONSTANT_PREFIX);
+  std::string name(CEGIS_CONSTANT_PREFIX);
   name+=expr2c(value, ns);
   add_danger_constant(program, name, value);
 }

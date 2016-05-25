@@ -21,14 +21,6 @@
 
 namespace
 {
-#if 0
-const program_individualt::instructiont::opt get_const_value(const exprt &expr)
-{
-  const bv_arithmetict bv(expr);
-  return static_cast<program_individualt::instructiont::opt>(bv.to_integer().to_ulong());
-}
-#endif
-
 size_t create_temps(invariant_variable_namest &rnames, const size_t num_tmp)
 {
   for (size_t i=0; i < num_tmp; ++i)

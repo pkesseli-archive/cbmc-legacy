@@ -1,14 +1,14 @@
 #include <cegis/cegis-util/constant_width.h>
 #include <cegis/cegis-util/program_helper.h>
+#include <cegis/instrument/literals.h>
 #include <cegis/instrument/meta_variables.h>
 #include <cegis/constant/literals_collector.h>
 
 namespace
 {
-const char CONSTANT_PREFIX[]="CEGIS_CONSTANT_";
 std::string get_name(size_t index)
 {
-  std::string name(CONSTANT_PREFIX);
+  std::string name(CEGIS_CONSTANT_PREFIX);
   return name+=integer2string(index);
 }
 }

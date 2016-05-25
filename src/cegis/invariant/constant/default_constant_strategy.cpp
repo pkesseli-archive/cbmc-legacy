@@ -8,11 +8,6 @@
 #include <cegis/invariant/constant/literals_constant_strategy.h>
 #include <cegis/invariant/constant/default_constant_strategy.h>
 
-namespace
-{
-//const char NONDET_PREFIX[]="INVARIANT_CONSTANT_NONDET_";
-}
-
 size_t default_constant_strategy(invariant_programt &program,
     const size_t max_length)
 {

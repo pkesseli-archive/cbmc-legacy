@@ -16,10 +16,6 @@
 #include <cegis/danger/symex/learn/solution_factory.h>
 #include <cegis/danger/symex/learn/danger_learn_config.h>
 
-// XXX: Debug
-#include <iostream>
-// XXX: Debug
-
 danger_learn_configt::danger_learn_configt(const danger_programt &program) :
     original_program(program), num_consts(0u)
 {
@@ -35,12 +31,6 @@ void danger_learn_configt::process(const counterexamplest &ces,
   program=original_program;
   var_ids.clear();
   num_consts=get_invariant_variable_ids(program.st, var_ids);
-  // XXX: Debug
-  std::cout << "<var_ids>" << std::endl;
-  for (const invariant_variable_idst::value_type &var_id : var_ids)
-    std::cout << "  <name>" << var_id.first << "</name><id>" << var_id.second << "</id>" << std::endl;
-  std::cout << "</var_ids>" << std::endl;
-  // XXX: Debug
   const size_t num_vars=var_ids.size();
   null_message_handlert msg;
   const std::string name(DANGER_EXECUTE);

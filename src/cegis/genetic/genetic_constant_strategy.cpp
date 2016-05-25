@@ -7,6 +7,7 @@
 #include <cegis/cegis-util/constant_width.h>
 
 #include <cegis/instrument/meta_variables.h>
+#include <cegis/instrument/literals.h>
 #include <cegis/invariant/constant/literals_constant_strategy.h>
 #include <cegis/invariant/options/invariant_program.h>
 #include <cegis/genetic/genetic_constant_strategy.h>
@@ -18,19 +19,9 @@
 
 namespace
 {
-#if 0
-const char NONDET_CONSTANT_PREFIX[]="INVARIANT_CONSTANT_NONDET_";
-std::string get_ndt_name(size_t index)
-{
-  std::string name(NONDET_CONSTANT_PREFIX);
-  return name+=integer2string(index);
-}
-#endif
-
-const char CONSTANT_PREFIX[]="INVARIANT_CONSTANT_";
 std::string get_name(size_t index)
 {
-  std::string name(CONSTANT_PREFIX);
+  std::string name(CEGIS_CONSTANT_PREFIX);
   return name+=integer2string(index);
 }
 

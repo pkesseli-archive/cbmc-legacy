@@ -14,10 +14,6 @@
 #include <cegis/bjc/preprocessing/bjc_literals.h>
 #include <cegis/bjc/preprocessing/bjc_query_factory.h>
 
-// XXX: Debug
-#include <util/ui_message.h>
-// XXX: Debug
-
 namespace
 {
 goto_programt::targett find_loop_end(goto_programt &body)
@@ -160,9 +156,7 @@ void add_bjc_query(bjc_programt &prog, const size_t num_vars,
   prog.query_decl=pos;
   const typet bt(c_bool_type());
   pos=declare_cegis_meta_variable(st, gf, pos, BJC_QUERY_RESULT_VAR_NAME, bt);
-  // XXX: Debug
-  ui_message_handlert msg(ui_message_handlert::PLAIN, "");
-  // XXX: Debug
+  null_message_handlert msg;
   add_bjc_library(st, gf, num_vars, num_consts, max_sz, msg);
   code_function_callt call;
   const std::string res_var(get_cegis_meta_name(BJC_QUERY_RESULT_VAR_NAME));

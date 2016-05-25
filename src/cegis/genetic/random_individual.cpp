@@ -66,6 +66,10 @@ program_individualt::x0t::value_type random_individualt::x0() const
   return rand();
 }
 
+// XXX: Debug
+#include <iostream>
+// XXX: Debug
+
 program_individualt::x0t::value_type random_individualt::constant() const
 {
   const bv_spect spec(type);
@@ -79,6 +83,9 @@ program_individualt::x0t::value_type random_individualt::constant() const
   case 1:
     return 1;
   case 2:
+    // XXX: Debug
+    std::cout << "<wordmask>" << wordmask << "</wordmask>" << std::endl;
+    // XXX: Debug
     return wordmask;
   case 3:
     return 1 << (width - 1);
