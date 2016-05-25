@@ -13,10 +13,6 @@
 #include <cegis/genetic/genetic_constant_strategy.h>
 #include <cegis/genetic/genetic_constant_strategy.h>
 
-// XXX: Debug
-#include <iostream>
-// XXX: Debug
-
 namespace
 {
 std::string get_name(size_t index)
@@ -29,6 +25,10 @@ std::string get_name(size_t index)
 bool constants_printed=false;
 // XXX: Debug
 }
+
+// XXX: Debug
+#include <iostream>
+// XXX: Debug
 
 size_t genetic_constant_strategy(invariant_programt &prog,
     const size_t max_length)

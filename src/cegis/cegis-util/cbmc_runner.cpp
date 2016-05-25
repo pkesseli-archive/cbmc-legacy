@@ -56,28 +56,12 @@ public:
 };
 }
 
-// XXX: Debug
-#include <iostream>
-// XXX: Debug
-
 safety_checkert::resultt run_cbmc(const symbol_tablet &st,
     const goto_functionst &gf, goto_tracet &trace)
 {
-  // XXX: Debug
-  std::cout << "<goto_program>" << std::endl;
-  const namespacet ns(st);
-  gf.output(ns, std::cout);
-  std::cout << "</goto_program>" << std::endl;
-  // XXX: Debug
   const temporary_output_blockt disable_output;
   cbmc_runnert runner(st, gf, trace);
-  // XXX: Debug
-  std::cout << "<cbmc_trace>" << std::endl;
-  // XXX: Debug
   const int result=runner.main();
-  // XXX: Debug
-  std::cout << "</cbmc_trace>" << std::endl;
-  // XXX: Debug
   disable_output.release();
   if (EXIT_SUCCESS != result)
     throw std::runtime_error("cbmc_runner.cbmc-execution-failed");

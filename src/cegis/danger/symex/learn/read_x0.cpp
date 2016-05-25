@@ -58,26 +58,16 @@ void danger_read_x0(danger_goto_solutiont &result, const danger_programt &prog,
   std::for_each(x0.begin(), x0.end(), extract);
 }
 
-// XXX: Debug
-#include <iostream>
-// XXX: Debug
-
 void danger_read_x0(program_individualt &ind, const danger_programt &prog,
     const goto_tracet &trace)
 {
   danger_goto_solutiont tmp;
   danger_read_x0(tmp, prog, trace);
   program_individualt::x0t &x0=ind.x0;
-  // XXX: Debug
-  std::cout << "<x0>" << std::endl;
-  // XXX: Debug
   for (const danger_goto_solutiont::nondet_choicest::value_type &choice : tmp.x0_choices)
   {
-    std::cout << "<expr_value>" << choice.to_string() << "</expr_value>" << std::endl;
     const bv_arithmetict arith(choice);
     const mp_integer::llong_t value=arith.to_integer().to_long();
-    std::cout << "<value>" << value << "</value>" << std::endl;
     x0.push_back(static_cast<program_individualt::x0t::value_type>(value));
   }
-  std::cout << "</x0>" << std::endl;
 }

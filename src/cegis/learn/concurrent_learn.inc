@@ -1,9 +1,5 @@
 #include <cegis/cegis-util/irep_pipe.h>
 
-// XXX: Debug
-#include <iostream>
-// XXX: Debug
-
 // XXX: Symex headstart for PLDI benchmarks
 namespace
 {
@@ -95,7 +91,6 @@ bool concurrent_learnt<learner1t, learner2t>::learn(itert first,
   // XXX: Symex headstart for PLDI benchmarks
   if (symex_count)
   {
-    std::cout << "<symex_count>" << symex_count << "</symex_count>" << std::endl; // XXX: Debug
     --symex_count;
     task_pool.join_all();
   }
