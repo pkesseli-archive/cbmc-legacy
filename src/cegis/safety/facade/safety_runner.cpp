@@ -17,6 +17,7 @@
 #include <cegis/genetic/match_select.h>
 #include <cegis/genetic/lazy_fitness.h>
 #include <cegis/genetic/ga_learn.h>
+#include <cegis/genetic/tournament_select.h>
 #include <cegis/instrument/meta_variables.h>
 #include <cegis/symex/cegis_symex_learn.h>
 #include <cegis/symex/cegis_symex_verify.h>
@@ -84,15 +85,33 @@ int configure_backend(mstreamt &os, const optionst &o,
   lazy_fitnesst<dynamic_safety_test_runnert, safety_goto_cet> fit(test_runner);
   random_mutatet mutate(rnd, lazy.num_consts_provder());
   random_crosst cross(rnd);
-  match_selectt select(fit.get_test_case_data(), rnd, pop_size, rounds);
-  typedef ga_learnt<match_selectt, random_mutatet, random_crosst,
+  const bool use_learner2_head_start=o.get_bool_option("cegis-symex-head-start");
+  if (o.get_bool_option(CEGIS_MATCH_SELECT))
+  {
+    match_selectt select(fit.get_test_case_data(), rnd, pop_size, rounds);
+    typedef ga_learnt<match_selectt, random_mutatet, random_crosst,
+        lazy_fitnesst<dynamic_safety_test_runnert, safety_goto_cet>,
+        safety_fitness_configt> ga_learnt;
+    ga_learnt ga_learn(o, select, mutate, cross, fit, safety_fitness_config);
+#ifndef _WIN32
+    const individual_to_safety_solution_deserialisert deser(prog, info_fac);
+    concurrent_learnt<ga_learnt, symex_learnt> learner(ga_learn, learn,
+        serialise, std::ref(deser), deserialise, use_learner2_head_start);
+#else
+    // TODO: Remove once task_pool supports Windows.
+    ga_learnt &learner=ga_learn;
+#endif
+    return configure_ui_and_run(os, o, learner, verify, pre);
+  }
+  tournament_selectt select(rnd, pop_size, rounds);
+  typedef ga_learnt<tournament_selectt, random_mutatet, random_crosst,
       lazy_fitnesst<dynamic_safety_test_runnert, safety_goto_cet>,
       safety_fitness_configt> ga_learnt;
   ga_learnt ga_learn(o, select, mutate, cross, fit, safety_fitness_config);
 #ifndef _WIN32
   const individual_to_safety_solution_deserialisert deser(prog, info_fac);
   concurrent_learnt<ga_learnt, symex_learnt> learner(ga_learn, learn, serialise,
-      std::ref(deser), deserialise);
+      std::ref(deser), deserialise, use_learner2_head_start);
 #else
   // TODO: Remove once task_pool supports Windows.
   ga_learnt &learner=ga_learn;

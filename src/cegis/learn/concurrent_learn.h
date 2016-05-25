@@ -52,10 +52,11 @@ public:
    * @param serialiser
    * @param deserialiser
    * @param encoded_deserialiser
+   * @param use_learner2_head_start
    */
   concurrent_learnt(learner1t &learner1, learner2t &learner2,
       serialisert serialiser, deserialisert deserialiser,
-      encoded_deserialisert encoded_deserialiser);
+      encoded_deserialisert encoded_deserialiser, bool use_learner2_head_start);
 
   /**
    * @brief

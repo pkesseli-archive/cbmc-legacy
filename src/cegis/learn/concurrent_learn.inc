@@ -1,14 +1,27 @@
 #include <cegis/cegis-util/irep_pipe.h>
 
+// XXX: Debug
+#include <iostream>
+// XXX: Debug
+
+// XXX: Symex headstart for PLDI benchmarks
+namespace
+{
+size_t symex_count=3u;
+}
+// XXX: Symex headstart for PLDI benchmarks
+
 template<class learner1t, class learner2t>
 concurrent_learnt<learner1t, learner2t>::concurrent_learnt(learner1t &learner1,
     learner2t &learner2, const serialisert serialiser,
     const deserialisert deserialiser,
-    const encoded_deserialisert encoded_deserialiser) :
+    const encoded_deserialisert encoded_deserialiser,
+    const bool use_learner2_head_start) :
     learner1(learner1), learner2(learner2), serialiser(serialiser), deserialiser(
         deserialiser), encoded_deserialiser(encoded_deserialiser), is_decoded_candidate(
         false)
 {
+  if (!use_learner2_head_start) symex_count=0;
 }
 
 template<class learner1t, class learner2t>
@@ -31,13 +44,6 @@ const typename concurrent_learnt<learner1t, learner2t>::candidatet &concurrent_l
   if (is_decoded_candidate) return decoded_candidate;
   return learner1.next_candidate();
 }
-
-// XXX: Symex headstart for PLDI benchmarks
-namespace
-{
-size_t symex_count=2u;
-}
-// XXX: Symex headstart for PLDI benchmarks
 
 template<class learner1t, class learner2t>
 template<class itert>
@@ -89,6 +95,7 @@ bool concurrent_learnt<learner1t, learner2t>::learn(itert first,
   // XXX: Symex headstart for PLDI benchmarks
   if (symex_count)
   {
+    std::cout << "<symex_count>" << symex_count << "</symex_count>" << std::endl; // XXX: Debug
     --symex_count;
     task_pool.join_all();
   }

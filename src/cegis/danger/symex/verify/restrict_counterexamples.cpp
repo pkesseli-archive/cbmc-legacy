@@ -45,25 +45,6 @@ void force_all_guards_violated(exprt::operandst &op, const size_t num_loops)
     op.push_back(not_Gx);
   }
 }
-
-#if 0
-void get_all_exits(exprt::operandst &op, const size_t num_loops)
-{
-  for (size_t i=0; i < num_loops; ++i)
-  {
-    op.push_back(danger_component_as_bool(get_Gx(i)));
-  }
-}
-#endif
-}
-
-void force_assertion_satisfaction(goto_functionst &gf, const size_t num_loops)
-{
-  exprt::operandst op;
-  force_all_guards_violated(op, num_loops);
-  op.push_back(danger_component_as_bool(get_Ax()));
-  goto_programt::targett pos=add_assume(gf);
-  pos->guard=conjunction(op);
 }
 
 void force_assertion_violation(goto_functionst &gf, const size_t num_loops)
@@ -77,40 +58,15 @@ void force_assertion_violation(goto_functionst &gf, const size_t num_loops)
   pos->guard=conjunction(op);
 }
 
-void force_loop_exit(goto_functionst &gf, const exprt::operandst &loop_guards)
-{
-  const size_t num_loops=loop_guards.size();
-  exprt::operandst exits;
-  for (size_t i=0; i < num_loops; ++i)
-  {
-    const notequal_exprt Gx=danger_component_as_bool(get_Gx(i));
-    exprt not_Gx_prime=loop_guards[i];
-    if (ID_not == not_Gx_prime.id()) not_Gx_prime=
-        to_not_expr(not_Gx_prime).op();
-    else not_Gx_prime=not_exprt(not_Gx_prime);
-    exits.push_back(and_exprt(Gx, not_Gx_prime));
-  }
-  goto_programt::targett pos=add_assume(gf);
-  pos->guard=disjunction(exits);
-}
-
-void force_guard_violation(goto_functionst &gf, const size_t num_loops)
-{
-  exprt::operandst op;
-  force_all_guards_violated(op, num_loops);
-  goto_programt::targett pos=add_assume(gf);
-  pos->guard=disjunction(op);
-}
-
-void force_invariant_and_guard_satisfaction(goto_functionst &gf,
-    const size_t num_loops)
+void force_ranking_error(goto_functionst &gf, const size_t num_loops)
 {
   exprt::operandst op;
   for (size_t i=0; i < num_loops; ++i)
   {
-    const notequal_exprt Dx=danger_component_as_bool(get_Dx(i));
-    const notequal_exprt Gx=danger_component_as_bool(get_Gx(i));
-    op.push_back(and_exprt(Dx, Gx));
+  const exprt::operandst conj={ danger_component_as_bool(get_Dx(i)),
+      danger_component_as_bool(get_Dx(i)), danger_component_as_bool(get_Gx(i)),
+      danger_component_as_bool(get_Dx_prime(i)) };
+    op.push_back(conjunction(conj));
   }
   goto_programt::targett pos=add_assume(gf);
   pos->guard=disjunction(op);

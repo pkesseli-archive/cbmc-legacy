@@ -91,7 +91,7 @@ void prepare_fitness_tester_library(fitness_lib_handlet &handle,
   if (fitness_tester) return;
   //const temporary_filet source_file(SOURCE_FILE_PREFIX, SOURCE_FILE_SUFFIX);
   //const std::string source_file_name(source_file());
-  const std::string source_file_name("/tmp/src.c");
+  const std::string source_file_name("/tmp/src.c"); // XXX: Debug
   std::string source;
   implement_deserialise(source, danger);
   source+=source_code_provider();

@@ -3,11 +3,6 @@
 #include <goto-programs/goto_trace.h>
 #include <cegis/cegis-util/temporary_output_block.h>
 
-// XXX: Debug
-#include <iostream>
-#include <goto-programs/write_goto_binary.h>
-// XXX: Debug
-
 #define MOCK_ARGC 1u
 
 namespace
@@ -64,14 +59,6 @@ public:
 safety_checkert::resultt run_cbmc(const symbol_tablet &st,
     const goto_functionst &gf, goto_tracet &trace)
 {
-  // XXX: Debug
-  const namespacet ns(st);
-  std::cout << "<run_cbmc>" << std::endl;
-  gf.output(ns, std::cout);
-  std::cout << "</run_cbmc>" << std::endl;
-  std::ofstream ofs("/tmp/run_cbmc.exe");
-  write_goto_binary(ofs, st, gf);
-  // XXX: Debug
   const temporary_output_blockt disable_output;
   cbmc_runnert runner(st, gf, trace);
   const int result=runner.main();

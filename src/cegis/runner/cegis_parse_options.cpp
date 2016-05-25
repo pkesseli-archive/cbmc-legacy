@@ -100,6 +100,7 @@ void cegis_parse_optionst::get_command_line_options(optionst &options)
       replace_rate=string2integer(cmdline.get_value("cegis-genetic-replace-rate")).to_ulong();
     options.set_option("cegis-genetic-replace-rate", replace_rate);
     options.set_option("danger-no-ranking", cmdline.isset("danger-no-ranking"));
+    options.set_option("cegis-symex-head-start", cmdline.isset("cegis-symex-head-start"));
   }
 }
 
