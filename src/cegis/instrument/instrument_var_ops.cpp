@@ -61,6 +61,10 @@ bool is_instrumentable_user_variable(const irep_idt &id, const typet &type)
 {
   if (ID_code == type.id()) return false;
   const std::string &name=id2string(id);
+  if (std::string::npos != name.find("::")
+      && std::string::npos == name.find(id2string(ID_main))
+      && std::string::npos == name.find(id2string(goto_functionst::entry_point())))
+    return false; // Inlined variables
   if (std::string::npos != name.find(RETURN_VALUE_IDENTIFIER)) return false;
   return std::string::npos == name.find(CPROVER_PREFIX);
 }

@@ -100,7 +100,7 @@ int run_match(mstreamt &os, optionst &opt, const danger_programt &prog,
     mutatet &mutate, crosst &cross, convertert &converter, preproct &preproc,
     symex_learnt &symex_learn)
 {
-  const bool use_learner2_head_start=opt.get_bool_option("cegis-symex-head-start");
+  const size_t symex_head_start=opt.get_bool_option(CEGIS_SYMEX_HEAD_START);
   const individual_to_danger_solution_deserialisert deser(prog, info_fac);
   if (opt.get_bool_option(CEGIS_MATCH_SELECT))
   {
@@ -110,7 +110,7 @@ int run_match(mstreamt &os, optionst &opt, const danger_programt &prog,
     ga_learnt ga_learn(opt, select, mutate, cross, fitness, converter);
 #ifndef _WIN32
     concurrent_learnt<ga_learnt, symex_learnt> learn(ga_learn, symex_learn,
-        serialise, std::ref(deser), deserialise, use_learner2_head_start);
+        serialise, std::ref(deser), deserialise, symex_head_start);
 #else
     // TODO: Remove once task_pool supports Windows.
     ga_learnt &learn=ga_learn;
@@ -123,7 +123,7 @@ int run_match(mstreamt &os, optionst &opt, const danger_programt &prog,
   ga_learnt ga_learn(opt, select, mutate, cross, fitness, converter);
 #ifndef _WIN32
   concurrent_learnt<ga_learnt, symex_learnt> learn(ga_learn, symex_learn,
-      serialise, std::ref(deser), deserialise, use_learner2_head_start);
+      serialise, std::ref(deser), deserialise, symex_head_start);
 #else
   // TODO: Remove once task_pool supports Windows.
   ga_learnt &learn=ga_learn;

@@ -9,6 +9,7 @@ Author: Daniel Kroening, kroening@kroening.com
 #include <util/mp_arith.h>
 #include <util/options.h>
 
+#include <cegis/options/parameters.h>
 #include <cegis/danger/facade/danger_runner.h>
 #include <cegis/safety/facade/safety_runner.h>
 #include <cegis/jsa/facade/jsa_runner.h>
@@ -100,7 +101,7 @@ void cegis_parse_optionst::get_command_line_options(optionst &options)
       replace_rate=string2integer(cmdline.get_value("cegis-genetic-replace-rate")).to_ulong();
     options.set_option("cegis-genetic-replace-rate", replace_rate);
     options.set_option("danger-no-ranking", cmdline.isset("danger-no-ranking"));
-    options.set_option("cegis-symex-head-start", cmdline.isset("cegis-symex-head-start"));
+    options.set_option(CEGIS_SYMEX_HEAD_START, cmdline.isset(CEGIS_SYMEX_HEAD_START));
   }
 }
 

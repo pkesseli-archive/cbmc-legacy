@@ -57,6 +57,7 @@ public:
   void operator()(const goto_programt::instructiont &instr)
   {
     instr.code.visit(*this);
+    instr.guard.visit(*this);
   }
 
   void operator()(const invariant_programt::invariant_loopt *loop)

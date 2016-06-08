@@ -85,7 +85,7 @@ int configure_backend(mstreamt &os, const optionst &o,
   lazy_fitnesst<dynamic_safety_test_runnert, safety_goto_cet> fit(test_runner);
   random_mutatet mutate(rnd, lazy.num_consts_provder());
   random_crosst cross(rnd);
-  const bool use_learner2_head_start=o.get_bool_option("cegis-symex-head-start");
+  const size_t symex_head_start=o.get_unsigned_int_option(CEGIS_SYMEX_HEAD_START);
   if (o.get_bool_option(CEGIS_MATCH_SELECT))
   {
     match_selectt select(fit.get_test_case_data(), rnd, pop_size, rounds);
@@ -96,7 +96,7 @@ int configure_backend(mstreamt &os, const optionst &o,
 #ifndef _WIN32
     const individual_to_safety_solution_deserialisert deser(prog, info_fac);
     concurrent_learnt<ga_learnt, symex_learnt> learner(ga_learn, learn,
-        serialise, std::ref(deser), deserialise, use_learner2_head_start);
+        serialise, std::ref(deser), deserialise, symex_head_start);
 #else
     // TODO: Remove once task_pool supports Windows.
     ga_learnt &learner=ga_learn;
@@ -111,7 +111,7 @@ int configure_backend(mstreamt &os, const optionst &o,
 #ifndef _WIN32
   const individual_to_safety_solution_deserialisert deser(prog, info_fac);
   concurrent_learnt<ga_learnt, symex_learnt> learner(ga_learn, learn, serialise,
-      std::ref(deser), deserialise, use_learner2_head_start);
+      std::ref(deser), deserialise, symex_head_start);
 #else
   // TODO: Remove once task_pool supports Windows.
   ga_learnt &learner=ga_learn;
