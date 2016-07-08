@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <functional>
 
 #include <util/expr_util.h>
 #include <goto-programs/goto_trace.h>
