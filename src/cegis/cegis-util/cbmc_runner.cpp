@@ -3,11 +3,11 @@
 #include <goto-programs/goto_trace.h>
 #include <cegis/cegis-util/temporary_output_block.h>
 
-#define MOCK_ARGC 1u
+#define MOCK_ARGC 2u
 
 namespace
 {
-const char * ARGV[]={ "cbmc" };
+const char * ARGV[]={ "cbmc", "--stop-on-fail" };
 
 class cbmc_runnert: public cbmc_parse_optionst
 {

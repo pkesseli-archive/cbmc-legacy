@@ -160,20 +160,6 @@ void insert_jsa_solution(jsa_programt &prog, const jsa_solutiont &solution)
   goto_functionst &gf=prog.gf;
   goto_programt &body=get_entry_body(gf);
 
-  // XXX: Debug
-  const namespacet ns(st);
-  goto_programt tmp;
-  for (const auto &pred : solution.predicates)
-  {
-    tmp.instructions=pred;
-    tmp.compute_incoming_edges();
-    tmp.compute_target_numbers();
-    std::cout << "<pred>" << std::endl;
-    tmp.output(ns, "", std::cout);
-    std::cout << "</pred>" << std::endl;
-  }
-  // XXX: Debug
-
   insert_before(body, prog.base_case, solution.query);
   insert_invariant(st, gf, body, prog.base_case, solution.invariant);
   insert_before(body, prog.inductive_assumption, solution.query);
