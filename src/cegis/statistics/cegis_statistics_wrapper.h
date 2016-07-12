@@ -44,13 +44,13 @@ public:
    * @param learner
    * @param verifier
    * @param os
-   * @param show_iterations
+   * @param options
    */
   cegis_statistics_wrappert(
       learnt &learner,
       verifyt &verifier,
       mstreamt &os,
-      bool show_iterations = false);
+      const optionst &options);
 
   /**
    * @brief

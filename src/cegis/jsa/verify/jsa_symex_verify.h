@@ -73,8 +73,21 @@ public:
    * @param counterexamples
    * @param trace
    */
-  void convert(counterexamplest &counterexamples,
+  void convert(
+      counterexamplest &counterexamples,
       const class goto_tracet &trace);
+
+  /**
+   * @brief
+   *
+   * @details
+   *
+   * @param os
+   * @param counterexample
+   */
+  void show_counterexample(
+      messaget::mstreamt &os,
+      const counterexamplet &counterexample) const;
 };
 
 #endif /* CEGIS_JSA_SYMEX_VERIFY_H_ */

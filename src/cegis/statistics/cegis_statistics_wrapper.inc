@@ -1,11 +1,13 @@
+#include <cegis/options/parameters.h>
+
 typedef std::chrono::high_resolution_clock my_clockt;
 
 template<class learnt, class verifyt, class mstreamt>
 cegis_statistics_wrappert<learnt, verifyt, mstreamt>::cegis_statistics_wrappert(
-    learnt &learner, verifyt &verifier, mstreamt &os,
-    const bool show_iterations) :
+    learnt &learner, verifyt &verifier, mstreamt &os, const optionst &options) :
     learner(learner), verifier(verifier), os(os), num_ces(0), learner_time(0), verifier_time(
-        0), start_time(my_clockt::now()), show_iterations(show_iterations)
+        0), start_time(my_clockt::now()), show_iterations(
+        options.get_bool_option(CEGIS_SHOW_ITERATIONS))
 {
 }
 
@@ -41,9 +43,11 @@ bool cegis_statistics_wrappert<learnt, verifyt, mstreamt>::learn(itert first,
     for (itert it(first); it != last; ++it)
     {
       os << "<counterexample>" << messaget::endl;
+      verifier.show_counterexample(os, *it);
       os << "</counterexample>" << messaget::endl;
     }
     os << "</counterexamples>" << messaget::endl;
+    show_candidate(os);
   }
   num_ces+=std::distance(first, last);
   my_time_pointt before=my_clockt::now();

@@ -20,5 +20,6 @@
 #define CEGIS_PARALLEL_VERIFY "cegis-parallel-verify"
 #define CEGIS_MATCH_SELECT "cegis-match-select"
 #define CEGIS_SYMEX_HEAD_START "cegis-symex-head-start"
+#define CEGIS_SHOW_ITERATIONS "cegis-show-iterations"
 
 #endif /* CEGIS_INVARIANT_PARAMETERS_H_ */

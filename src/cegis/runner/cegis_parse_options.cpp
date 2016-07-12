@@ -102,6 +102,7 @@ void cegis_parse_optionst::get_command_line_options(optionst &options)
     options.set_option("cegis-genetic-replace-rate", replace_rate);
     options.set_option("danger-no-ranking", cmdline.isset("danger-no-ranking"));
     options.set_option(CEGIS_SYMEX_HEAD_START, cmdline.isset(CEGIS_SYMEX_HEAD_START));
+    options.set_option(CEGIS_SHOW_ITERATIONS, cmdline.isset(CEGIS_SHOW_ITERATIONS));
   }
 }
 

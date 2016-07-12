@@ -52,16 +52,16 @@ bool is_genetic(const optionst &opt)
 typedef messaget::mstreamt mstreamt;
 
 template<class learnt, class verifyt, class preproct>
-int run_statistics(mstreamt &os, const optionst &options,
+int run_statistics(mstreamt &os, const optionst &opt,
     const danger_programt &prog, learnt &learn, verifyt &verify,
     preproct &preproc)
 {
   null_seedt seed;
   //danger_literals_seedt seed(prog);  // XXX: Benchmark performance
-  const size_t max_prog_size=options.get_unsigned_int_option(CEGIS_MAX_SIZE);
-  if (!options.get_bool_option(CEGIS_STATISTICS))
+  const size_t max_prog_size=opt.get_unsigned_int_option(CEGIS_MAX_SIZE);
+  if (!opt.get_bool_option(CEGIS_STATISTICS))
     return run_cegis(learn, verify, preproc, seed, max_prog_size, os);
-  cegis_statistics_wrappert<learnt, verifyt, mstreamt> stat(learn, verify, os);
+  cegis_statistics_wrappert<learnt, verifyt, mstreamt> stat(learn, verify, os, opt);
   return run_cegis(stat, stat, preproc, seed, max_prog_size, os);
 }
 

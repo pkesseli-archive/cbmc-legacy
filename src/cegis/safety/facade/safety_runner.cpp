@@ -44,14 +44,14 @@ namespace
 typedef messaget::mstreamt mstreamt;
 
 template<class learnt, class verifyt, class preproct>
-int configure_ui_and_run(mstreamt &os, const optionst &options, learnt &learn,
+int configure_ui_and_run(mstreamt &os, const optionst &opt, learnt &learn,
     verifyt &verify, preproct &preproc)
 {
   null_seedt seed;
-  const size_t max_prog_size=options.get_unsigned_int_option(CEGIS_MAX_SIZE);
-  if (!options.get_bool_option(CEGIS_STATISTICS))
+  const size_t max_prog_size=opt.get_unsigned_int_option(CEGIS_MAX_SIZE);
+  if (!opt.get_bool_option(CEGIS_STATISTICS))
     return run_cegis(learn, verify, preproc, seed, max_prog_size, os);
-  cegis_statistics_wrappert<learnt, verifyt, mstreamt> stat(learn, verify, os);
+  cegis_statistics_wrappert<learnt, verifyt, mstreamt> stat(learn, verify, os, opt);
   return run_cegis(stat, stat, preproc, seed, max_prog_size, os);
 }
 

@@ -1,5 +1,6 @@
 #include <goto-programs/remove_returns.h>
 
+#include <cegis/value/assignments_printer.h>
 #include <cegis/jsa/constraint/jsa_constraint_factory.h>
 #include <cegis/jsa/preprocessing/add_synthesis_library.h>
 #include <cegis/jsa/learn/instrument_pred_ops.h>
@@ -42,4 +43,12 @@ void jsa_symex_verifyt::convert(counterexamplest &counterexamples,
 {
   counterexamples.push_back(counterexamplet());
   extract(program, counterexamples.back(), trace);
+}
+
+void jsa_symex_verifyt::show_counterexample(messaget::mstreamt &os,
+    const counterexamplet &counterexample) const
+{
+  os << "<jsa_counterexample>" << messaget::endl;
+  print_assignments(os, get_symbol_table(), counterexample);
+  os << "</jsa_counterexample>" << messaget::endl;
 }

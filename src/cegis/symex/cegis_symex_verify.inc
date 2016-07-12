@@ -78,5 +78,5 @@ template<class verify_configurationt>
 void cegis_symex_verifyt<verify_configurationt>::show_counterexample(
     messaget::mstreamt &os, const counterexamplet &counterexample) const
 {
-
+  config.show_counterexample(os, counterexample);
 }
