@@ -64,3 +64,19 @@ bool cegis_symex_verifyt<verify_configurationt>::success() const
 {
   return !is_failure;
 }
+
+namespace
+{
+template<class verify_configurationt>
+void show_ce(verify_configurationt &)
+{
+
+}
+}
+
+template<class verify_configurationt>
+void cegis_symex_verifyt<verify_configurationt>::show_counterexample(
+    messaget::mstreamt &os, const counterexamplet &counterexample) const
+{
+
+}
