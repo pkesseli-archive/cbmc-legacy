@@ -1,25 +1,50 @@
 #include <cbmc/cbmc_parse_options.h>
 #include <cbmc/bmc.h>
 #include <goto-programs/goto_trace.h>
+#include <goto-programs/write_goto_binary.h>
+
+#include <cegis/options/parameters.h>
 #include <cegis/cegis-util/temporary_output_block.h>
+#include <cegis/cegis-util/cbmc_runner.h>
 
 #define MOCK_ARGC 2u
 
 namespace
 {
+bool exists(const std::string &name)
+{
+  return std::ifstream(name.c_str()).good();
+}
+
+std::string get_goto_file_name(const size_t index)
+{
+  std::string name("cbmc_runner-");
+  name+=std::to_string(index);
+  return name+=".exe";
+}
+
+std::string get_next_goto_file_name()
+{
+  size_t index=0;
+  while (exists(get_goto_file_name(index)))
+    ++index;
+  return get_goto_file_name(index);
+}
+
 const char * ARGV[]={ "cbmc", "--stop-on-fail" };
 
 class cbmc_runnert: public cbmc_parse_optionst
 {
   const symbol_tablet &st;
   const goto_functionst &gf;
-  goto_tracet &trace;
+  cbmc_resultt &result;
   safety_checkert::resultt bmc_result;
+  const bool keep_goto_programs;
 public:
   cbmc_runnert(const symbol_tablet &st, const goto_functionst &gf,
-      goto_tracet &trace) :
-      cbmc_parse_optionst(MOCK_ARGC, ARGV), st(st), gf(gf), trace(trace), bmc_result(
-          safety_checkert::UNSAFE)
+      cbmc_resultt &result, const bool keep_goto_programs) :
+      cbmc_parse_optionst(MOCK_ARGC, ARGV), st(st), gf(gf), result(result), bmc_result(
+          safety_checkert::UNSAFE), keep_goto_programs(keep_goto_programs)
   {
   }
 
@@ -32,15 +57,30 @@ public:
     symbol_table=st;
     goto_functions.clear();
     goto_functions.copy_from(gf);
+    // XXX: Debug
+    std::string tmp_file(get_next_goto_file_name());
+    tmp_file+=".no-preprocess";
+    write_goto_binary(tmp_file, symbol_table, goto_functions, get_message_handler());
+    // XXX: Debug
     if (process_goto_program(options, goto_functions)) return 6;
+    if (keep_goto_programs)
+    {
+      const std::string path(get_next_goto_file_name());
+      message_handlert &msg=get_message_handler();
+      write_goto_binary(path, symbol_table, goto_functions, msg);
+    }
     return -1;
   }
 
   int do_bmc(bmct &bmc, const goto_functionst &goto_functions)
   {
     bmc.set_ui(get_ui());
-    bmc_result=bmc.run(gf);
-    trace=bmc.safety_checkert::error_trace;
+    result.symbol_table.clear();
+    result.symbol_table=symbol_table;
+    result.goto_functions.clear();
+    result.goto_functions.copy_from(goto_functions);
+    bmc_result=bmc.run(result.goto_functions);
+    result.trace=bmc.safety_checkert::error_trace;
     return 0;
   }
 
@@ -48,23 +88,25 @@ public:
   {
     return bmc_result;
   }
-
-  const goto_tracet &get_trace() const
-  {
-    return trace;
-  }
 };
 }
 
 safety_checkert::resultt run_cbmc(const symbol_tablet &st,
-    const goto_functionst &gf, goto_tracet &trace)
+    const goto_functionst &gf, cbmc_resultt &cbmc_result,
+    const bool keep_goto_programs)
 {
   const temporary_output_blockt disable_output;
-  cbmc_runnert runner(st, gf, trace);
+  cbmc_runnert runner(st, gf, cbmc_result, keep_goto_programs);
   const int result=runner.main();
   disable_output.release();
   if (EXIT_SUCCESS != result)
     throw std::runtime_error("cbmc_runner.cbmc-execution-failed");
-  trace=runner.get_trace();
   return runner.get_bmc_result();
+}
+
+safety_checkert::resultt run_cbmc(const symbol_tablet &st,
+    const goto_functionst &gf, cbmc_resultt &cbmc_result,
+    const optionst &o)
+{
+  return run_cbmc(st, gf, cbmc_result, o.get_bool_option(CEGIS_KEEP_GOTO_PROGRAMS));
 }

@@ -26,8 +26,8 @@ void cegis_symex_verifyt<verify_configurationt>::verify(
   config.process(candidate);
   const symbol_tablet &st=config.get_symbol_table();
   const goto_functionst &gf=config.get_goto_functions();
-  goto_tracet trace;
-  const safety_checkert::resultt result=run_cbmc(st, gf, trace);
+  cbmc_resultt cbmc_result;
+  const safety_checkert::resultt result=run_cbmc(st, gf, cbmc_result, options);
   switch (result)
   {
   case safety_checkert::SAFE:
@@ -35,7 +35,7 @@ void cegis_symex_verifyt<verify_configurationt>::verify(
   case safety_checkert::ERROR:
     return;
   default:
-    config.convert(current_counterexamples, trace);
+    config.convert(current_counterexamples, cbmc_result.trace);
   }
 }
 
@@ -63,15 +63,6 @@ template<class verify_configurationt>
 bool cegis_symex_verifyt<verify_configurationt>::success() const
 {
   return !is_failure;
-}
-
-namespace
-{
-template<class verify_configurationt>
-void show_ce(verify_configurationt &)
-{
-
-}
 }
 
 template<class verify_configurationt>

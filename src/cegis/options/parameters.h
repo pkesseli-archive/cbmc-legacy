@@ -21,5 +21,6 @@
 #define CEGIS_MATCH_SELECT "cegis-match-select"
 #define CEGIS_SYMEX_HEAD_START "cegis-symex-head-start"
 #define CEGIS_SHOW_ITERATIONS "cegis-show-iterations"
+#define CEGIS_KEEP_GOTO_PROGRAMS "cegis-keep-goto-programs"
 
 #endif /* CEGIS_INVARIANT_PARAMETERS_H_ */
