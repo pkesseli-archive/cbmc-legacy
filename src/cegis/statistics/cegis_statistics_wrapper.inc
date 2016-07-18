@@ -37,18 +37,6 @@ template<class itert>
 bool cegis_statistics_wrappert<learnt, verifyt, mstreamt>::learn(itert first,
     const itert &last)
 {
-  if (show_iterations)
-  {
-    os << "<counterexamples>" << messaget::endl;
-    for (itert it(first); it != last; ++it)
-    {
-      os << "<counterexample>" << messaget::endl;
-      verifier.show_counterexample(os, *it);
-      os << "</counterexample>" << messaget::endl;
-    }
-    os << "</counterexamples>" << messaget::endl;
-    show_candidate(os);
-  }
   num_ces+=std::distance(first, last);
   my_time_pointt before=my_clockt::now();
   const bool result=learner.learn(first, last);
@@ -86,6 +74,19 @@ void cegis_statistics_wrappert<learnt, verifyt, mstreamt>::verify(
   verifier.verify(candidate);
   my_time_pointt after=my_clockt::now();
   verifier_time+=std::chrono::duration_cast < millisecondst > (after - before);
+  if (show_iterations)
+  {
+    os << "<counterexamples>" << messaget::endl;
+    const const_iterator last=counterexamples_end();
+    for (const_iterator it=counterexamples_begin(); it != last; ++it)
+    {
+      os << "<counterexample>" << messaget::endl;
+      verifier.show_counterexample(os, *it);
+      os << "</counterexample>" << messaget::endl;
+    }
+    os << "</counterexamples>" << messaget::endl;
+    show_candidate(os);
+  }
 }
 
 template<class learnt, class verifyt, class mstreamt>

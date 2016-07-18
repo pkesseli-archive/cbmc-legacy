@@ -278,7 +278,7 @@ __CPROVER_jsa_inline void __CPROVER_jsa__internal_set_previous(
 #define __CPROVER_jsa__internal_get_previous(heap_ptr, node) \
   (__CPROVER_jsa__internal_is_concrete_node(node) ? (heap_ptr)->concrete_nodes[node].previous : (heap_ptr)->abstract_nodes[__CPROVER_jsa__internal_get_abstract_node_index(node)].previous)
 
-__CPROVER_jsa_inline void __CPROVER_jsa__internal_remove(
+__CPROVER_jsa_inline __CPROVER_jsa_node_id_t __CPROVER_jsa__internal_remove(
     __CPROVER_jsa_abstract_heapt * const heap,
     const __CPROVER_jsa_node_id_t node_id_to_remove)
 #ifdef __CPROVER_JSA_DEFINE_TRANSFORMERS
@@ -286,6 +286,8 @@ __CPROVER_jsa_inline void __CPROVER_jsa__internal_remove(
   __CPROVER_jsa_assume(__CPROVER_jsa__internal_is_concrete_node(node_id_to_remove));
   const __CPROVER_jsa_id_t previous_node_id=heap->concrete_nodes[node_id_to_remove].previous;
   const __CPROVER_jsa_id_t next_node_id=heap->concrete_nodes[node_id_to_remove].next;
+  __CPROVER_jsa__internal_set_next(heap, node_id_to_remove, __CPROVER_jsa_null);
+  __CPROVER_jsa__internal_set_previous(heap, node_id_to_remove, __CPROVER_jsa_null);
   if (__CPROVER_jsa_null != previous_node_id)
     __CPROVER_jsa__internal_set_next(heap, previous_node_id, next_node_id);
   else
@@ -295,6 +297,7 @@ __CPROVER_jsa_inline void __CPROVER_jsa__internal_remove(
   }
   if (__CPROVER_jsa_null != next_node_id)
     __CPROVER_jsa__internal_set_previous(heap, next_node_id, previous_node_id);
+  return next_node_id;
 }
 #else
 ;
@@ -630,7 +633,7 @@ __CPROVER_jsa_inline void __CPROVER_jsa_remove(
 #ifdef __CPROVER_JSA_DEFINE_TRANSFORMERS
 {
   const __CPROVER_jsa_id_t node_id_to_remove=heap->iterators[it].previous_node_id;
-  __CPROVER_jsa__internal_remove(heap, node_id_to_remove);
+  heap->iterators[it].node_id=__CPROVER_jsa__internal_remove(heap, node_id_to_remove);
   heap->iterators[it].previous_node_id=__CPROVER_jsa_null;
 }
 #else
@@ -937,7 +940,7 @@ __CPROVER_jsa_inline void __CPROVER_jsa_stream_op(
       {
       case 0: // filter
         if (pred_result == 0)
-          __CPROVER_jsa__internal_remove(heap, node);
+          node=__CPROVER_jsa__internal_remove(heap, node);
         else
           node=__CPROVER_jsa__internal_get_next(heap, node);
         break;

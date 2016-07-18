@@ -13,10 +13,6 @@
 #include <cegis/jsa/preprocessing/clone_heap.h>
 #include <cegis/jsa/verify/insert_solution.h>
 
-// XXX: Debug
-#include <iostream>
-// XXX: Debug
-
 #define JSA_PRED_RESULT JSA_PREFIX "pred_result"
 #define SYNC_IT "__CPROVER_jsa_verify_synchronise_iterator"
 #define MAKE_NULL "__CPROVER_jsa__internal_make_null"
@@ -98,6 +94,7 @@ void insert_invariant(const symbol_tablet &st, const goto_functionst &gf, goto_p
   args.push_back(address_of_exprt(get_user_heap(gf)));
   args.push_back(address_of_exprt(get_queried_heap(st)));
   pos->code=call;
+  remove_return(body, pos);
 }
 
 const exprt &get_iterator_arg(const codet &code)

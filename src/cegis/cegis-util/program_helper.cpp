@@ -2,6 +2,7 @@
 
 #include <util/type_eq.h>
 #include <goto-programs/goto_functions.h>
+#include <goto-programs/remove_returns.h>
 
 #include <cegis/instrument/literals.h>
 #include <cegis/instrument/instrument_var_ops.h>
@@ -243,4 +244,20 @@ goto_programt::targett cegis_assign_user_variable(const symbol_tablet &st,
 {
   const symbol_exprt lhs(st.lookup(name).symbol_expr());
   return cegis_assign(st, gf, insert_after_pos, lhs, value);
+}
+
+void remove_return(goto_programt &body, const goto_programt::targett pos)
+{
+  code_function_callt &call=to_code_function_call(to_code(pos->code));
+  const irep_idt &id=to_symbol_expr(call.function()).get_identifier();
+  const typet &type=call.lhs().type();
+  const symbol_exprt ret(id2string(id) + RETURN_VALUE_SUFFIX, type);
+  const source_locationt &loc=pos->source_location;
+  const irep_idt &func=pos->function;
+  const goto_programt::targett assign=body.insert_after(pos);
+  assign->make_assignment();
+  assign->source_location=loc;
+  assign->code=code_assignt(call.lhs(), ret);
+  assign->function=func;
+  call.lhs().make_nil();
 }
