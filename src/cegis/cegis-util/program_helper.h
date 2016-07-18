@@ -223,4 +223,22 @@ void remove_return(
     goto_programt &body,
     goto_programt::targett pos);
 
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @param body
+ * @param pos
+ * @param func_id
+ * @param value
+ *
+ * @return
+ */
+goto_programt::targett add_return_assignment(
+    goto_programt &body,
+    goto_programt::targett pos,
+    const irep_idt &func_id,
+    const exprt &value);
+
 #endif /* CEGIS_PROGRAM_HELPER_H_ */

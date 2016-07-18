@@ -35,10 +35,7 @@ void add_predicates(jsa_programt &prog, const jsa_solutiont::predicatest &preds)
   const std::string result(get_cegis_meta_name(JSA_PRED_RESULT));
   const symbol_exprt ret_val(st.lookup(result).symbol_expr());
   const goto_programt::targett first=pos;
-  pos=body.insert_after(pos);
-  pos->source_location=jsa_builtin_source_location();
-  pos->type=goto_program_instruction_typet::RETURN;
-  pos->code=code_returnt(ret_val);
+  pos=add_return_assignment(body, pos, JSA_PRED_EXEC, ret_val);
   const goto_programt::targett end=pos;
   pos=body.insert_after(pos);
   pos->source_location=jsa_builtin_source_location();
