@@ -57,11 +57,6 @@ public:
     symbol_table=st;
     goto_functions.clear();
     goto_functions.copy_from(gf);
-    // XXX: Debug
-    std::string tmp_file(get_next_goto_file_name());
-    tmp_file+=".no-preprocess";
-    write_goto_binary(tmp_file, symbol_table, goto_functions, get_message_handler());
-    // XXX: Debug
     if (process_goto_program(options, goto_functions)) return 6;
     if (keep_goto_programs)
     {
