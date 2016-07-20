@@ -14,6 +14,11 @@
 namespace
 {
 typedef messaget::mstreamt mstreamt;
+
+void run_with_ga(const optionst &o, mstreamt &result)
+{
+
+}
 }
 
 int run_jsa(optionst &o, mstreamt &result, const symbol_tablet &st,

@@ -41,14 +41,6 @@ typename lazy_fitnesst<test_runnert, cet>::populationt::iterator lazy_fitnesst<
 
 namespace
 {
-size_t get_bounty(const size_t index)
-{
-  /*size_t bounty=1u;
-   bounty+=index / 5u;
-   return bounty;*/
-  return 1u;
-}
-
 bool &new_test_result(std::list<bool> &test_case_data)
 {
   test_case_data.push_back(false);
@@ -116,8 +108,7 @@ typename lazy_fitnesst<test_runnert, cet>::individualt::fitnesst lazy_fitnesst<
 {
   size_t fitness=0;
   const size_t end=counterexamples.size();
-  for (size_t i=0u; i < end; ++i)
-    fitness+=get_bounty(i);
+  for (size_t i=0u; i < end; ++i) ++fitness;
   return fitness;
 }
 
