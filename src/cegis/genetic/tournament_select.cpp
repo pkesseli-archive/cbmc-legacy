@@ -30,20 +30,13 @@ const tournament_selectt::individualt &tournament_selectt::selectiont::mutation_
 }
 
 tournament_selectt::tournament_selectt(random_individualt &random,
-    size_t pop_size, size_t rounds) :
-    random(random), pop_size(pop_size), rounds(rounds)
+    const size_t rounds) :
+    random(random), rounds(rounds)
 {
 }
 
 tournament_selectt::~tournament_selectt()
 {
-}
-
-void tournament_selectt::init(populationt &pop)
-{
-  pop.resize(pop_size);
-  for (program_individualt &ind : pop)
-    random.havoc(ind);
 }
 
 namespace

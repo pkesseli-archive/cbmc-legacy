@@ -24,7 +24,6 @@ public:
 private:
   const test_case_datat &test_case_data;
   class random_individualt &random;
-  const size_t pop_size;
   const size_t rounds;
 public:
   typedef program_populationt populationt;
@@ -49,11 +48,10 @@ public:
    *
    * @param test_case_data
    * @param random
-   * @param pop_size
    * @param rounds
    */
   match_selectt(const test_case_datat &test_case_data,
-      random_individualt &random, size_t pop_size, size_t rounds);
+      random_individualt &random, size_t rounds);
 
   /**
    * @brief
@@ -61,15 +59,6 @@ public:
    * @details
    */
   ~match_selectt();
-
-  /**
-   * @brief
-   *
-   * @details
-   *
-   * @param population
-   */
-  void init(populationt &population);
 
   /**
    * @brief

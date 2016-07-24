@@ -2,21 +2,13 @@
 #include <cegis/genetic/match_select.h>
 
 match_selectt::match_selectt(const test_case_datat &test_case_data,
-    random_individualt &random, size_t pop_size, size_t rounds) :
-    test_case_data(test_case_data), random(random), pop_size(pop_size), rounds(
-        rounds)
+    random_individualt &random, const size_t rounds) :
+    test_case_data(test_case_data), random(random), rounds(rounds)
 {
 }
 
 match_selectt::~match_selectt()
 {
-}
-
-void match_selectt::init(populationt &pop)
-{
-  pop.resize(pop_size);
-  for (program_individualt &ind : pop)
-    random.havoc(ind);
 }
 
 bool match_selectt::selectiont::can_cross() const

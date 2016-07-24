@@ -73,7 +73,6 @@ int configure_backend(mstreamt &os, const optionst &o,
   lazy_genetic_settingst<safety_program_genetic_settingst<preproct> > lazy(set);
   invariant_exec_body_providert<safety_programt> body(DANGER_EXECUTE, prog);
   instruction_set_info_factoryt info_fac(std::ref(body));
-  const size_t pop_size=o.get_unsigned_int_option(CEGIS_POPSIZE);
   const size_t rounds=o.get_unsigned_int_option(CEGIS_ROUNDS);
   const typet type=cegis_default_integer_type(); // XXX: Currently single user data type.
   random_individualt rnd(type, info_fac, lazy);
@@ -88,11 +87,11 @@ int configure_backend(mstreamt &os, const optionst &o,
   const size_t symex_head_start=o.get_unsigned_int_option(CEGIS_SYMEX_HEAD_START);
   if (o.get_bool_option(CEGIS_MATCH_SELECT))
   {
-    match_selectt select(fit.get_test_case_data(), rnd, pop_size, rounds);
+    match_selectt select(fit.get_test_case_data(), rnd, rounds);
     typedef ga_learnt<match_selectt, random_mutatet, random_crosst,
         lazy_fitnesst<dynamic_safety_test_runnert, safety_goto_cet>,
         safety_fitness_configt> ga_learnt;
-    ga_learnt ga_learn(o, select, mutate, cross, fit, safety_fitness_config);
+    ga_learnt ga_learn(o, rnd, select, mutate, cross, fit, safety_fitness_config);
 #ifndef _WIN32
     const individual_to_safety_solution_deserialisert deser(prog, info_fac);
     concurrent_learnt<ga_learnt, symex_learnt> learner(ga_learn, learn,
@@ -103,11 +102,11 @@ int configure_backend(mstreamt &os, const optionst &o,
 #endif
     return configure_ui_and_run(os, o, learner, verify, pre);
   }
-  tournament_selectt select(rnd, pop_size, rounds);
+  tournament_selectt select(rnd, rounds);
   typedef ga_learnt<tournament_selectt, random_mutatet, random_crosst,
       lazy_fitnesst<dynamic_safety_test_runnert, safety_goto_cet>,
       safety_fitness_configt> ga_learnt;
-  ga_learnt ga_learn(o, select, mutate, cross, fit, safety_fitness_config);
+  ga_learnt ga_learn(o, rnd, select, mutate, cross, fit, safety_fitness_config);
 #ifndef _WIN32
   const individual_to_safety_solution_deserialisert deser(prog, info_fac);
   concurrent_learnt<ga_learnt, symex_learnt> learner(ga_learn, learn, serialise,

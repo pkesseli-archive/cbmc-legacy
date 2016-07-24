@@ -20,7 +20,6 @@
 class tournament_selectt
 {
   class random_individualt &random;
-  const size_t pop_size;
   const size_t rounds;
 public:
   typedef program_populationt populationt;
@@ -44,11 +43,9 @@ public:
    * @details
    *
    * @param random
-   * @param pop_size
    * @param rounds
    */
-  tournament_selectt(random_individualt &random, size_t pop_size,
-      size_t rounds);
+  tournament_selectt(random_individualt &random, size_t rounds);
 
   /**
    * @brief
@@ -56,15 +53,6 @@ public:
    * @details
    */
   ~tournament_selectt();
-
-  /**
-   * @brief
-   *
-   * @details
-   *
-   * @param population
-   */
-  void init(populationt &population);
 
   /**
    * @brief

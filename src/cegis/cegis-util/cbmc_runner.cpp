@@ -2,12 +2,11 @@
 #include <cbmc/bmc.h>
 #include <goto-programs/goto_trace.h>
 #include <goto-programs/write_goto_binary.h>
+#include <util/config.h>
 
 #include <cegis/options/parameters.h>
 #include <cegis/cegis-util/temporary_output_block.h>
 #include <cegis/cegis-util/cbmc_runner.h>
-
-#define MOCK_ARGC 2u
 
 namespace
 {
@@ -31,7 +30,12 @@ std::string get_next_goto_file_name()
   return get_goto_file_name(index);
 }
 
-const char * ARGV[]={ "cbmc", "--stop-on-fail" };
+const char * ARGV[]= { "cbmc", "--stop-on-fail" };
+const char * GCC_ARGV[]= { "cbmc", "--stop-on-fail", "-gcc" };
+
+bool is_gcc() { return configt::ansi_ct::flavourt::MODE_GCC_C == config.ansi_c.mode; }
+int get_argc() { return is_gcc() ? 3 : 2; }
+const char ** get_argv() { return is_gcc() ? GCC_ARGV : ARGV; }
 
 class cbmc_runnert: public cbmc_parse_optionst
 {
@@ -43,8 +47,9 @@ class cbmc_runnert: public cbmc_parse_optionst
 public:
   cbmc_runnert(const symbol_tablet &st, const goto_functionst &gf,
       cbmc_resultt &result, const bool keep_goto_programs) :
-      cbmc_parse_optionst(MOCK_ARGC, ARGV), st(st), gf(gf), result(result), bmc_result(
-          safety_checkert::UNSAFE), keep_goto_programs(keep_goto_programs)
+      cbmc_parse_optionst(get_argc(), get_argv()), st(st), gf(gf), result(
+          result), bmc_result(safety_checkert::UNSAFE), keep_goto_programs(
+          keep_goto_programs)
   {
   }
 
