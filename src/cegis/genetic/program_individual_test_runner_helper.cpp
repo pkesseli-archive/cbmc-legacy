@@ -41,13 +41,11 @@ void add_default_return(std::string &source)
 }
 }
 
-#define FUNC "__CPROVER_cegis_test_fitness"
-
 void transform_program_individual_main_to_lib(std::string &source,
     const bool danger)
 {
   substitute(source, "int main(const int argc, const char * const argv[])\n"
-      "{\n", "int " FUNC "(const unsigned int argv[])\n"
+      "{\n", "int " CEGIS_FITNESS_TEST_FUNC "(const unsigned int argv[])\n"
   "{\n"
   "memset(" CEGIS_OPS ", 0, sizeof(" CEGIS_OPS "));\n"
   "memset(" CEGIS_RESULT_OPS ", 0, sizeof(" CEGIS_RESULT_OPS "));\n");

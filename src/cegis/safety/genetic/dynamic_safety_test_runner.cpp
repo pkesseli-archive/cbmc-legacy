@@ -33,7 +33,7 @@ void dynamic_safety_test_runnert::run_test(individualt &ind,
         return code;
       };
   prepare_fitness_tester_library(handle, fitness_tester, source_code_provider,
-      shared_library(), false);
+      shared_library());
   assert(ind.x0.empty());
   std::deque<unsigned int> args;
   // TODO: Implement for multiple loops (change constraint, instrumentation)
