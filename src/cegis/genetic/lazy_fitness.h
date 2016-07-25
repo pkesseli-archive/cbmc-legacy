@@ -14,6 +14,10 @@
  * @brief
  *
  * @details
+ *
+ * @tparam populationt
+ * @tparam test_runnert
+ * @tparam counterexample_typet
  */
 template<class populationt, class test_runnert, class counterexample_typet>
 class lazy_fitnesst
