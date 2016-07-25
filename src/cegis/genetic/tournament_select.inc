@@ -1,4 +1,4 @@
-#include <algorithm>
+#include <iterator>
 #include <cstdlib>
 
 template<class population_typet>
@@ -73,8 +73,7 @@ typename tournament_selectt<population_typet>::selectiont tournament_selectt<
   arenat<populationt> arena(pop);
   for (size_t contestants=0; contestants < rounds;)
   {
-    contestantt contestant=pop.begin();
-    std::advance(contestant, rand() % pop.size());
+    const contestantt contestant=std::next(pop.begin(), rand() % pop.size());
     if (arena.add_contestant(contestant)) ++contestants;
   }
   tournament_selectt::selectiont selection;

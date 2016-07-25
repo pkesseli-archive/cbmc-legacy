@@ -6,6 +6,8 @@
 
 #include <cegis/symex/cegis_symex_learn.h>
 #include <cegis/symex/cegis_symex_verify.h>
+#include <cegis/genetic/match_select.h>
+#include <cegis/jsa/value/jsa_genetic_solution.h>
 #include <cegis/jsa/preprocessing/jsa_preprocessing.h>
 #include <cegis/jsa/learn/jsa_symex_learn.h>
 #include <cegis/jsa/verify/jsa_symex_verify.h>
@@ -17,7 +19,9 @@ typedef messaget::mstreamt mstreamt;
 
 void run_with_ga(const optionst &o, mstreamt &result)
 {
-
+  const size_t rounds=o.get_unsigned_int_option(CEGIS_ROUNDS);
+  const match_selectt<jsa_populationt>::test_case_datat test_case_data;
+  const match_selectt<jsa_populationt> selectt(test_case_data, ::rand, rounds);
 }
 }
 

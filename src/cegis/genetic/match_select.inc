@@ -1,3 +1,5 @@
+#include <iterator>
+
 template<class populationt>
 match_selectt<populationt>::match_selectt(const test_case_datat &test_case_data,
     const std::function<unsigned int()> random, const size_t rounds) :
@@ -65,8 +67,7 @@ typename match_selectt<populationt>::selectiont match_selectt<populationt>::sele
   contestantt father=no_contestant;
   for (size_t contestants=0; contestants < rounds / 2;)
   {
-    contestantt contestant=pop.begin();
-    std::advance(contestant, next_random_unsigned_int() % pop.size());
+    const contestantt contestant=std::next(pop.begin(), next_random_unsigned_int() % pop.size());
     if (father == contestant) continue;
     if (is_less_than(father, contestant)) father=contestant;
     ++contestants;
@@ -75,8 +76,7 @@ typename match_selectt<populationt>::selectiont match_selectt<populationt>::sele
   size_t match_fitness=0u;
   for (size_t contestants=0; contestants < rounds / 2;)
   {
-    contestantt contestant=pop.begin();
-    std::advance(contestant, next_random_unsigned_int() % pop.size());
+    const contestantt contestant=std::next(pop.begin(), next_random_unsigned_int() % pop.size());
     if (mother == contestant || father == contestant) continue;
     if (no_contestant == mother) mother=contestant;
     else
@@ -95,8 +95,7 @@ typename match_selectt<populationt>::selectiont match_selectt<populationt>::sele
   contestantt daughter=no_contestant;
   for (size_t contestants=0; contestants < rounds / 2;)
   {
-    contestantt contestant=pop.begin();
-    std::advance(contestant, next_random_unsigned_int() % pop.size());
+    const contestantt contestant=std::next(pop.begin(), next_random_unsigned_int() % pop.size());
     if (father == contestant || mother == contestant || son == contestant
         || daughter == contestant) continue;
     if (no_contestant == son) son=contestant;

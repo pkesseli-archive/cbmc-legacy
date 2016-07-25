@@ -81,7 +81,9 @@ int configure_backend(mstreamt &os, const optionst &o,
       prog, lazy.max_prog_sz_provider(), DANGER_EXECUTE);
   dynamic_safety_test_runnert test_runner(std::ref(src),
       lazy.max_prog_sz_per_index_provider());
-  lazy_fitnesst<dynamic_safety_test_runnert, safety_goto_cet> fit(test_runner);
+  typedef lazy_fitnesst<program_populationt, dynamic_safety_test_runnert,
+      safety_goto_cet> fitnesst;
+  fitnesst fit(test_runner);
   random_mutatet mutate(rnd, lazy.num_consts_provder());
   random_crosst cross(rnd);
   const size_t symex_head_start=o.get_unsigned_int_option(CEGIS_SYMEX_HEAD_START);
@@ -90,8 +92,8 @@ int configure_backend(mstreamt &os, const optionst &o,
     typedef match_selectt<program_populationt> selectt;
     selectt select(fit.get_test_case_data(), rnd, rounds);
     typedef ga_learnt<selectt, random_mutatet, random_crosst,
-        lazy_fitnesst<dynamic_safety_test_runnert, safety_goto_cet>,
-        safety_fitness_configt> ga_learnt;
+        lazy_fitnesst<program_populationt, dynamic_safety_test_runnert,
+            safety_goto_cet>, safety_fitness_configt> ga_learnt;
     ga_learnt ga_learn(o, rnd, select, mutate, cross, fit, safety_fitness_config);
 #ifndef _WIN32
     const individual_to_safety_solution_deserialisert deser(prog, info_fac);
@@ -106,8 +108,8 @@ int configure_backend(mstreamt &os, const optionst &o,
   typedef tournament_selectt<program_populationt> selectt;
   selectt select(rounds);
   typedef ga_learnt<selectt, random_mutatet, random_crosst,
-      lazy_fitnesst<dynamic_safety_test_runnert, safety_goto_cet>,
-      safety_fitness_configt> ga_learnt;
+      lazy_fitnesst<program_populationt, dynamic_safety_test_runnert,
+          safety_goto_cet>, safety_fitness_configt> ga_learnt;
   ga_learnt ga_learn(o, rnd, select, mutate, cross, fit, safety_fitness_config);
 #ifndef _WIN32
   const individual_to_safety_solution_deserialisert deser(prog, info_fac);

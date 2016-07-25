@@ -160,7 +160,9 @@ int run_genetic_and_symex(mstreamt &os, optionst &opt,
       prog, lazy.max_prog_sz_provider(), DANGER_EXECUTE);
   dynamic_danger_test_runnert test_runner(std::ref(src),
       lazy.max_prog_sz_per_index_provider());
-  lazy_fitnesst<dynamic_danger_test_runnert, danger_learn_configt::counterexamplet> fitness(test_runner);
+  typedef lazy_fitnesst<program_populationt, dynamic_danger_test_runnert,
+      danger_learn_configt::counterexamplet> fitnesst;
+  fitnesst fitness(test_runner);
   random_mutatet mutate(rnd, lazy.num_consts_provder());
   random_crosst cross(rnd);
   return run_match(os, opt, prog, rnd, info_fac, rounds, fitness, mutate, cross,

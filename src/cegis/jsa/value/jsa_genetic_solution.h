@@ -44,6 +44,27 @@ public:
    * @details
    */
   std::vector<__CPROVER_jsa_invariant_instructiont> invariant;
+
+  /**
+   * @brief
+   *
+   * @details
+   */
+  typedef size_t fitnesst;
+
+  /**
+   * @brief
+   *
+   * @details
+   */
+  fitnesst fitness;
 };
+
+/**
+ * @brief
+ *
+ * @details
+ */
+typedef std::vector<jsa_genetic_solutiont> jsa_populationt;
 
 #endif /* CEGIS_JSA_GENETIC_SOLUTION_H_ */

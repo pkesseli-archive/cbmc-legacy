@@ -10,6 +10,8 @@
 #ifndef CEGIS_GENETIC_MATCH_SELECT_H_
 #define CEGIS_GENETIC_MATCH_SELECT_H_
 
+#include <functional>
+
 #include <cegis/genetic/family_selection.h>
 
 /**
