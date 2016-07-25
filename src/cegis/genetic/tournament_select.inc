@@ -1,50 +1,24 @@
 #include <algorithm>
 #include <cstdlib>
 
-#include <cegis/genetic/random_individual.h>
-#include <cegis/genetic/tournament_select.h>
-
-#define MUTATION_OPS 2u
-
-bool tournament_selectt::selectiont::can_mutate() const
-{
-  return parents.size() >= MUTATION_OPS;
-}
-
-#define NUM_PARENTS 2u
-#define NUM_CHILDREN 2u
-
-bool tournament_selectt::selectiont::can_cross() const
-{
-  return parents.size() >= NUM_PARENTS && children.size() >= NUM_CHILDREN;
-}
-
-tournament_selectt::individualt &tournament_selectt::selectiont::mutation_lhs()
-{
-  return *children.front();
-}
-
-const tournament_selectt::individualt &tournament_selectt::selectiont::mutation_rhs() const
-{
-  return *parents.front();
-}
-
-tournament_selectt::tournament_selectt(random_individualt &random,
-    const size_t rounds) :
-    random(random), rounds(rounds)
+template<class population_typet>
+tournament_selectt<population_typet>::tournament_selectt(const size_t rounds) :
+    rounds(rounds)
 {
 }
 
-tournament_selectt::~tournament_selectt()
+template<class population_typet>
+tournament_selectt<population_typet>::~tournament_selectt()
 {
 }
 
 namespace
 {
-typedef tournament_selectt::populationt::iterator contestantt;
-
+template<class populationt>
 class arenat
 {
+  typedef typename tournament_selectt<populationt>::contestantt contestantt;
+  typedef typename tournament_selectt<populationt>::selectiont selectiont;
   const contestantt no_contestant;
   contestantt father;
   contestantt mother;
@@ -56,7 +30,7 @@ class arenat
     return father == c || mother == c || son == c || daughter == c;
   }
 public:
-  arenat(tournament_selectt::populationt &pop) :
+  arenat(populationt &pop) :
       no_contestant(pop.end()), father(no_contestant), mother(no_contestant), son(
           no_contestant), daughter(no_contestant)
   {
@@ -82,7 +56,7 @@ public:
     return true;
   }
 
-  void select(tournament_selectt::selectiont &selection)
+  void select(selectiont &selection)
   {
     selection.parents.push_back(father);
     selection.parents.push_back(mother);
@@ -92,12 +66,14 @@ public:
 };
 }
 
-tournament_selectt::selectiont tournament_selectt::select(populationt &pop)
+template<class population_typet>
+typename tournament_selectt<population_typet>::selectiont tournament_selectt<
+    population_typet>::select(populationt &pop)
 {
-  arenat arena(pop);
+  arenat<populationt> arena(pop);
   for (size_t contestants=0; contestants < rounds;)
   {
-    populationt::iterator contestant=pop.begin();
+    contestantt contestant=pop.begin();
     std::advance(contestant, rand() % pop.size());
     if (arena.add_contestant(contestant)) ++contestants;
   }

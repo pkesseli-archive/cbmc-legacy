@@ -103,9 +103,9 @@ int run_match(mstreamt &os, optionst &opt, const danger_programt &prog,
   const individual_to_danger_solution_deserialisert deser(prog, info_fac);
   if (opt.get_bool_option(CEGIS_MATCH_SELECT))
   {
-    match_selectt select(fitness.get_test_case_data(), rnd, rounds);
-    typedef ga_learnt<match_selectt, mutatet, crosst, fitnesst,
-        danger_fitness_configt> ga_learnt;
+    typedef match_selectt<program_populationt> selectt;
+    selectt select(fitness.get_test_case_data(), rnd, rounds);
+    typedef ga_learnt<selectt, mutatet, crosst, fitnesst, danger_fitness_configt> ga_learnt;
     ga_learnt ga_learn(opt, rnd, select, mutate, cross, fitness, converter);
 #ifndef _WIN32
     concurrent_learnt<ga_learnt, symex_learnt> learn(ga_learn, symex_learn,
@@ -116,8 +116,9 @@ int run_match(mstreamt &os, optionst &opt, const danger_programt &prog,
 #endif
     return run_parallel(os, opt, prog, learn, preproc);
   }
-  tournament_selectt select(rnd, rounds);
-  typedef ga_learnt<tournament_selectt, random_mutatet, random_crosst, fitnesst,
+  typedef tournament_selectt<program_populationt> selectt;
+  selectt select(rounds);
+  typedef ga_learnt<selectt, random_mutatet, random_crosst, fitnesst,
       danger_fitness_configt> ga_learnt;
   ga_learnt ga_learn(opt, rnd, select, mutate, cross, fitness, converter);
 #ifndef _WIN32

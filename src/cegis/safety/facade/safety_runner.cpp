@@ -87,8 +87,9 @@ int configure_backend(mstreamt &os, const optionst &o,
   const size_t symex_head_start=o.get_unsigned_int_option(CEGIS_SYMEX_HEAD_START);
   if (o.get_bool_option(CEGIS_MATCH_SELECT))
   {
-    match_selectt select(fit.get_test_case_data(), rnd, rounds);
-    typedef ga_learnt<match_selectt, random_mutatet, random_crosst,
+    typedef match_selectt<program_populationt> selectt;
+    selectt select(fit.get_test_case_data(), rnd, rounds);
+    typedef ga_learnt<selectt, random_mutatet, random_crosst,
         lazy_fitnesst<dynamic_safety_test_runnert, safety_goto_cet>,
         safety_fitness_configt> ga_learnt;
     ga_learnt ga_learn(o, rnd, select, mutate, cross, fit, safety_fitness_config);
@@ -102,8 +103,9 @@ int configure_backend(mstreamt &os, const optionst &o,
 #endif
     return configure_ui_and_run(os, o, learner, verify, pre);
   }
-  tournament_selectt select(rnd, rounds);
-  typedef ga_learnt<tournament_selectt, random_mutatet, random_crosst,
+  typedef tournament_selectt<program_populationt> selectt;
+  selectt select(rounds);
+  typedef ga_learnt<selectt, random_mutatet, random_crosst,
       lazy_fitnesst<dynamic_safety_test_runnert, safety_goto_cet>,
       safety_fitness_configt> ga_learnt;
   ga_learnt ga_learn(o, rnd, select, mutate, cross, fit, safety_fitness_config);

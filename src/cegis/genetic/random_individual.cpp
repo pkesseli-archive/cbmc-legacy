@@ -149,3 +149,8 @@ void random_individualt::post_process(program_individualt &ind) const
     }
   // XXX: Specific optimisation for PLDI 2016 submissions.
 }
+
+random_individualt::operator std::function<unsigned int()>() const
+{
+  return ::rand;
+}
