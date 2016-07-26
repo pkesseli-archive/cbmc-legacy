@@ -52,6 +52,18 @@ public:
    * @brief
    *
    * @details
+   *
+   * @param test_case_data
+   * @param rounds
+   */
+  match_selectt(
+      const test_case_datat &test_case_data,
+      size_t rounds);
+
+  /**
+   * @brief
+   *
+   * @details
    */
   ~match_selectt();
 

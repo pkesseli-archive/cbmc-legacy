@@ -7,39 +7,35 @@ Author: Daniel Kroening, kroening@kroening.com
 
 \*******************************************************************/
 
-#ifndef CEGIS_JSA_SYMEX_VERIFY_H_
-#define CEGIS_JSA_SYMEX_VERIFY_H_
+#ifndef CEGIS_CONVERTING_VERIFY_H_
+#define CEGIS_CONVERTING_VERIFY_H_
 
 #include <deque>
 
 #include <util/message.h>
-
-#include <cegis/jsa/options/jsa_program.h>
-#include <cegis/jsa/value/jsa_counterexample.h>
-#include <cegis/jsa/value/jsa_solution.h>
 
 /**
  * @brief
  *
  * @details
  */
-class jsa_symex_verifyt
+class jsa_genetic_verifyt
 {
-  const jsa_programt &original_program;
-  jsa_programt program;
+  class jsa_symex_verifyt &verify;
 public:
-  typedef jsa_counterexamplet counterexamplet;
-  typedef jsa_counterexamplest counterexamplest;
-  typedef jsa_solutiont candidatet;
+  typedef class jsa_genetic_counterexamplet counterexamplet;
+  typedef std::deque<counterexamplet> counterexamplest;
+  typedef class jsa_genetic_solutiont candidatet;
 
   /**
    * @brief
    *
    * @details
    *
-   * @param program
+   * @param verify
    */
-  jsa_symex_verifyt(const jsa_programt &program);
+  jsa_genetic_verifyt(jsa_symex_verifyt &verify);
+
 
   /**
    * @brief
@@ -66,7 +62,7 @@ public:
    *
    * @return
    */
-  const goto_functionst &get_goto_functions() const;
+  const class goto_functionst &get_goto_functions() const;
 
   /**
    * @brief
@@ -93,4 +89,4 @@ public:
       const counterexamplet &counterexample) const;
 };
 
-#endif /* CEGIS_JSA_SYMEX_VERIFY_H_ */
+#endif /* CEGIS_CONVERTING_VERIFY_H_ */

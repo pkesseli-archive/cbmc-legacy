@@ -1,9 +1,18 @@
+#include <cstdlib>
 #include <iterator>
 
 template<class populationt>
 match_selectt<populationt>::match_selectt(const test_case_datat &test_case_data,
     const std::function<unsigned int()> random, const size_t rounds) :
     test_case_data(test_case_data), next_random_unsigned_int(random), rounds(
+        rounds)
+{
+}
+
+template<class populationt>
+match_selectt<populationt>::match_selectt(const test_case_datat &test_case_data,
+    const size_t rounds) :
+    test_case_data(test_case_data), next_random_unsigned_int(::rand), rounds(
         rounds)
 {
 }

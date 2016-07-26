@@ -13,6 +13,8 @@ Author: Daniel Kroening, kroening@kroening.com
 #include <deque>
 #include <map>
 
+#include <util/irep.h>
+
 #include <cegis/jsa/value/jsa_genetic_synthesis.h>
 
 /**

@@ -70,7 +70,8 @@ program_individualt::x0t::value_type random_individualt::constant() const
 {
   const bv_spect spec(type);
   const unsigned int width=spec.width;
-  const unsigned int wordmask=spec.max_value().to_ulong();
+  const mp_integer::llong_t v=spec.max_value().to_long();
+  const unsigned int wordmask=static_cast<unsigned int>(v);
   const unsigned int r=rand() % 6u;
   switch (r)
   {
