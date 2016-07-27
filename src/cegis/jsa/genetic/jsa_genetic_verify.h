@@ -25,7 +25,7 @@ class jsa_genetic_verifyt
 public:
   typedef class jsa_genetic_counterexamplet counterexamplet;
   typedef std::deque<counterexamplet> counterexamplest;
-  typedef class jsa_genetic_solutiont candidatet;
+  typedef class jsa_solutiont candidatet;
 
   /**
    * @brief

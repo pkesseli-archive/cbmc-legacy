@@ -43,7 +43,7 @@ SRC = danger/meta/meta_variable_names.cpp danger/facade/danger_runner.cpp danger
       jsa/converters/replace_operators.cpp \
       jsa/instrument/jsa_meta_data.cpp \
       jsa/value/jsa_solution.cpp jsa/value/jsa_solution_printer.cpp jsa/value/jsa_types.cpp \
-      jsa/value/jsa_counterexample_printer.cpp \
+      jsa/value/jsa_genetic_counterexample.cpp jsa/value/jsa_counterexample_printer.cpp \
       jsa/genetic/jsa_source_provider.cpp jsa/genetic/dynamic_jsa_test_runner.cpp jsa/genetic/random_jsa_mutate.cpp \
       jsa/genetic/random_jsa_cross.cpp jsa/genetic/jsa_genetic_convert.cpp jsa/genetic/jsa_random.cpp \
       jsa/genetic/jsa_genetic_verify.cpp \

@@ -12,6 +12,7 @@
 #include <cegis/jsa/value/jsa_genetic_solution.h>
 #include <cegis/jsa/genetic/jsa_source_provider.h>
 #include <cegis/jsa/genetic/jsa_random.h>
+#include <cegis/jsa/genetic/jsa_genetic_verify.h>
 #include <cegis/jsa/genetic/random_jsa_cross.h>
 #include <cegis/jsa/genetic/random_jsa_mutate.h>
 #include <cegis/jsa/genetic/jsa_genetic_convert.h>
@@ -48,7 +49,9 @@ int run_with_ga(const optionst &o, mstreamt &result, verifyt &verify,
             fitnesst,
             jsa_genetic_convertt> learn(o, random, select, mutate,
                                         cross, fitness, convert);
-  return run_cegis_with_statistics_wrapper(result, o, learn, verify, prep);
+  jsa_genetic_verifyt genetic_verify(verify);
+  cegis_symex_verifyt<jsa_genetic_verifyt> oracle(o, genetic_verify);
+  return run_cegis_with_statistics_wrapper(result, o, learn, oracle, prep);
 }
 }
 
@@ -60,7 +63,7 @@ int run_jsa(optionst &o, mstreamt &result, const symbol_tablet &st,
   jsa_symex_learnt lcfg(prog);
   cegis_symex_learnt<jsa_preprocessingt, jsa_symex_learnt> learn(o, prep, lcfg);
   jsa_symex_verifyt vcfg(prog);
+  return run_with_ga(o, result, vcfg, prep);
   cegis_symex_verifyt<jsa_symex_verifyt> oracle(o, vcfg);
-  //return run_with_ga(o, result, oracle, prep);
-  return run_cegis_with_statistics_wrapper(result, o, learn, oracle, prep);
+  //return run_cegis_with_statistics_wrapper(result, o, learn, oracle, prep);
 }

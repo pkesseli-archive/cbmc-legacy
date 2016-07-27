@@ -10,6 +10,8 @@ Author: Daniel Kroening, kroening@kroening.com
 #ifndef CEGIS_JSA_GENETIC_CONVERT_H_
 #define CEGIS_JSA_GENETIC_CONVERT_H_
 
+#include <util/message.h>
+
 /**
  * @brief
  *
@@ -30,6 +32,16 @@ public:
    * @param individual
    */
   void convert(candidatet &candidate, const individualt &individual) const;
+
+  /**
+   * @brief
+   *
+   * @details
+   *
+   * @param candidate
+   * @param os
+   */
+  void show(messaget::mstreamt &os, const candidatet &candidate) const;
 };
 
 #endif /* CEGIS_JSA_GENETIC_CONVERT_H_ */

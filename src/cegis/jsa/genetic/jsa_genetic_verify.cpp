@@ -11,8 +11,7 @@ jsa_genetic_verifyt::jsa_genetic_verifyt(jsa_symex_verifyt &verify) :
 
 void jsa_genetic_verifyt::process(const candidatet &candidate)
 {
-  const jsa_programt prog(get_symbol_table(), get_goto_functions());
-  verify.process(::convert(candidate, prog));
+  verify.process(candidate);
 }
 
 const symbol_tablet &jsa_genetic_verifyt::get_symbol_table() const

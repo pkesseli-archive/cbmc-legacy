@@ -31,6 +31,17 @@ public:
 
   typedef std::map<const irep_idt, __CPROVER_jsa_word_t> assignments_per_program_locationt;
   assignments_per_program_locationt assignments_per_program_location;
+
+  /**
+   * @brief
+   *
+   * @details
+   *
+   * @param other
+   *
+   * @return
+   */
+  bool operator==(const jsa_genetic_counterexamplet &other);
 };
 
 #endif /* CEGIS_JSA_GENETIC_COUNTEREXAMPLE_H_ */
