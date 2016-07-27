@@ -12,7 +12,7 @@ Author: Daniel Kroening, kroening@kroening.com
 
 #include <functional>
 
-#include <cegis/jsa/value/jsa_genetic_counterexample.h>
+#include <cegis/jsa/value/jsa_counterexample.h>
 
 /**
  * @brief
@@ -22,7 +22,7 @@ Author: Daniel Kroening, kroening@kroening.com
 class dynamic_jsa_test_runnert
 {
 public:
-  typedef jsa_genetic_counterexamplet counterexamplet;
+  typedef jsa_counterexamplet counterexamplet;
   typedef class jsa_genetic_solutiont individualt;
 
   /**

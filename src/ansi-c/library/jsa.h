@@ -970,7 +970,7 @@ typedef struct __CPROVER_jsa_query_instruction
   __CPROVER_jsa_opt op1;
 } __CPROVER_jsa_query_instructiont;
 
-#define __CPROVER_JSA_NUM_QUERY_INSTRUCTIONS 1u
+#define __CPROVER_JSA_NUM_QUERY_INSTRUCTIONS 4u
 
 __CPROVER_jsa_inline void __CPROVER_jsa_assume_valid_query(
     const __CPROVER_jsa_abstract_heapt * const heap,

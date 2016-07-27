@@ -28,7 +28,7 @@ SRC = danger/meta/meta_variable_names.cpp danger/facade/danger_runner.cpp danger
       invariant/symex/learn/replace_operators.cpp invariant/symex/verify/extract_counterexample.cpp \
       invariant/symex/verify/insert_constraint.cpp invariant/symex/verify/insert_program.cpp \
       invariant/fitness/concrete_fitness_source_provider.cpp \
-      jsa/facade/jsa_runner.cpp jsa/options/jsa_program.cpp \
+      jsa/facade/jsa_runner.cpp jsa/options/jsa_program.cpp jsa/options/jsa_program_info.cpp \
       jsa/preprocessing/jsa_preprocessing.cpp jsa/preprocessing/remove_loop.cpp \
       jsa/preprocessing/add_constraint_meta_variables.cpp jsa/preprocessing/inline_user_program.cpp \
       jsa/preprocessing/default_jsa_constant_strategy.cpp jsa/preprocessing/create_temp_variables.cpp \
@@ -39,14 +39,11 @@ SRC = danger/meta/meta_variable_names.cpp danger/facade/danger_runner.cpp danger
       jsa/verify/jsa_symex_verify.cpp jsa/verify/extract_counterexample.cpp jsa/verify/renondet_inputs.cpp \
       jsa/verify/insert_solution.cpp \
       jsa/constraint/jsa_constraint_factory.cpp \
-      jsa/converters/counterexample.cpp jsa/converters/solution.cpp jsa/converters/translate_to_goto_program.cpp \
-      jsa/converters/replace_operators.cpp \
+      jsa/converters/solution.cpp jsa/converters/translate_to_goto_program.cpp jsa/converters/replace_operators.cpp \
       jsa/instrument/jsa_meta_data.cpp \
-      jsa/value/jsa_solution.cpp jsa/value/jsa_solution_printer.cpp jsa/value/jsa_types.cpp \
-      jsa/value/jsa_genetic_counterexample.cpp jsa/value/jsa_counterexample_printer.cpp \
+      jsa/value/jsa_solution.cpp jsa/value/jsa_solution_printer.cpp jsa/value/jsa_types.cpp jsa/value/jsa_counterexample_printer.cpp \
       jsa/genetic/jsa_source_provider.cpp jsa/genetic/dynamic_jsa_test_runner.cpp jsa/genetic/random_jsa_mutate.cpp \
       jsa/genetic/random_jsa_cross.cpp jsa/genetic/jsa_genetic_convert.cpp jsa/genetic/jsa_random.cpp \
-      jsa/genetic/jsa_genetic_verify.cpp \
       wordsize/restrict_bv_size.cpp value/program_individual_serialisation.cpp value/assignments_printer.cpp \
       seed/literals_seed.cpp \
       genetic/instruction_set_info_factory.cpp genetic/random_mutate.cpp genetic/random_cross.cpp \

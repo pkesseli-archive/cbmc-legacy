@@ -11,7 +11,10 @@ Author: Daniel Kroening, kroening@kroening.com
 #define CEGIS_JSA_SYMEX_LEARN_H_
 
 #include <deque>
+#include <functional>
+
 #include <util/message.h>
+
 #include <cegis/jsa/options/jsa_program.h>
 #include <cegis/jsa/value/jsa_counterexample.h>
 #include <cegis/jsa/value/jsa_solution.h>
@@ -113,6 +116,24 @@ public:
   void show_candidate(
       messaget::mstreamt &os,
       const candidatet &candidate);
+
+  /**
+   * @brief
+   *
+   * @details
+   *
+   * @return
+   */
+  std::function<size_t()> get_pred_ops_count() const;
+
+  /**
+   * @brief
+   *
+   * @details
+   *
+   * @return
+   */
+  std::function<size_t()> get_const_pred_ops_count() const;
 };
 
 #endif /* CEGIS_JSA_SYMEX_LEARN_H_ */

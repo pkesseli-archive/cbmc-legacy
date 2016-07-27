@@ -62,3 +62,13 @@ void jsa_symex_learnt::show_candidate(messaget::mstreamt &os,
 {
   print_jsa_solution(os, program, candidate);
 }
+
+std::function<size_t()> jsa_symex_learnt::get_pred_ops_count() const
+{
+  return [this]() { return op_ids.size(); };
+}
+
+std::function<size_t()> jsa_symex_learnt::get_const_pred_ops_count() const
+{
+  return [this]() { return const_op_ids.size(); };
+}

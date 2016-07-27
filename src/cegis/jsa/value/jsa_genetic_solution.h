@@ -22,7 +22,19 @@ Author: Daniel Kroening, kroening@kroening.com
 class jsa_genetic_solutiont
 {
 public:
-  typedef std::vector<std::vector<__CPROVER_jsa_pred_instructiont> > predicatest;
+  /**
+   * @brief
+   *
+   * @details
+   */
+  typedef std::vector<__CPROVER_jsa_pred_instructiont> predicatet;
+
+  /**
+   * @brief
+   *
+   * @details
+   */
+  typedef std::vector<predicatet> predicatest;
 
   /**
    * @brief
@@ -36,14 +48,28 @@ public:
    *
    * @details
    */
-  std::vector<__CPROVER_jsa_query_instructiont> query;
+  typedef std::vector<__CPROVER_jsa_query_instructiont> queryt;
 
   /**
    * @brief
    *
    * @details
    */
-  std::vector<__CPROVER_jsa_invariant_instructiont> invariant;
+  queryt query;
+
+  /**
+   * @brief
+   *
+   * @details
+   */
+  typedef std::vector<__CPROVER_jsa_invariant_instructiont> invariantt;
+
+  /**
+   * @brief
+   *
+   * @details
+   */
+  invariantt invariant;
 
   /**
    * @brief

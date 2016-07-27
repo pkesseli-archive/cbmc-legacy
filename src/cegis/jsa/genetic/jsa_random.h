@@ -1,14 +1,18 @@
 /*******************************************************************
 
-Module: Counterexample-Guided Inductive Synthesis
+ Module: Counterexample-Guided Inductive Synthesis
 
-Author: Daniel Kroening, kroening@kroening.com
-        Pascal Kesseli, pascal.kesseli@cs.ox.ac.uk
+ Author: Daniel Kroening, kroening@kroening.com
+         Pascal Kesseli, pascal.kesseli@cs.ox.ac.uk
 
-\*******************************************************************/
+ \*******************************************************************/
 
 #ifndef CEGIS_GENETIC_JSA_RANDOM_H_
 #define CEGIS_GENETIC_JSA_RANDOM_H_
+
+#include <functional>
+
+#include <cegis/jsa/value/jsa_genetic_solution.h>
 
 /**
  * @brief
@@ -17,7 +21,23 @@ Author: Daniel Kroening, kroening@kroening.com
  */
 class jsa_randomt
 {
+  const symbol_tablet &st;
+  const std::function<size_t()> pred_ops_count;
+  const std::function<size_t()> const_pred_ops_count;
 public:
+  /**
+   * @brief
+   *
+   * @details
+   *
+   * @param st
+   * @param pred_ops_count
+   * @param const_pred_ops_count
+   */
+  jsa_randomt(const symbol_tablet &st,
+      std::function<size_t()> pred_ops_count,
+      std::function<size_t()> const_pred_ops_count);
+
   /**
    * @brief
    *
@@ -25,7 +45,79 @@ public:
    *
    * @param individual
    */
-  void havoc(class jsa_genetic_solutiont &individual) const;
+  void havoc(jsa_genetic_solutiont &individual) const;
+
+  /**
+   * @brief
+   *
+   * @details
+   *
+   * @param predicates
+   */
+  void havoc(jsa_genetic_solutiont::predicatest &predicates) const;
+
+  /**
+   * @brief
+   *
+   * @details
+   *
+   * @param predicate
+   */
+  void havoc(jsa_genetic_solutiont::predicatet &predicate) const;
+
+  /**
+   * @brief
+   *
+   * @details
+   *
+   * @param instr
+   */
+  void havoc(jsa_genetic_solutiont::predicatet::value_type &instr) const;
+
+  /**
+   * @brief
+   *
+   * @details
+   *
+   * @param invariant
+   */
+  void havoc(jsa_genetic_solutiont::invariantt &invariant) const;
+
+  /**
+   * @brief
+   *
+   * @details
+   *
+   * @param instr
+   */
+  void havoc(jsa_genetic_solutiont::invariantt::value_type &instr) const;
+
+  /**
+   * @brief
+   *
+   * @details
+   *
+   * @param query
+   */
+  void havoc(jsa_genetic_solutiont::queryt &query) const;
+
+  /**
+   * @brief
+   *
+   * @details
+   *
+   * @param instr
+   */
+  void havoc(jsa_genetic_solutiont::queryt::value_type &instr) const;
+
+  /**
+   * @brief
+   *
+   * @details
+   *
+   * @return
+   */
+  unsigned int rand() const;
 };
 
 #endif /* CEGIS_GENETIC_JSA_RANDOM_H_ */
