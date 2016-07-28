@@ -62,6 +62,15 @@ size_t get_max_query_size(const symbol_tablet &st);
  *
  * @return
  */
+size_t get_max_inv_size();
+
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @return
+ */
 size_t get_pred_instruction_set_size();
 
 /**
@@ -78,10 +87,41 @@ size_t get_query_instruction_set_size();
  *
  * @details
  *
+ * @return
+ */
+size_t get_invariant_instruction_set_size();
+
+/**
+ * @brief
+ *
+ * @details
+ *
  * @param st
  *
  * @return
  */
 size_t get_num_jsa_preds(const symbol_tablet &st);
+
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @param st
+ *
+ * @return
+ */
+size_t get_max_iterators(const symbol_tablet &st);
+
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @param st
+ *
+ * @return
+ */
+size_t get_max_lists(const symbol_tablet &st);
 
 #endif /* CEGIS_JSA_PROGRAM_INFO_H_ */

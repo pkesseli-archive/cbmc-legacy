@@ -53,26 +53,56 @@ void jsa_randomt::havoc(
 
 void jsa_randomt::havoc(jsa_genetic_solutiont::invariantt &invariant) const
 {
-  // TODO: Implement!
+  invariant.resize(get_max_inv_size());
+  for (jsa_genetic_solutiont::invariantt::value_type &instr : invariant)
+    havoc(instr);
 }
 
 void jsa_randomt::havoc(
     jsa_genetic_solutiont::invariantt::value_type &instr) const
 {
-  // TODO: Implement!
+  instr.opcode=rand() % get_invariant_instruction_set_size();
 }
 
 void jsa_randomt::havoc(jsa_genetic_solutiont::queryt &query) const
 {
-  // TODO: Implement!
+  havoc_size(query, get_max_query_size(st));
+  for (size_t i=0; i < query.size(); ++i)
+    havoc(query[i], i);
 }
 
-void jsa_randomt::havoc(jsa_genetic_solutiont::queryt::value_type &instr) const
+void jsa_randomt::havoc(jsa_genetic_solutiont::queryt::value_type &instr,
+    const size_t index) const
 {
-// TODO: Implement!
+  if (index == 0)
+  {
+    havoc_list(instr.opcode);
+    havoc_iterator(instr.op0);
+    instr.op1=__CPROVER_jsa_null;
+  } else
+  {
+    instr.opcode=rand() % get_query_instruction_set_size();
+    havoc_pred(instr.op0);
+    havoc_list(instr.op1);
+  }
 }
 
 unsigned int jsa_randomt::rand() const
 {
   return ::rand();
+}
+
+void jsa_randomt::havoc_iterator(__CPROVER_jsa_opt &it) const
+{
+  it=rand() % get_max_iterators(st);
+}
+
+void jsa_randomt::havoc_list(__CPROVER_jsa_opt &list) const
+{
+  list=rand() % get_max_lists(st);
+}
+
+void jsa_randomt::havoc_pred(__CPROVER_jsa_opt &pred) const
+{
+  pred=rand() % get_num_jsa_preds(st);
 }

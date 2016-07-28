@@ -25,6 +25,11 @@ size_t get_max_query_size(const symbol_tablet &st)
   return get_size(st, QUERY_RELAY);
 }
 
+size_t get_max_inv_size()
+{
+  return 1;
+}
+
 size_t get_pred_instruction_set_size()
 {
   return __CPROVER_JSA_NUM_PRED_INSTRUCTIONS;
@@ -35,7 +40,26 @@ size_t get_query_instruction_set_size()
   return __CPROVER_JSA_NUM_QUERY_INSTRUCTIONS;
 }
 
+size_t get_invariant_instruction_set_size()
+{
+  return __CPROVER_JSA_NUM_INV_INSTRUCTIONS;
+}
+
 size_t get_num_jsa_preds(const symbol_tablet &st)
 {
   return get_size(st, JSA_PREDS);
+}
+
+#define MAX_IT "__CPROVER_JSA_MAX_ITERATORS_RELAY"
+
+size_t get_max_iterators(const symbol_tablet &st)
+{
+  return get_size(st, MAX_IT);
+}
+
+#define MAX_LIST "__CPROVER_JSA_MAX_LISTS_RELAY"
+
+size_t get_max_lists(const symbol_tablet &st)
+{
+  return get_size(st, MAX_LIST);
 }

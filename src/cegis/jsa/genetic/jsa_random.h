@@ -107,8 +107,38 @@ public:
    * @details
    *
    * @param instr
+   * @param index
    */
-  void havoc(jsa_genetic_solutiont::queryt::value_type &instr) const;
+  void havoc(
+      jsa_genetic_solutiont::queryt::value_type &instr,
+      size_t index) const;
+
+  /**
+   * @brief
+   *
+   * @details
+   *
+   * @return
+   */
+  void havoc_iterator(__CPROVER_jsa_opt &it) const;
+
+  /**
+   * @brief
+   *
+   * @details
+   *
+   * @return
+   */
+  void havoc_list(__CPROVER_jsa_opt &list) const;
+
+  /**
+   * @brief
+   *
+   * @details
+   *
+   * @return
+   */
+  void havoc_pred(__CPROVER_jsa_opt &pred) const;
 
   /**
    * @brief
