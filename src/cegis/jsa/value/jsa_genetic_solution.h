@@ -19,6 +19,27 @@ Author: Daniel Kroening, kroening@kroening.com
  *
  * @details
  */
+#define OPERANDS_PER_JSA_INVARIANT_INSTRUCTION 1
+
+/**
+ * @brief
+ *
+ * @details
+ */
+#define OPERANDS_PER_JSA_PREDICATE_INSTRUCTION 4
+
+/**
+ * @brief
+ *
+ * @details
+ */
+#define OPERANDS_PER_JSA_QUERY_INSTRUCTION 3
+
+/**
+ * @brief
+ *
+ * @details
+ */
 class jsa_genetic_solutiont
 {
 public:

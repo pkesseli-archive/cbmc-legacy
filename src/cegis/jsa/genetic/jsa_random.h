@@ -21,7 +21,7 @@
  */
 class jsa_randomt
 {
-  const symbol_tablet &st;
+  const class symbol_tablet &st;
   const std::function<size_t()> pred_ops_count;
   const std::function<size_t()> const_pred_ops_count;
 public:

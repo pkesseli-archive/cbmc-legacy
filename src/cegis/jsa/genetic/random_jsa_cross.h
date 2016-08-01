@@ -21,9 +21,20 @@ Author: Daniel Kroening, kroening@kroening.com
  */
 class random_jsa_crosst
 {
+  const class jsa_randomt &random;
 public:
   typedef jsa_populationt populationt;
   typedef std::deque<populationt::iterator> individualst;
+  typedef populationt::value_type individualt;
+
+  /**
+   * @brief
+   *
+   * @details
+   *
+   * @param random
+   */
+  random_jsa_crosst(const jsa_randomt &random);
 
   /**
    * @brief

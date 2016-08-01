@@ -17,8 +17,18 @@ Author: Daniel Kroening, kroening@kroening.com
  */
 class random_jsa_mutatet
 {
+  const class jsa_randomt &random;
 public:
   typedef class jsa_genetic_solutiont individualt;
+
+  /**
+   * @brief
+   *
+   * @details
+   *
+   * @param random
+   */
+  random_jsa_mutatet(const jsa_randomt &random);
 
   /**
    * @brief

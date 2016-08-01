@@ -38,8 +38,8 @@ int run_with_ga(const symbol_tablet &st, const optionst &o, mstreamt &result,
   const size_t rounds=o.get_unsigned_int_option(CEGIS_ROUNDS);
   const selectt select(test_case_data, rounds);
   jsa_randomt rnd(st, l.get_pred_ops_count(), l.get_const_pred_ops_count());
-  random_jsa_mutatet mutate;
-  random_jsa_crosst cross;
+  random_jsa_mutatet mutate(rnd);
+  random_jsa_crosst cross(rnd);
   jsa_genetic_convertt convert;
   ga_learnt<const selectt, random_jsa_mutatet, random_jsa_crosst, fitnesst,
       jsa_genetic_convertt> learn(o, rnd, select, mutate, cross, fitness,
