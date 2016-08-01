@@ -8,18 +8,9 @@ template<class randomt>
 ga_learnt<selectt, mutatet, crosst, fitnesst, convertt>::ga_learnt(
     const optionst &options, randomt &random, selectt &select, mutatet &mutate,
     crosst &cross, fitnesst &fitness, convertt &convert) :
-    options(options), select(select), mutate(mutate), cross(cross), fitness(
+    options(options), havoc([&random](individualt &ind)
+    { random.havoc(ind);}), select(select), mutate(mutate), cross(cross), fitness(
         fitness), convert(convert)
-{
-  const size_t pop_size=options.get_unsigned_int_option(CEGIS_POPSIZE);
-  pop.resize(pop_size);
-  for (individualt &ind : pop)
-    random.havoc(ind);
-}
-
-template<class selectt, class mutatet, class crosst, class fitnesst,
-    class convertt>
-ga_learnt<selectt, mutatet, crosst, fitnesst, convertt>::~ga_learnt()
 {
 }
 
@@ -30,6 +21,10 @@ void ga_learnt<selectt, mutatet, crosst, fitnesst, convertt>::seed(
     seedt &seeder)
 {
   fitness.seed(seeder);
+  const size_t pop_size=options.get_unsigned_int_option(CEGIS_POPSIZE);
+  pop.resize(pop_size);
+  for (individualt &ind : pop)
+    havoc(ind);
 }
 
 template<class selectt, class mutatet, class crosst, class fitnesst,

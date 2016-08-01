@@ -24,7 +24,8 @@ namespace
 template<class containert>
 void havoc_size(containert &container, const size_t max_size)
 {
-  container.resize(rand() % (max_size + 1));
+  const size_t size=rand() % (max_size + 1);
+  container.resize(std::max(static_cast<size_t>(1u), size));
 }
 }
 

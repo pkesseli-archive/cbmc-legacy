@@ -22,6 +22,10 @@ Author: Daniel Kroening, kroening@kroening.com
  * @paral learn
  * @param verify
  * @param preproc
+ *
+ * @tparam learnt
+ * @tparam verifyt
+ * @tparam preproct
  */
 template<class learnt, class verifyt, class preproct>
 int run_cegis_with_statistics_wrapper(
@@ -30,6 +34,32 @@ int run_cegis_with_statistics_wrapper(
     learnt &learn,
     verifyt &verify,
     preproct &preproc);
+
+/**
+ * @brief
+ *
+ * @details
+ *
+ * @param os
+ * @param opt
+ * @paral learn
+ * @param verify
+ * @param preproc
+ * @param seed
+ *
+ * @tparam learnt
+ * @tparam verifyt
+ * @tparam preproct
+ * @tparam seedt
+ */
+template<class learnt, class verifyt, class preproct, class seedt>
+int run_cegis_with_statistics_wrapper(
+    messaget::mstreamt &os,
+    const optionst &opt,
+    learnt &learn,
+    verifyt &verify,
+    preproct &preproc,
+    seedt &seed);
 
 #include "runner_helper.inc"
 

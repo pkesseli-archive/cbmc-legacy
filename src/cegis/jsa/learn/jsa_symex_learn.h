@@ -69,6 +69,15 @@ public:
    *
    * @details
    *
+   * @param max_solution_size
+   */
+  void process(size_t max_solution_size);
+
+  /**
+   * @brief
+   *
+   * @details
+   *
    * @param word_width_in_bits
    */
   void set_word_width(size_t word_width_in_bits);

@@ -9,6 +9,7 @@
 #include <cegis/genetic/lazy_fitness.h>
 #include <cegis/genetic/ga_learn.h>
 #include <cegis/genetic/match_select.h>
+#include <cegis/genetic/learn_preprocess_seed.h>
 #include <cegis/jsa/value/jsa_genetic_solution.h>
 #include <cegis/jsa/genetic/jsa_source_provider.h>
 #include <cegis/jsa/genetic/jsa_random.h>
@@ -29,9 +30,11 @@ template<class oraclet, class prept>
 int run_with_ga(const symbol_tablet &st, const optionst &o, mstreamt &result,
     jsa_symex_learnt &l, oraclet &oracle, prept &prep)
 {
+  jsa_source_providert source_provider(o, l);
   dynamic_jsa_test_runnert test_runner;
-  typedef lazy_fitnesst<jsa_populationt, dynamic_jsa_test_runnert,
-      jsa_counterexamplet> fitnesst;
+  typedef lazy_fitnesst<jsa_populationt,
+                        dynamic_jsa_test_runnert,
+                        jsa_counterexamplet> fitnesst;
   fitnesst fitness(test_runner);
   typedef match_selectt<jsa_populationt> selectt;
   const selectt::test_case_datat &test_case_data=fitness.get_test_case_data();
@@ -41,10 +44,13 @@ int run_with_ga(const symbol_tablet &st, const optionst &o, mstreamt &result,
   random_jsa_mutatet mutate(rnd);
   random_jsa_crosst cross(rnd);
   jsa_genetic_convertt convert;
-  ga_learnt<const selectt, random_jsa_mutatet, random_jsa_crosst, fitnesst,
-      jsa_genetic_convertt> learn(o, rnd, select, mutate, cross, fitness,
-      convert);
-  return run_cegis_with_statistics_wrapper(result, o, learn, oracle, prep);
+  ga_learnt<const selectt,
+            random_jsa_mutatet,
+            random_jsa_crosst,
+            fitnesst,
+            jsa_genetic_convertt> learn(o, rnd, select, mutate, cross, fitness, convert);
+  learn_preprocess_seedt<jsa_symex_learnt> seed(o, l);
+  return run_cegis_with_statistics_wrapper(result, o, learn, oracle, prep, seed);
 }
 }
 
@@ -57,6 +63,6 @@ int run_jsa(optionst &o, mstreamt &result, const symbol_tablet &st,
   cegis_symex_learnt<jsa_preprocessingt, jsa_symex_learnt> learn(o, prep, lcfg);
   jsa_symex_verifyt vcfg(prog);
   cegis_symex_verifyt<jsa_symex_verifyt> oracle(o, vcfg);
-  //return run_with_ga(st, o, result, lcfg, oracle, prep);
-  return run_cegis_with_statistics_wrapper(result, o, learn, oracle, prep);
+  return run_with_ga(st, o, result, lcfg, oracle, prep);
+  //return run_cegis_with_statistics_wrapper(result, o, learn, oracle, prep);
 }

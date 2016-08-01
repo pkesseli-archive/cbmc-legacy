@@ -66,12 +66,12 @@ void splice(containert &result, const containert &lhs, const containert &rhs,
 void cross(individualt &offspring, const individualt &father,
     const individualt &mother, size_t offset)
 {
+  offspring.predicates=mother.predicates;
+  offspring.query=mother.query;
   const individualt::invariantt &f_inv=father.invariant;
   const size_t f_inv_size=f_inv.size();
   if (offset < f_inv_size)
   {
-    offspring.predicates=mother.predicates;
-    offspring.query=mother.query;
     const individualt::invariantt &m_inv=mother.invariant;
     return splice(offspring.invariant, f_inv, m_inv, offset, OPERANDS_PER_JSA_INVARIANT_INSTRUCTION);
   }
@@ -88,9 +88,8 @@ void cross(individualt &offspring, const individualt &father,
       offset-=f_pred_size;
       continue;
     }
-    offspring.query=mother.query;
     const individualt::predicatet &m_pred=mother.predicates[pred_index];
-    splice(offspring_pred, f_pred, m_pred, offset, OPERANDS_PER_JSA_PREDICATE_INSTRUCTION);
+    return splice(offspring_pred, f_pred, m_pred, offset, OPERANDS_PER_JSA_PREDICATE_INSTRUCTION);
   }
   offspring.predicates=father.predicates;
   const queryt f_query=father.query;
@@ -115,5 +114,5 @@ void random_jsa_crosst::operator()(const individualst &parents,
   const size_t son_offset=random.rand() % father_sz;
   const size_t daughter_offset=random.rand() % mother_sz;
   cross(son, father, mother, son_offset);
-  cross(daughter, father, mother, daughter_offset);
+  cross(daughter, mother, father, daughter_offset);
 }

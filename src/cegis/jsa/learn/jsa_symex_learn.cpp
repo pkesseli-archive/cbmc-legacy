@@ -1,5 +1,7 @@
 #include <goto-programs/remove_returns.h>
+#include <linking/zero_initializer.h>
 
+#include <cegis/cegis-util/program_helper.h>
 #include <cegis/jsa/value/jsa_solution_printer.h>
 #include <cegis/jsa/preprocessing/add_synthesis_library.h>
 #include <cegis/jsa/learn/insert_counterexample.h>
@@ -34,6 +36,24 @@ void jsa_symex_learnt::process(const counterexamplest &counterexamples,
   program.gf.update();
 }
 
+void jsa_symex_learnt::process(const size_t max_solution_size)
+{
+  null_message_handlert msg;
+  const namespacet ns(original_program.st);
+  counterexamplest counterexamples(1);
+  counterexamplet &counterexample=counterexamples.front();
+  for (const goto_programt::targett &pos : original_program.counterexample_locations)
+  {
+    assert(pos->labels.size() == 1u);
+    const irep_idt &key=pos->labels.front();
+    const typet &type=get_affected_type(*pos);
+    const source_locationt &loc=pos->source_location;
+    const exprt value(zero_initializer(type, loc, ns, msg));
+    counterexample.insert(std::make_pair(key, value));
+  }
+  process(counterexamples, max_solution_size);
+}
+
 void jsa_symex_learnt::set_word_width(const size_t word_width_in_bits)
 {
   // XXX: Unsupported
@@ -65,10 +85,12 @@ void jsa_symex_learnt::show_candidate(messaget::mstreamt &os,
 
 std::function<size_t()> jsa_symex_learnt::get_pred_ops_count() const
 {
-  return [this]() { return op_ids.size(); };
+  return [this]()
+  { return op_ids.size();};
 }
 
 std::function<size_t()> jsa_symex_learnt::get_const_pred_ops_count() const
 {
-  return [this]() { return const_op_ids.size(); };
+  return [this]()
+  { return const_op_ids.size();};
 }

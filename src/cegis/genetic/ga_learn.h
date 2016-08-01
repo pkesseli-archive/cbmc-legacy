@@ -29,6 +29,7 @@ public:
   typedef typename selectt::selectiont selectiont;
 private:
   const class optionst &options;
+  const std::function<void(individualt &)> havoc;
   selectt &select;
   mutatet &mutate;
   crosst &cross;
@@ -59,13 +60,6 @@ public:
   template<class randomt>
   ga_learnt(const optionst &options, randomt &random, selectt &select,
       mutatet &mutate, crosst &cross, fitnesst &fitness, convertt &convert);
-
-  /**
-   * @brief
-   *
-   * @details
-   */
-  ~ga_learnt();
 
 
   /**
