@@ -31,7 +31,7 @@ int run_with_ga(const symbol_tablet &st, const optionst &o, mstreamt &result,
     jsa_symex_learnt &l, oraclet &oracle, prept &prep)
 {
   jsa_source_providert source_provider(o, l);
-  dynamic_jsa_test_runnert test_runner;
+  dynamic_jsa_test_runnert test_runner(std::ref(source_provider));
   typedef lazy_fitnesst<jsa_populationt,
                         dynamic_jsa_test_runnert,
                         jsa_counterexamplet> fitnesst;

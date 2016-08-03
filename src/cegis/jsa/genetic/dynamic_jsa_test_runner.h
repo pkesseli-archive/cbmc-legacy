@@ -12,6 +12,8 @@ Author: Daniel Kroening, kroening@kroening.com
 
 #include <functional>
 
+#include <util/tempfile.h>
+
 #include <cegis/jsa/value/jsa_counterexample.h>
 
 /**
@@ -21,9 +23,33 @@ Author: Daniel Kroening, kroening@kroening.com
  */
 class dynamic_jsa_test_runnert
 {
+  typedef void *lib_handlet;
 public:
   typedef jsa_counterexamplet counterexamplet;
   typedef class jsa_genetic_solutiont individualt;
+private:
+  typedef int (*fitness_testert)(const individualt &);
+  const std::function<std::string(void)> source_code_provider;
+  const temporary_filet shared_library;
+  lib_handlet handle;
+  fitness_testert fitness_tester;
+public:
+  /**
+   * @brief
+   *
+   * @details
+   *
+   * @param source_code_provider
+   */
+  dynamic_jsa_test_runnert(
+      const std::function<std::string(void)> &source_code_provider);
+
+  /**
+   * @brief
+   *
+   * @details
+   */
+  ~dynamic_jsa_test_runnert();
 
   /**
    * @brief
