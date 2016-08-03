@@ -51,16 +51,26 @@ void splice(containert &result, const containert &lhs, const containert &rhs,
 {
   const size_t rhs_size=rhs.size();
   const size_t offset_index=offset / element_size;
-  const size_t rhs_offset=std::max(offset_index, rhs_size);
-  const size_t result_size=offset_index + rhs_size - rhs_offset;
+  assert(rhs_size > 0);
+  const size_t rhs_offset_index=std::min(offset_index, rhs_size - 1);
+  const size_t result_size=offset_index + rhs_size - rhs_offset_index;
   result.resize(result_size);
   const typename containert::const_iterator lhs_first=lhs.begin();
   const typename containert::iterator result_first=result.begin();
   std::copy(lhs_first, std::next(lhs_first, offset_index), result_first);
   const typename containert::const_iterator rhs_first=rhs.begin();
   const typename containert::iterator result_mid=std::next(result_first, offset_index);
-  std::copy(std::next(rhs_first, rhs_offset), rhs.end(), result_mid);
-  splice(result[offset_index], lhs[offset_index], rhs[offset_index], offset % element_size);
+  std::copy(std::next(rhs_first, rhs_offset_index), rhs.end(), result_mid);
+  splice(result[offset_index], lhs[offset_index], rhs[rhs_offset_index], offset % element_size);
+}
+
+void check_consistency(const individualt &individual)
+{
+  assert(individual.invariant.size() == 1);
+  assert(individual.predicates.size() >= 1);
+  for (const individualt::predicatet &predicate : individual.predicates)
+    assert(predicate.size() >= 1);
+  assert(individual.query.size() >= 1);
 }
 
 void cross(individualt &offspring, const individualt &father,
@@ -80,7 +90,7 @@ void cross(individualt &offspring, const individualt &father,
   for (size_t pred_index=0; pred_index < father.predicates.size(); ++pred_index)
   {
     const individualt::predicatet &f_pred=father.predicates[pred_index];
-    const size_t f_pred_size=f_pred.size();
+    const size_t f_pred_size=f_pred.size() * OPERANDS_PER_JSA_PREDICATE_INSTRUCTION;
     individualt::predicatet &offspring_pred=offspring.predicates[pred_index];
     if (offset >= f_pred_size)
     {
@@ -92,9 +102,10 @@ void cross(individualt &offspring, const individualt &father,
     return splice(offspring_pred, f_pred, m_pred, offset, OPERANDS_PER_JSA_PREDICATE_INSTRUCTION);
   }
   offspring.predicates=father.predicates;
-  const queryt f_query=father.query;
+  const queryt &f_query=father.query;
   assert(offset < f_query.size() * OPERANDS_PER_JSA_QUERY_INSTRUCTION);
   splice(offspring.query, f_query, mother.query, offset, OPERANDS_PER_JSA_QUERY_INSTRUCTION);
+  check_consistency(offspring);
 }
 }
 
@@ -109,8 +120,6 @@ void random_jsa_crosst::operator()(const individualst &parents,
 
   const size_t father_sz=get_num_genetic_targets(father);
   const size_t mother_sz=get_num_genetic_targets(mother);
-  const size_t son_sz=get_num_genetic_targets(son);
-  const size_t daughter_sz=get_num_genetic_targets(daughter);
   const size_t son_offset=random.rand() % father_sz;
   const size_t daughter_offset=random.rand() % mother_sz;
   cross(son, father, mother, son_offset);

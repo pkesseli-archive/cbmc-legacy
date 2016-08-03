@@ -43,7 +43,7 @@ void random_jsa_mutatet::operator()(individualt &lhs,
   {
   case 0: instr.op0=tmp.op0; break;
   case 1: instr.op1=tmp.op1; break;
-  case 3: instr.opcode=tmp.opcode; break;
+  case 2: instr.opcode=tmp.opcode; break;
   default: assert(!"Invalid query mutation index");
   }
 }
