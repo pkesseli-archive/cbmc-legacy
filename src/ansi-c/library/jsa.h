@@ -21,6 +21,8 @@
 #ifndef __CPROVER
 #include <assert.h>
 #include <string.h>
+#include <setjmp.h>
+extern jmp_buf __CPROVER_jsa_jump_buffer;
 #endif
 #include <stdbool.h>
 
@@ -156,8 +158,8 @@ typedef struct __CPROVER_jsa_abstract_heap
 #define __CPROVER_jsa_assume(c) __CPROVER_assume(c)
 #define __CPROVER_jsa_assert(c, str) __CPROVER_assert(c, str)
 #else
-#define __CPROVER_jsa_assume(c) assert(c)
-#define __CPROVER_jsa_assert(c, str) assert(c && str)
+#define __CPROVER_jsa_assume(c) do { if (!(c)) longjmp(__CPROVER_jsa_jump_buffer, 1); } while(false)
+#define __CPROVER_jsa_assert(c, str) assert((c) && str)
 #endif
 
 // Heap comparison
