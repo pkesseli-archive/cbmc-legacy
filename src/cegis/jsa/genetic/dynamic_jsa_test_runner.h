@@ -14,6 +14,7 @@ Author: Daniel Kroening, kroening@kroening.com
 
 #include <util/tempfile.h>
 
+#include <cegis/jsa/value/jsa_genetic_synthesis.h>
 #include <cegis/jsa/value/jsa_counterexample.h>
 
 /**
@@ -28,8 +29,16 @@ public:
   typedef jsa_counterexamplet counterexamplet;
   typedef class jsa_genetic_solutiont individualt;
 private:
-  typedef int (*fitness_testert)(const individualt &);
-  const std::function<std::string(void)> source_code_provider;
+  typedef int (*fitness_testert)(
+      const __CPROVER_jsa_index_t __CPROVER_jsa_query_size,
+      const __CPROVER_jsa_query_instructiont *__CPROVER_jsa_query,
+      const __CPROVER_jsa_index_t __CPROVER_jsa_invariant_size,
+      const __CPROVER_jsa_invariant_instructiont *__CPROVER_jsa_invariant,
+      const __CPROVER_jsa_index_t *__CPROVER_jsa_predicate_sizes,
+      const __CPROVER_jsa_pred_instructiont **__CPROVER_jsa_predicates,
+      const __CPROVER_jsa_abstract_heapt *__CPROVER_jsa_counterexample_heaps,
+      const __CPROVER_jsa_word_t *__CPROVER_jsa_counterexample_words);
+  const std::function<std::string(void)> source_code;
   const temporary_filet shared_library;
   lib_handlet handle;
   fitness_testert fitness_tester;

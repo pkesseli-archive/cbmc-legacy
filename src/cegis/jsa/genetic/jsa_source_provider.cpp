@@ -23,19 +23,44 @@ jsa_source_providert::jsa_source_providert(const optionst &options,
 #define START_METHOD_PREFIX "void _start"
 #define RETURN_VALUE_ASSIGNMENT RETURN_VALUE_SUFFIX" ="
 #define JUMP_BUFFER "__CPROVER_jsa_jump_buffer"
+#define TEST_SIGNATURE "int " CEGIS_FITNESS_TEST_FUNC \
+  "(const __CPROVER_jsa_index_t __CPROVER_jsa_query_size, " \
+      "const __CPROVER_jsa_query_instructiont * const __CPROVER_jsa_query, " \
+      "const __CPROVER_jsa_index_t __CPROVER_jsa_invariant_size, " \
+      "const __CPROVER_jsa_invariant_instructiont * const __CPROVER_jsa_invariant, " \
+      "const __CPROVER_jsa_index_t * const __CPROVER_jsa_predicate_sizes, " \
+      "const __CPROVER_jsa_pred_instructiont **__CPROVER_jsa_predicates, " \
+      "const __CPROVER_jsa_abstract_heapt *__CPROVER_jsa_counterexample_heaps, " \
+      "const __CPROVER_jsa_word_t *__CPROVER_jsa_counterexample_words)"
+#define CE_ASSIGNMENT_MARKER "= __CPROVER_jsa_ce_array___CPROVER_jsa_predicate_ce_marker_"
 
 namespace
 {
 void add_jsa_defines(std::string &result, const jsa_symex_learnt &lcfg)
 {
-  // TODO: Implement!
-  result+="#define __CPROVER_assume(c) __CPROVER_jsa_assume(c)\n";
-  result+="// TODO: Implement!";
+  const symbol_tablet &st=lcfg.get_symbol_table();
+  result+="#define __CPROVER_assume(c) __CPROVER_jsa_assume(c)\n"
+      "#define __CPROVER_JSA_MAX_CONCRETE_NODES 1u\n"
+      "#define __CPROVER_JSA_MAX_ABSTRACT_NODES 0u\n"
+      "#define JSA_SYNTHESIS_H_\n"
+      "#define __CPROVER_JSA_DEFINE_TRANSFORMERS\n";
+  result+="#define __CPROVER_JSA_MAX_ITERATORS ";
+  result+=std::to_string(get_max_iterators(st));
+  result+="\n#define __CPROVER_JSA_MAX_LISTS ";
+  result+=std::to_string(get_max_lists(st));
+  result+="\n#define __CPROVER_JSA_MAX_QUERY_SIZE ";
+  result+=std::to_string(get_max_query_size(st));
+  result+="\n#define __CPROVER_JSA_MAX_PRED_SIZE ";
+  result+=std::to_string(get_max_pred_size(st));
+  result+="\n#define __CPROVER_JSA_NUM_PREDS ";
+  result+=std::to_string(get_num_jsa_preds(st));
+  result+="\n\n";
 }
 
 void add_includes_and_globals(std::string &result)
 {
-  result+="#include <cegis/jsa/value/jsa_genetic_solution.h>\n\n";
+  result+="#include <stdlib.h>\n\n"
+      "#include <ansi-c/library/jsa.h>\n\n";
   result+="jmp_buf " JUMP_BUFFER";\n\n";
 }
 
@@ -81,12 +106,13 @@ void fix_return_values(std::string &result)
     result.insert(prev_start + 2, var_name);
     pos=result.find(RETURN_VALUE_SUFFIX, prev_start);
   }
+  substitute(result, "assert((_Bool)0)", "return EXIT_SUCCESS");
+  substitute(result, "\n  return 0;", "");
 }
 
 void add_facade_function(std::string &result)
 {
-  substitute(result, "void _start(void)",
-      "int " CEGIS_FITNESS_TEST_FUNC"(const jsa_genetic_solutiont &solution)");
+  substitute(result, "void _start(void)", TEST_SIGNATURE);
   const std::string::size_type pos=result.find("  __CPROVER_initialize();");
   result.insert(pos, "  if (!setjmp(" JUMP_BUFFER")) return EXIT_FAILURE;\n");
 }
@@ -114,75 +140,76 @@ void remove_predicates(std::string &result, const size_t num_preds)
   }
 }
 
-void declare_predicate_sizes(std::string &result, const size_t num_preds,
+void declare_predicates(std::string &result, const size_t num_preds,
     const std::string::size_type pos)
 {
   std::string source;
   for (size_t i=0; i < num_preds; ++i)
   {
-    source+="  unsigned char __CPROVER_jsa_predicate_";
+    std::string base_name("__CPROVER_jsa_predicate_");
+    base_name+=std::to_string(i);
+    source+="  __CPROVER_jsa_index_t ";
+    source+=base_name;
+    source+="_size=__CPROVER_jsa_predicate_sizes[";
     source+=std::to_string(i);
-    source+="_size;\n";
+    source+="];\n";
+    source+="  const __CPROVER_jsa_pred_instructiont * const ";
+    source+=base_name;
+    source+="=__CPROVER_jsa_predicates[";
+    source+=std::to_string(i);
+    source+="];\n";
   }
-  source+=
-      "  __CPROVER_jsa_tmp_index=0;\n"
-          "  for (const jsa_genetic_solutiont::predicatet &__CPROVER_jsa_predicate : solution.predicates)\n"
-          "  {\n"
-          "    "
-          "  }\n";
-}
-
-void add_predicate(std::string &result, const size_t index,
-    const std::string::size_type pos)
-{
-  std::string base_name("__CPROVER_jsa_predicate_");
-  base_name+=std::to_string(index);
-  std::string size_var_name(base_name);
-  size_var_name+="_size";
-  std::string source("  jsa_genetic_solutiont::predicatet::value_type ");
-  source+=base_name;
-  source+="[__CPROVER_jsa_predicate_";
-  source+=std::to_string(index);
-  source+="_size];\n";
-  source+="  __CPROVER_jsa_instr_index=0;\n";
-  source+=
-      "  for (const jsa_genetic_solutiont::predicatet::value_type &__CPROVER_jsa_instr : ";
-  source+=base_name;
-  source+=")\n  {\n    ";
-  source+=size_var_name;
-  source+="=__CPROVER_jsa_instr.size()\n    ";
-  source+=base_name;
-  source+="[__CPROVER_jsa_instr_index++]=__CPROVER_jsa_instr;\n";
-  source+="  }\n";
   result.insert(pos, source);
 }
 
 void insert_solution(std::string &result, const jsa_symex_learnt &lcfg)
 {
-  const std::string::size_type pos=result.find("__CPROVER_initialize();\n");
+  const std::string::size_type pos=result.find("  __CPROVER_initialize();\n");
   const size_t num_preds=get_num_jsa_preds(lcfg.get_symbol_table());
   remove_predicates(result, num_preds);
-  declare_predicate_sizes(result, num_preds, pos);
-  for (size_t i=0; i < num_preds; ++i)
-  {
-//    add_predicate(result, i, pos);
-  }
+  declare_predicates(result, num_preds, pos);
   remove_line_with(result, "__CPROVER_jsa_query_size;");
   remove_line_with(result, "__CPROVER_jsa_query[");
   remove_line_with(result, "__CPROVER_jsa_invariant_size;");
   remove_line_with(result, "__CPROVER_jsa_invariant[");
-  result.insert(pos,
-      "  const __CPROVER_jsa_word_t __CPROVER_jsa_query_size=__CPROVER_jsa_solution.query.size();\n"
-          "  jsa_genetic_solutiont::queryt::value_type __CPROVER_jsa_query[__CPROVER_jsa_query_size];\n"
-          "  size_t __CPROVER_jsa_tmp_index=0;\n"
-          "  for (const jsa_genetic_solutiont::queryt::value_type &__CPROVER_jsa_query_instr : __CPROVER_jsa_solution.query)\n"
-          "    __CPROVER_jsa_query[__CPROVER_jsa_tmp_index++]=__CPROVER_jsa_query_instr;\n"
-          "  const __CPROVER_jsa_word_t __CPROVER_jsa_invariant_size=__CPROVER_jsa_solution.invariant.size();\n"
-          "  jsa_genetic_solutiont::invariantt::value_type __CPROVER_jsa_invariant[__CPROVER_jsa_invariant_size];\n"
-          "  __CPROVER_jsa_tmp_index=0;\n"
-          "  for (const jsa_genetic_solutiont::invariantt::value_type &__CPROVER_jsa_inv_instr : __CPROVER_jsa_solution.invariant)\n"
-          "    __CPROVER_jsa_invariant[__CPROVER_jsa_tmp_index++]=__CPROVER_jsa_inv_instr;\n");
-// TODO: Substitute
+}
+
+bool is_heap(const std::string &line)
+{
+  return std::string::npos != line.find("heap");
+}
+
+void insert_counterexample(std::string &result)
+{
+  std::string::size_type pos=result.find(CE_ASSIGNMENT_MARKER);
+  size_t heap_count=0;
+  size_t word_count=0;
+  while (std::string::npos != pos)
+  {
+    const std::string::size_type line_start=result.rfind("  ", pos);
+    const std::string::size_type line_end=result.find('\n', pos);
+    const std::string line(result.substr(line_start, line_end - line_start));
+    const std::string::size_type stmt_end=result.find(';', pos);
+    std::string value("= ");
+    if (is_heap(line))
+    {
+      value+="__CPROVER_jsa_counterexample_heaps[";
+      value+=std::to_string(heap_count++);
+    } else
+    {
+      value+="__CPROVER_jsa_counterexample_words[";
+      value+=std::to_string(word_count++);
+    }
+    value+=']';
+    result.replace(pos, stmt_end - pos, value);
+    pos=result.find(CE_ASSIGNMENT_MARKER, line_start);
+  }
+}
+
+void cleanup(std::string &result)
+{
+  substitute(result, "  __CPROVER_initialize();\n", "");
+  result+="\n}\n";
 }
 }
 
@@ -195,6 +222,8 @@ const std::string &jsa_source_providert::operator ()()
   fix_return_values(source);
   add_facade_function(source);
   insert_solution(source, lcfg);
+  insert_counterexample(source);
+  cleanup(source);
 // XXX: Debug
   std::cout << source << std::endl;
   assert(!"TODO: Implement");
