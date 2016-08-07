@@ -1,5 +1,6 @@
 #include <algorithm>
 
+#include <cegis/cegis-util/module_helper.h>
 #include <cegis/genetic/dynamic_test_runner_helper.h>
 #include <cegis/jsa/value/jsa_genetic_solution.h>
 #include <cegis/jsa/converters/counterexample.h>
@@ -17,12 +18,21 @@ dynamic_jsa_test_runnert::~dynamic_jsa_test_runnert()
   close_fitness_tester_library(handle, fitness_tester);
 }
 
+std::string get_compile_options()
+{
+  std::string path("-I ");
+  const std::string exe(get_current_executable_file_path());
+  path+=exe.substr(0, exe.rfind("cegis", exe.rfind("cegis") - 1) - 1);
+  return path+=' ';
+}
+
 void dynamic_jsa_test_runnert::run_test(individualt &individual,
     const counterexamplet &counterexample,
     const std::function<void(bool)> on_complete)
 {
   const std::string lib(shared_library());
-  prepare_fitness_tester_library(handle, fitness_tester, source_code, lib);
+  const std::string opt(get_compile_options());
+  prepare_fitness_tester_library(handle, fitness_tester, source_code, lib, opt);
   const individualt::queryt &query=individual.query;
   const __CPROVER_jsa_index_t jsa_query_size=query.size();
   __CPROVER_jsa_query_instructiont jsa_query[jsa_query_size];

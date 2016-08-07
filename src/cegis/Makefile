@@ -53,7 +53,7 @@ SRC = danger/meta/meta_variable_names.cpp danger/facade/danger_runner.cpp danger
       genetic/dynamic_test_runner_helper.cpp genetic/genetic_settings.cpp \
       genetic/serialise_individual.cpp genetic/program_individual_test_runner_helper.cpp \
       cegis-util/task_pool.cpp cegis-util/constant_width.cpp cegis-util/irep_pipe.cpp cegis-util/program_helper.cpp \
-      cegis-util/temporary_output_block.cpp cegis-util/cbmc_runner.cpp \
+      cegis-util/temporary_output_block.cpp cegis-util/cbmc_runner.cpp cegis-util/module_helper.cpp \
       constant/add_constant.cpp constant/literals_collector.cpp constant/default_cegis_constant_strategy.cpp \
       instrument/cegis_library.cpp instrument/instrument_var_ops.cpp instrument/meta_variables.cpp \
       runner/cegis_parse_options.cpp runner/cegis_main.cpp \

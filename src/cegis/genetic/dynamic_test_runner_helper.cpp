@@ -45,12 +45,13 @@ void write_file(const char * const path, const std::string &content)
 
 void *prepare_fitness_tester_library(fitness_lib_handlet &handle,
     const std::function<std::string(void)> &source_code_provider,
-    const std::string &library_file_path)
+    const std::string &library_file_path, const std::string &compile_options)
 {
   const temporary_filet source_file(SOURCE_FILE_PREFIX, SOURCE_FILE_SUFFIX);
   const std::string source_file_name(source_file());
   write_file(source_file_name.c_str(), source_code_provider());
   std::string compile_command(COMPILE_COMMAND);
+  compile_command+=compile_options;
   compile_command+=source_file_name;
   compile_command+=ARTIFACT_SEPARATOR;
   compile_command+=library_file_path;

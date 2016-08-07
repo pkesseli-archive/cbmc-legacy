@@ -15,11 +15,6 @@ jsa_source_providert::jsa_source_providert(const optionst &options,
 {
 }
 
-// XXX: Debug
-#include <iostream>
-#include <cegis/jsa/value/jsa_genetic_solution.h>
-// XXX: Debug
-
 #define START_METHOD_PREFIX "void _start"
 #define RETURN_VALUE_ASSIGNMENT RETURN_VALUE_SUFFIX" ="
 #define JUMP_BUFFER "__CPROVER_jsa_jump_buffer"
@@ -224,10 +219,5 @@ const std::string &jsa_source_providert::operator ()()
   insert_solution(source, lcfg);
   insert_counterexample(source);
   cleanup(source);
-// XXX: Debug
-  std::cout << source << std::endl;
-  assert(!"TODO: Implement");
-// XXX: Debug
-// TODO: Implement!
   return source;
 }

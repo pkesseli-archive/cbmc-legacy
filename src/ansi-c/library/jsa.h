@@ -1031,7 +1031,7 @@ __CPROVER_jsa_inline void __CPROVER_jsa_query_execute(
 
 __CPROVER_jsa_inline void __CPROVER_jsa_full_query_execute(
     __CPROVER_jsa_abstract_heapt * const heap,
-    __CPROVER_jsa_query_instructiont * const query,
+    const __CPROVER_jsa_query_instructiont * const query,
     const __CPROVER_jsa__internal_index_t query_size)
 {
   const __CPROVER_jsa_iterator_id_t it=query[0].op0;

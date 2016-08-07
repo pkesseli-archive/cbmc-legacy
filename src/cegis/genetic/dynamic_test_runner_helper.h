@@ -29,11 +29,13 @@ typedef void *fitness_lib_handlet;
  * @param handle
  * @param source_code_provider
  * @param library_file_path
+ * @param compile_options
  */
 void *prepare_fitness_tester_library(
     fitness_lib_handlet &handle,
     const std::function<std::string(void)> &source_code_provider,
-    const std::string &library_file_path);
+    const std::string &library_file_path,
+    const std::string &compile_options);
 
 /**
  * @brief
@@ -44,13 +46,15 @@ void *prepare_fitness_tester_library(
  * @param fitness_tester
  * @param source_code_provider
  * @param library_file_path
+ * @param compile_options
  */
 template<class fitness_testert>
 void prepare_fitness_tester_library(
     fitness_lib_handlet &handle,
     fitness_testert &fitness_tester,
     const std::function<std::string(void)> &source_code_provider,
-    const std::string &library_file_path);
+    const std::string &library_file_path,
+    std::string compile_options = "");
 
 /**
  * @brief
