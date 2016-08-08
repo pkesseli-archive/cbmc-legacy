@@ -77,8 +77,13 @@ const goto_functionst &jsa_symex_learnt::get_goto_functions() const
   return program.gf;
 }
 
+const jsa_programt &jsa_symex_learnt::get_jsa_program() const
+{
+  return program;
+}
+
 void jsa_symex_learnt::show_candidate(messaget::mstreamt &os,
-    const candidatet &candidate)
+    const candidatet &candidate) const
 {
   print_jsa_solution(os, program, candidate);
 }

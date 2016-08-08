@@ -35,5 +35,8 @@ void print_jsa_solution(messaget::mstreamt &os, const jsa_programt &program,
   os << "  <query>" << messaget::endl;
   print_instructions(os, program, solution.query);
   os << "  </query>" << messaget::endl;
+  os << "  <invariant>" << messaget::endl;
+  print_instructions(os, program, solution.invariant);
+  os << "  </invariant>" << messaget::endl;
   os << "</jsa_solution>" << messaget::endl << messaget::eom;
 }

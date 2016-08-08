@@ -22,10 +22,10 @@ void jsa_randomt::havoc(jsa_genetic_solutiont &individual) const
 namespace
 {
 template<class containert>
-void havoc_size(containert &container, const size_t max_size)
+void havoc_size(containert &container, const size_t max, const size_t min=1u)
 {
-  const size_t size=rand() % (max_size + 1);
-  container.resize(std::max(static_cast<size_t>(1u), size));
+  const size_t size=rand() % (max + 1);
+  container.resize(std::max(min, size));
 }
 }
 
@@ -65,12 +65,16 @@ void jsa_randomt::havoc(
   instr.opcode=rand() % get_invariant_instruction_set_size();
 }
 
+#define MIN_QUERY_SIZE 2u
+
 void jsa_randomt::havoc(jsa_genetic_solutiont::queryt &query) const
 {
-  havoc_size(query, get_max_query_size(st));
+  havoc_size(query, get_max_query_size(st), MIN_QUERY_SIZE);
   for (size_t i=0; i < query.size(); ++i)
     havoc(query[i], i);
 }
+
+#define QUERY_PREFIX_OP1_VALUE 0u
 
 void jsa_randomt::havoc(jsa_genetic_solutiont::queryt::value_type &instr,
     const size_t index) const
@@ -79,12 +83,22 @@ void jsa_randomt::havoc(jsa_genetic_solutiont::queryt::value_type &instr,
   {
     havoc_list(instr.opcode);
     havoc_iterator(instr.op0);
-    instr.op1=__CPROVER_jsa_null;
+    instr.op1=QUERY_PREFIX_OP1_VALUE;
   } else
   {
     instr.opcode=rand() % get_query_instruction_set_size();
     havoc_pred(instr.op0);
-    havoc_list(instr.op1);
+    switch(instr.opcode)
+    {
+      case __CPROVER_jsa_query_idt::FILTER:
+        instr.op1=__CPROVER_jsa_null;
+        break;
+      case __CPROVER_jsa_query_idt::MAP_IN_PLACE:
+        instr.op1=__CPROVER_jsa_null;
+        break;
+      default:
+        havoc_list(instr.op1);
+    }
   }
 }
 

@@ -119,12 +119,21 @@ public:
    *
    * @details
    *
+   * @return
+   */
+  const jsa_programt &get_jsa_program() const;
+
+  /**
+   * @brief
+   *
+   * @details
+   *
    * @param os
    * @param candidate
    */
   void show_candidate(
       messaget::mstreamt &os,
-      const candidatet &candidate);
+      const candidatet &candidate) const;
 
   /**
    * @brief

@@ -19,9 +19,19 @@ Author: Daniel Kroening, kroening@kroening.com
  */
 class jsa_genetic_convertt
 {
+  const class jsa_symex_learnt &learn;
 public:
   typedef class jsa_solutiont candidatet;
   typedef class jsa_genetic_solutiont individualt;
+
+  /**
+   * @brief
+   *
+   * @details
+   *
+   * @param learn
+   */
+  jsa_genetic_convertt(const jsa_symex_learnt &learn);
 
   /**
    * @brief

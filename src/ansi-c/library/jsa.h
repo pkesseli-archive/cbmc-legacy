@@ -920,6 +920,13 @@ __CPROVER_jsa_inline __CPROVER_jsa_word_t __CPROVER_jsa_execute_pred(
 
 // Instrumentation adds a lambda variable at program entry. It'll have id 0.
 #define __CPROVER_jsa__internal_lambda_op_id 0
+#define FILTER_QUERY_INSTR_ID 0
+typedef enum {
+  FILTER = 0,
+  COPY_IF = 1,
+  MAP = 2,
+  MAP_IN_PLACE = 3
+} __CPROVER_jsa_query_idt;
 
 __CPROVER_jsa_inline void __CPROVER_jsa_stream_op(
     __CPROVER_jsa_abstract_heapt * const heap,
@@ -942,20 +949,20 @@ __CPROVER_jsa_inline void __CPROVER_jsa_stream_op(
       const __CPROVER_jsa_word_t pred_result=__CPROVER_jsa_execute_pred(pred_id);
       switch(id)
       {
-      case 0: // filter
+      case FILTER:
         if (pred_result == 0)
           node=__CPROVER_jsa__internal_remove(heap, node);
         else
           node=__CPROVER_jsa__internal_get_next(heap, node);
         break;
-      case 1: // copy_if
+      case COPY_IF:
         if (pred_result != 0)
           __CPROVER_jsa_add(heap, copy, value);
         break;
-      case 2: // map
+      case MAP:
         __CPROVER_jsa_add(heap, copy, pred_result);
         break;
-      case 3: // map_in_place
+      case MAP_IN_PLACE:
         heap->concrete_nodes[node].value=pred_result;
         break;
       }
@@ -994,16 +1001,16 @@ __CPROVER_jsa_inline void __CPROVER_jsa_assume_valid_query(
     __CPROVER_jsa_assume(instr.op0 < __CPROVER_JSA_NUM_PREDS);
     switch(instr.opcode)
     {
-      case 0: // filter
+      case FILTER:
         __CPROVER_jsa_assume(__CPROVER_jsa_null == instr.op1);
         break;
-      case 1:// copy_if
+      case COPY_IF:
         __CPROVER_jsa_assume_valid_list(heap, instr.op1);
         break;
-      case 2:// map
+      case MAP:
         __CPROVER_jsa_assume_valid_list(heap, instr.op1);
         break;
-      case 3:// map_in_place
+      case MAP_IN_PLACE:
         __CPROVER_jsa_assume(__CPROVER_jsa_null == instr.op1);
         break;
       default:

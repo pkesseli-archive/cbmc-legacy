@@ -32,8 +32,8 @@ void write_file(const char * const path, const std::string &content)
 #define SOURCE_FILE_PREFIX "concrete_test"
 #define SOURCE_FILE_SUFFIX ".c"
 #ifndef _WIN32
-#define COMPILE_COMMAND "gcc -std=c99 -g0 -O2 -shared -rdynamic -fPIC "
-//#define COMPILE_COMMAND "gcc -std=c99 -g3 -O0 -shared -rdynamic -fPIC "
+//#define COMPILE_COMMAND "gcc -std=c99 -g0 -O2 -shared -rdynamic -fPIC "
+#define COMPILE_COMMAND "gcc -std=c99 -g3 -O0 -shared -rdynamic -fPIC "
 #else
 #define COMPILE_COMMAND "gcc -std=c99 -g0 -O2 -shared "
 #endif
@@ -43,11 +43,13 @@ void write_file(const char * const path, const std::string &content)
 #define LOAD_FUNC_FAILED "Loading fitness test function failed."
 }
 
+const temporary_filet source_file(SOURCE_FILE_PREFIX, SOURCE_FILE_SUFFIX);
+
 void *prepare_fitness_tester_library(fitness_lib_handlet &handle,
     const std::function<std::string(void)> &source_code_provider,
     const std::string &library_file_path, const std::string &compile_options)
 {
-  const temporary_filet source_file(SOURCE_FILE_PREFIX, SOURCE_FILE_SUFFIX);
+  //const temporary_filet source_file(SOURCE_FILE_PREFIX, SOURCE_FILE_SUFFIX);
   const std::string source_file_name(source_file());
   write_file(source_file_name.c_str(), source_code_provider());
   std::string compile_command(COMPILE_COMMAND);

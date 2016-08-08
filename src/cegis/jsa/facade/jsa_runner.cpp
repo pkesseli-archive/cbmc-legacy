@@ -43,7 +43,7 @@ int run_with_ga(const symbol_tablet &st, const optionst &o, mstreamt &result,
   jsa_randomt rnd(st, l.get_pred_ops_count(), l.get_const_pred_ops_count());
   random_jsa_mutatet mutate(rnd);
   random_jsa_crosst cross(rnd);
-  jsa_genetic_convertt convert;
+  jsa_genetic_convertt convert(l);
   ga_learnt<const selectt,
             random_jsa_mutatet,
             random_jsa_crosst,
