@@ -109,7 +109,7 @@ void add_facade_function(std::string &result)
 {
   substitute(result, "void _start(void)", TEST_SIGNATURE);
   const std::string::size_type pos=result.find("  __CPROVER_initialize();");
-  result.insert(pos, "  if (!setjmp(" JUMP_BUFFER")) return EXIT_FAILURE;\n");
+  result.insert(pos, "  if (setjmp(" JUMP_BUFFER")) return EXIT_FAILURE;\n");
 }
 
 void remove_line_with(std::string &result, const std::string &value)
