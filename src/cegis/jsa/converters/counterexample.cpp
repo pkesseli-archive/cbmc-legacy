@@ -5,10 +5,6 @@
 
 #include <cegis/jsa/converters/counterexample.h>
 
-// XXX: Debug
-#include <iostream>
-// XXX: Debug
-
 #define HEAP_VAR_SIGNIFIER "heap"
 #define CONCRETE_NODES_COMP_INDEX 0
 #define ABSTRACT_NODES_COMP_INDEX 1
@@ -121,6 +117,16 @@ void read_array(wordt *data, const exprt &value)
   for (const exprt &op : value.operands())
     read_element(data[index++], op);
 }
+
+void remove_padding(struct_exprt::operandst &ops, const typet &type)
+{
+  assert(!ops.empty());
+  const struct_typet::componentst &comps=to_struct_type(type).components();
+  assert(comps.size() == ops.size());
+  for (int i=ops.size() - 1; i >= 0; --i)
+    if (comps[i].get_bool(ID_C_is_padding))
+      ops.erase(std::next(ops.begin(), i));
+}
 }
 
 void retrieve_heaps(const jsa_counterexamplet &ce,
@@ -133,7 +139,8 @@ void retrieve_heaps(const jsa_counterexamplet &ce,
     {
       const struct_exprt &value=to_struct_expr(assignment.second);
       __CPROVER_jsa_abstract_heapt &heap=heaps[index++];
-      const struct_exprt::operandst &ops=value.operands();
+      struct_exprt::operandst ops(value.operands());
+      remove_padding(ops, value.type());
       read_array(heap.concrete_nodes, ops[CONCRETE_NODES_COMP_INDEX]);
       read_array(heap.abstract_nodes, ops[ABSTRACT_NODES_COMP_INDEX]);
       read_array(heap.abstract_ranges, ops[ABSTRACT_RANGES_COMP_INDEX]);

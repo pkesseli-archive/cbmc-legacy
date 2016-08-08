@@ -3,6 +3,7 @@
 #else
 #include <limits.h>
 #include <unistd.h>
+#include <stdexcept>
 #endif
 #include <cegis/cegis-util/module_helper.h>
 
