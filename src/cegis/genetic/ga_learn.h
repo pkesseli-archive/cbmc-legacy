@@ -26,6 +26,7 @@ public:
   typedef typename fitnesst::counterexamplest counterexamplest;
   typedef typename selectt::populationt populationt;
   typedef typename selectt::individualt individualt;
+  typedef individualt paragont;
   typedef typename selectt::selectiont selectiont;
 private:
   const class optionst &options;
@@ -142,7 +143,7 @@ public:
    *
    * @param ind
    */
-  void add_paragon(individualt ind);
+  void add_paragon(paragont ind);
 };
 
 #include "ga_learn.inc"

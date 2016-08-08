@@ -24,3 +24,9 @@ void individual_to_safety_solution_deserialisert::operator()(
   get_invariant_variable_ids(st, ids);
   create_safety_solution(result, st, prog.gf, ind, ids, info_fac);
 }
+
+individual_to_safety_solution_deserialisert::operator std::function<void(safety_goto_solutiont &, const irept &)>() const
+{
+  return [this] (safety_goto_solutiont &result, const irept &sdu)
+  { this->operator ()(result, sdu);};
+}

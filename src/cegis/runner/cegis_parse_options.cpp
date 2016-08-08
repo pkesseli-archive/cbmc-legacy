@@ -79,7 +79,7 @@ void cegis_parse_optionst::get_command_line_options(optionst &options)
     options.set_option("cegis-limit-wordsize", cmdline.isset("cegis-limit-wordsize"));
     options.set_option("cegis-match-select", !cmdline.isset("cegis-tournament-select"));
     options.set_option("cegis-statistics", cmdline.isset("cegis-statistics"));
-    options.set_option("cegis-genetic", cmdline.isset("cegis-genetic"));
+    options.set_option(CEGIS_GENETIC, cmdline.isset(CEGIS_GENETIC));
     unsigned int genetic_rounds=10u;
     if (cmdline.isset("cegis-genetic-rounds"))
       genetic_rounds=string2integer(cmdline.get_value("cegis-genetic-rounds")).to_ulong();

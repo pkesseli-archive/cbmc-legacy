@@ -26,19 +26,19 @@ class concurrent_learnt
 {
 public:
   typedef typename learner1t::candidatet candidatet;
-  typedef typename learner2t::candidatet encoded_candidatet;
+  typedef typename learner1t::paragont learner2_candidatet;
   typedef typename learner1t::counterexamplet counterexamplet;
   typedef typename learner1t::counterexamplest counterexamplest;
-  typedef std::function<void(irept &, const encoded_candidatet &)> serialisert;
-  typedef std::function<void(candidatet &, const irept &)> deserialisert;
-  typedef std::function<void(encoded_candidatet &, const irept &)> encoded_deserialisert;
+  typedef std::function<void(irept &, const candidatet &)> learner2_serialisert;
+  typedef std::function<void(candidatet &, const irept &)> learner1_deserialisert;
+  typedef std::function<void(learner2_candidatet &, const irept &)> learner2_deserialisert;
 private:
   learner1t &learner1;
   learner2t &learner2;
   task_poolt task_pool;
-  const serialisert serialiser;
-  const deserialisert deserialiser;
-  const encoded_deserialisert encoded_deserialiser;
+  const learner2_serialisert learner2_serialiser;
+  const learner1_deserialisert learner1_deserialiser;
+  const learner2_deserialisert learner2_deserialiser;
   bool is_decoded_candidate;
   candidatet decoded_candidate;
   size_t num_ces;
@@ -57,8 +57,22 @@ public:
    * @param learner1_head_start
    */
   concurrent_learnt(learner1t &learner1, learner2t &learner2,
-      serialisert serialiser, deserialisert deserialiser,
-      encoded_deserialisert encoded_deserialiser, size_t learner1_head_start);
+      learner2_serialisert serialiser, learner1_deserialisert deserialiser,
+      learner2_deserialisert encoded_deserialiser, size_t learner1_head_start);
+
+  /**
+   * @brief
+   *
+   * @details
+   *
+   * @param learner1
+   * @param learner2
+   * @param serialiser
+   * @param learner1_head_start
+   */
+  template<class serialisert>
+  concurrent_learnt(learner1t &learner1, learner2t &learner2,
+      const serialisert &serialiser, size_t learner1_head_start);
 
   /**
    * @brief

@@ -10,6 +10,8 @@
 #ifndef CEGIS_INDIVIDUAL_TO_SAFETY_SOLUTION_DESERIALISER_H_
 #define CEGIS_INDIVIDUAL_TO_SAFETY_SOLUTION_DESERIALISER_H_
 
+#include <functional>
+
 #include <cegis/safety/value/safety_goto_solution.h>
 
 /**
@@ -49,6 +51,15 @@ public:
    * @param sdu
    */
   void operator()(safety_goto_solutiont &result, const irept &sdu) const;
+
+  /**
+   * @brief
+   *
+   * @details
+   *
+   * @return
+   */
+  operator std::function<void(safety_goto_solutiont &, const irept &)>() const;
 };
 
 #endif /* CEGIS_INDIVIDUAL_TO_SAFETY_SOLUTION_DESERIALISER_H_ */

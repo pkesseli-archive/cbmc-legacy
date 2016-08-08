@@ -67,8 +67,10 @@ int configure_backend(mstreamt &os, const optionst &o,
   encoded_safety_learn_configt enc(cfg);
   typedef genetic_preprocessingt<prept> preproct;
   preproct pre(o, prep);
-  typedef cegis_symex_learnt<preproct, encoded_safety_learn_configt> symex_learnt;
-  symex_learnt learn(o, pre, enc);
+  //typedef cegis_symex_learnt<preproct, encoded_safety_learn_configt> symex_learnt;
+  //symex_learnt learn(o, pre, enc);
+  typedef cegis_symex_learnt<preproct, safety_learn_configt> symex_learnt;
+  symex_learnt learn(o, pre, cfg);
   safety_program_genetic_settingst<preproct> set(o, prog, pre);
   lazy_genetic_settingst<safety_program_genetic_settingst<preproct> > lazy(set);
   invariant_exec_body_providert<safety_programt> body(DANGER_EXECUTE, prog);
@@ -87,7 +89,7 @@ int configure_backend(mstreamt &os, const optionst &o,
   random_mutatet mutate(rnd, lazy.num_consts_provder());
   random_crosst cross(rnd);
   const size_t symex_head_start=o.get_unsigned_int_option(CEGIS_SYMEX_HEAD_START);
-  if (o.get_bool_option(CEGIS_MATCH_SELECT))
+  /*if (o.get_bool_option(CEGIS_MATCH_SELECT))
   {
     typedef match_selectt<program_populationt> selectt;
     selectt select(fit.get_test_case_data(), rnd, rounds);
@@ -98,7 +100,7 @@ int configure_backend(mstreamt &os, const optionst &o,
 #ifndef _WIN32
     const individual_to_safety_solution_deserialisert deser(prog, info_fac);
     concurrent_learnt<ga_learnt, symex_learnt> learner(ga_learn, learn,
-        serialise, std::ref(deser), deserialise, symex_head_start);
+        serialise, deser, deserialise, symex_head_start);
 #else
     // TODO: Remove once task_pool supports Windows.
     ga_learnt &learner=ga_learn;
@@ -119,7 +121,8 @@ int configure_backend(mstreamt &os, const optionst &o,
   // TODO: Remove once task_pool supports Windows.
   ga_learnt &learner=ga_learn;
 #endif
-  return configure_ui_and_run(os, o, learner, verify, pre);
+  return configure_ui_and_run(os, o, learner, verify, pre);*/
+  return 0;
 }
 
 constant_strategyt get_constant_strategy(const optionst &opt)

@@ -98,7 +98,7 @@ int run_match(mstreamt &os, optionst &opt, const danger_programt &prog,
     const size_t rounds, fitnesst &fitness, mutatet &mutate, crosst &cross,
     convertert &converter, preproct &preproc, symex_learnt &symex_learn)
 {
-  const size_t symex_head_start=opt.get_bool_option(CEGIS_SYMEX_HEAD_START);
+  /*const size_t symex_head_start=opt.get_bool_option(CEGIS_SYMEX_HEAD_START);
   const individual_to_danger_solution_deserialisert deser(prog, info_fac);
   if (opt.get_bool_option(CEGIS_MATCH_SELECT))
   {
@@ -127,7 +127,8 @@ int run_match(mstreamt &os, optionst &opt, const danger_programt &prog,
   // TODO: Remove once task_pool supports Windows.
   ga_learnt &learn=ga_learn;
 #endif
-  return run_parallel(os, opt, prog, learn, preproc);
+  return run_parallel(os, opt, prog, learn, preproc);*/
+  return 0;
 }
 
 template<class preproct>

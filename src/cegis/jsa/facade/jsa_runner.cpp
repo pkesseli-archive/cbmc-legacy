@@ -6,6 +6,8 @@
 
 #include <cegis/symex/cegis_symex_learn.h>
 #include <cegis/symex/cegis_symex_verify.h>
+#define _CONCURRENT_TEST
+#include <cegis/learn/concurrent_learn.h>
 #include <cegis/genetic/lazy_fitness.h>
 #include <cegis/genetic/ga_learn.h>
 #include <cegis/genetic/match_select.h>
@@ -13,6 +15,7 @@
 #include <cegis/jsa/value/jsa_genetic_solution.h>
 #include <cegis/jsa/genetic/jsa_source_provider.h>
 #include <cegis/jsa/genetic/jsa_random.h>
+#include <cegis/jsa/genetic/jsa_serialiser.h>
 #include <cegis/jsa/genetic/random_jsa_cross.h>
 #include <cegis/jsa/genetic/random_jsa_mutate.h>
 #include <cegis/jsa/genetic/jsa_genetic_convert.h>
@@ -32,9 +35,8 @@ int run_with_ga(const symbol_tablet &st, const optionst &o, mstreamt &result,
 {
   jsa_source_providert source_provider(o, l);
   dynamic_jsa_test_runnert test_runner(std::ref(source_provider));
-  typedef lazy_fitnesst<jsa_populationt,
-                        dynamic_jsa_test_runnert,
-                        jsa_counterexamplet> fitnesst;
+  typedef lazy_fitnesst<jsa_populationt, dynamic_jsa_test_runnert,
+      jsa_counterexamplet> fitnesst;
   fitnesst fitness(test_runner);
   typedef match_selectt<jsa_populationt> selectt;
   const selectt::test_case_datat &test_case_data=fitness.get_test_case_data();
@@ -48,9 +50,18 @@ int run_with_ga(const symbol_tablet &st, const optionst &o, mstreamt &result,
             random_jsa_mutatet,
             random_jsa_crosst,
             fitnesst,
-            jsa_genetic_convertt> learn(o, rnd, select, mutate, cross, fitness, convert);
+            jsa_genetic_convertt> ga(o, rnd, select, mutate, cross, fitness, convert);
+  /*const jsa_serialisert serialiser(l.get_jsa_program());
+  const size_t num_sym=o.get_unsigned_int_option(CEGIS_SYMEX_HEAD_START);
+  typedef cegis_symex_learnt<jsa_preprocessingt, jsa_symex_learnt> symex_learnt;
+  symex_learnt symex_learn(o, prep, l);
+  concurrent_learnt<decltype(ga), symex_learnt> learn(ga,
+                                                      symex_learn,
+                                                      serialiser,
+                                                      num_sym);
   learn_preprocess_seedt<jsa_symex_learnt> seed(o, l);
-  return run_cegis_with_statistics_wrapper(result, o, learn, oracle, prep, seed);
+  return run_cegis_with_statistics_wrapper(result, o, learn, oracle, prep, seed);*/
+  return 0;
 }
 }
 
@@ -63,6 +74,8 @@ int run_jsa(optionst &o, mstreamt &result, const symbol_tablet &st,
   cegis_symex_learnt<jsa_preprocessingt, jsa_symex_learnt> learn(o, prep, lcfg);
   jsa_symex_verifyt vcfg(prog);
   cegis_symex_verifyt<jsa_symex_verifyt> oracle(o, vcfg);
-  return run_with_ga(st, o, result, lcfg, oracle, prep);
-  //return run_cegis_with_statistics_wrapper(result, o, learn, oracle, prep);
+  if (o.get_bool_option(CEGIS_GENETIC))
+    return run_with_ga(st, o, result, lcfg, oracle, prep);
+  else
+    return run_cegis_with_statistics_wrapper(result, o, learn, oracle, prep);
 }
