@@ -2,24 +2,12 @@
 
 template<class learner1t, class learner2t>
 concurrent_learnt<learner1t, learner2t>::concurrent_learnt(learner1t &learner1,
-    learner2t &learner2, const learner2_serialisert learner2_serialiser,
-    const learner1_deserialisert learner2_deserialiser,
-    const learner2_deserialisert learner1_deserialiser,
+    learner2t &learner2, const serialisert serialiser,
+    const deserialisert deserialiser,
+    const encoded_deserialisert encoded_deserialiser,
     const size_t learner1_head_start) :
-    learner1(learner1), learner2(learner2), learner2_serialiser(
-        learner2_serialiser), learner1_deserialiser(learner2_deserialiser), learner2_deserialiser(
-        learner1_deserialiser), is_decoded_candidate(false), num_ces(0), num_symex_ces(
-        learner1_head_start)
-{
-}
-
-template<class learner1t, class learner2t>
-template<class serialisert>
-concurrent_learnt<learner1t, learner2t>::concurrent_learnt(learner1t &learner1,
-    learner2t &learner2, const serialisert &serialiser,
-    const size_t learner1_head_start) :
-    learner1(learner1), learner2(learner2), learner2_serialiser(serialiser), learner1_deserialiser(
-        serialiser), learner2_deserialiser(serialiser), is_decoded_candidate(
+    learner1(learner1), learner2(learner2), serialiser(serialiser), deserialiser(
+        deserialiser), encoded_deserialiser(encoded_deserialiser), is_decoded_candidate(
         false), num_ces(0), num_symex_ces(learner1_head_start)
 {
 }
@@ -68,7 +56,7 @@ bool concurrent_learnt<learner1t, learner2t>::learn(itert first,
           const bool result=learner2.learn(first, last);
           if (!result) return EXIT_FAILURE;
           irept sdu;
-          learner2_serialiser(sdu, learner2.next_candidate());
+          serialiser(sdu, learner2.next_candidate());
           irep_pipe.send(sdu);
           irep_pipe.close_write();
           return EXIT_SUCCESS;
@@ -84,10 +72,11 @@ bool concurrent_learnt<learner1t, learner2t>::learn(itert first,
         symex_success=true;
         irept sdu;
         irep_pipe.receive(sdu);
-        learner2_candidatet ind;
-        learner2_deserialiser(ind, sdu);
+        program_individualt ind;
+        encoded_deserialiser(ind, sdu);
         learner1.add_paragon(ind);
-        learner1_deserialiser(decoded_candidate, sdu);
+        typename learner2t::candidatet symex_candidate;
+        deserialiser(decoded_candidate, sdu);
         is_decoded_candidate=true;
       });
   irep_pipe.close_write();

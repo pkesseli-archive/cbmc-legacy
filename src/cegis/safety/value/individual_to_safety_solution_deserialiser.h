@@ -39,27 +39,11 @@ public:
    * @brief
    *
    * @details
-   */
-  ~individual_to_safety_solution_deserialisert();
-
-  /**
-   * @brief
    *
-   * @details
-   *
-   * @param result
+   * @param entity
    * @param sdu
    */
-  void operator()(safety_goto_solutiont &result, const irept &sdu) const;
-
-  /**
-   * @brief
-   *
-   * @details
-   *
-   * @return
-   */
-  operator std::function<void(safety_goto_solutiont &, const irept &)>() const;
+  void operator()(safety_goto_solutiont &entity, const irept &sdu) const;
 };
 
 #endif /* CEGIS_INDIVIDUAL_TO_SAFETY_SOLUTION_DESERIALISER_H_ */

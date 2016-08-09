@@ -67,10 +67,8 @@ int configure_backend(mstreamt &os, const optionst &o,
   encoded_safety_learn_configt enc(cfg);
   typedef genetic_preprocessingt<prept> preproct;
   preproct pre(o, prep);
-  //typedef cegis_symex_learnt<preproct, encoded_safety_learn_configt> symex_learnt;
-  //symex_learnt learn(o, pre, enc);
-  typedef cegis_symex_learnt<preproct, safety_learn_configt> symex_learnt;
-  symex_learnt learn(o, pre, cfg);
+  typedef cegis_symex_learnt<preproct, encoded_safety_learn_configt> symex_learnt;
+  symex_learnt learn(o, pre, enc);
   safety_program_genetic_settingst<preproct> set(o, prog, pre);
   lazy_genetic_settingst<safety_program_genetic_settingst<preproct> > lazy(set);
   invariant_exec_body_providert<safety_programt> body(DANGER_EXECUTE, prog);
@@ -89,7 +87,7 @@ int configure_backend(mstreamt &os, const optionst &o,
   random_mutatet mutate(rnd, lazy.num_consts_provder());
   random_crosst cross(rnd);
   const size_t symex_head_start=o.get_unsigned_int_option(CEGIS_SYMEX_HEAD_START);
-  /*if (o.get_bool_option(CEGIS_MATCH_SELECT))
+  if (o.get_bool_option(CEGIS_MATCH_SELECT))
   {
     typedef match_selectt<program_populationt> selectt;
     selectt select(fit.get_test_case_data(), rnd, rounds);
@@ -121,8 +119,7 @@ int configure_backend(mstreamt &os, const optionst &o,
   // TODO: Remove once task_pool supports Windows.
   ga_learnt &learner=ga_learn;
 #endif
-  return configure_ui_and_run(os, o, learner, verify, pre);*/
-  return 0;
+  return configure_ui_and_run(os, o, learner, verify, pre);
 }
 
 constant_strategyt get_constant_strategy(const optionst &opt)

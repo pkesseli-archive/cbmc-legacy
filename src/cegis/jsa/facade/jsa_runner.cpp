@@ -7,7 +7,6 @@
 #include <cegis/symex/cegis_symex_learn.h>
 #include <cegis/symex/cegis_symex_verify.h>
 #define _CONCURRENT_TEST
-#include <cegis/learn/concurrent_learn.h>
 #include <cegis/genetic/lazy_fitness.h>
 #include <cegis/genetic/ga_learn.h>
 #include <cegis/genetic/match_select.h>
@@ -43,7 +42,7 @@ int run_with_ga(const symbol_tablet &st, const optionst &o, mstreamt &result,
   const size_t rounds=o.get_unsigned_int_option(CEGIS_ROUNDS);
   const selectt select(test_case_data, rounds);
   jsa_randomt rnd(st, l.get_pred_ops_count(), l.get_const_pred_ops_count());
-  random_jsa_mutatet mutate(rnd);
+  /*random_jsa_mutatet mutate(rnd);
   random_jsa_crosst cross(rnd);
   jsa_genetic_convertt convert(l);
   ga_learnt<const selectt,
@@ -51,7 +50,7 @@ int run_with_ga(const symbol_tablet &st, const optionst &o, mstreamt &result,
             random_jsa_crosst,
             fitnesst,
             jsa_genetic_convertt> ga(o, rnd, select, mutate, cross, fitness, convert);
-  /*const jsa_serialisert serialiser(l.get_jsa_program());
+  const jsa_serialisert serialiser(l.get_jsa_program());
   const size_t num_sym=o.get_unsigned_int_option(CEGIS_SYMEX_HEAD_START);
   typedef cegis_symex_learnt<jsa_preprocessingt, jsa_symex_learnt> symex_learnt;
   symex_learnt symex_learn(o, prep, l);
