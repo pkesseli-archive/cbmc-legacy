@@ -38,17 +38,7 @@ public:
    * @param sdu
    * @param entity
    */
-  void operator()(class irept &sdu, const class jsa_solutiont &entity) const;
-
-  /**
-   * @brief
-   *
-   * @details
-   *
-   * @param entity
-   * @param sdu
-   */
-  void operator()(jsa_solutiont &entity, const irept &sdu) const;
+  void operator()(class irept &sdu, const class jsa_genetic_solutiont &entity) const;
 
   /**
    * @brief
@@ -65,9 +55,10 @@ public:
    *
    * @details
    *
-   * @return
+   * @param entity
+   * @param sdu
    */
-  operator std::function<void(irept &, const jsa_solutiont &)>() const;
+  void operator()(class jsa_solutiont &entity, const irept &sdu) const;
 
   /**
    * @brief
@@ -76,7 +67,7 @@ public:
    *
    * @return
    */
-  operator std::function<void(jsa_solutiont &, const irept &)>() const;
+  operator std::function<void(irept &, const jsa_genetic_solutiont &)>() const;
 
   /**
    * @brief
@@ -86,6 +77,15 @@ public:
    * @return
    */
   operator std::function<void(jsa_genetic_solutiont &, const irept &)>() const;
+
+  /**
+   * @brief
+   *
+   * @details
+   *
+   * @return
+   */
+  operator std::function<void(jsa_solutiont &, const irept &)>() const;
 };
 
 #endif /* CEGIS_JSA_SERIALISER_H_ */
